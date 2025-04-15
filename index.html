@@ -1,9 +1,9 @@
-!DOCTYPE html>
+l>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Roleta DStreet Company</title>
+  <title>Roleta DStreet</title>
   <style>
     body {
       background-color: #111;
@@ -48,7 +48,7 @@
       border-left: 20px solid transparent;
       border-right: 20px solid transparent;
       border-bottom: 30px solid red;
-      margin: -5px auto -25px auto;
+      margin: -10px auto -20px auto;
       position: relative;
       z-index: 10;
     }
@@ -85,7 +85,7 @@
 <body>
 
   <div class="logo">
-    <img src="https://dstreetcompany.vercel.app/logo.png" alt="Logo DStreet Company" />
+    <img src="https://dstreetcompany.vercel.app/logo192.png" alt="Logo DStreet Company" />
   </div>
 
   <div class="frase-animada">Gire e leve para casa até 10 camisetas!</div>
@@ -148,11 +148,10 @@
       rotacaoAtual += totalGiro;
       canvas.style.transform = `rotate(${rotacaoAtual}deg)`;
 
-      // Espera a roleta girar antes de mostrar resultado
       setTimeout(() => {
-        const anguloFinal = rotacaoAtual % 360;
-        const index = Math.floor((tamanho - (anguloFinal / anguloPorSegmento)) % tamanho);
-        const resultado = segmentos[index >= 0 ? index : index + tamanho].texto;
+        const anguloFinal = (rotacaoAtual % 360 + 360) % 360;
+        const index = Math.floor(((anguloFinal + anguloPorSegmento / 2) % 360) / anguloPorSegmento);
+        const resultado = segmentos[(tamanho - index) % tamanho].texto;
         document.getElementById("resultado").textContent = `Resultado: ${resultado}`;
       }, 4000);
     });
