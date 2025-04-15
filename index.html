@@ -1,184 +1,145 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Roleta DStreet Company</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Roleta DStreet</title>
   <style>
     body {
       margin: 0;
       font-family: 'Arial Black', sans-serif;
-      color: white;
       background: url('background.jpg') no-repeat center center fixed;
       background-size: cover;
-      position: relative;
-    }
-
-    body::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.8);
-      z-index: 0;
-    }
-
-    .container {
-      position: relative;
-      z-index: 1;
+      color: #fff;
       text-align: center;
-      padding: 20px;
     }
-
     .logo {
-      max-width: 200px;
-      margin: 10px auto 20px;
+      width: 160px;
+      margin: 20px auto 10px;
       display: block;
-      filter: drop-shadow(0 0 10px white);
     }
-
-    .titulo {
+    h1 {
       font-size: 24px;
-      color: yellow;
-      text-shadow: 0 0 10px #ff00ff;
+      color: #fdee0c;
+      text-shadow: 0 0 10px #000;
     }
-
-    .subtitulo {
+    h2 {
       font-size: 20px;
       color: #ff00ff;
-      text-shadow: 0 0 10px #00ffff;
       margin-bottom: 30px;
+      text-shadow: 0 0 10px #000;
     }
-
-    .wheel-container {
-      position: relative;
-      width: 300px;
-      height: 300px;
+    #wheel {
       margin: 0 auto;
-    }
-
-    .wheel {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      border: 5px solid #fff;
-      background: conic-gradient(
-        #2f2f2f 0deg 60deg,
-        #666 60deg 120deg,
-        #2f2f2f 120deg 180deg,
-        #666 180deg 240deg,
-        #2f2f2f 240deg 300deg,
-        #666 300deg 360deg
-      );
       position: relative;
-      transition: transform 4s cubic-bezier(0.33, 1, 0.68, 1);
     }
-
-    .pointer {
+    #canvas {
+      border-radius: 50%;
+    }
+    #arrow {
       position: absolute;
-      top: 50%;
+      top: -20px;
       left: 50%;
-      transform: translate(-50%, -165px);
+      transform: translateX(-50%);
       width: 0;
       height: 0;
-      border-left: 15px solid transparent;
-      border-right: 15px solid transparent;
-      border-bottom: 25px solid red;
-      z-index: 2;
+      border-left: 20px solid transparent;
+      border-right: 20px solid transparent;
+      border-bottom: 40px solid red;
     }
-
-    .wheel span {
-      position: absolute;
-      width: 100%;
-      text-align: center;
-      transform-origin: center;
-      font-size: 14px;
-      font-weight: bold;
-    }
-
-    .wheel span:nth-child(1) { transform: rotate(30deg) translateY(-130px); }
-    .wheel span:nth-child(2) { transform: rotate(90deg) translateY(-130px); }
-    .wheel span:nth-child(3) { transform: rotate(150deg) translateY(-130px); }
-    .wheel span:nth-child(4) { transform: rotate(210deg) translateY(-130px); }
-    .wheel span:nth-child(5) { transform: rotate(270deg) translateY(-130px); }
-    .wheel span:nth-child(6) { transform: rotate(330deg) translateY(-130px); }
-
-    .button {
-      background: #00f0ff;
-      color: black;
-      font-weight: bold;
-      font-size: 20px;
-      padding: 15px 30px;
-      border: none;
+    #spin {
       margin-top: 30px;
+      font-size: 22px;
+      padding: 15px 40px;
+      background: cyan;
+      border: none;
       border-radius: 10px;
+      box-shadow: 0 0 20px cyan;
       cursor: pointer;
-      box-shadow: 0 0 15px #00f0ff;
+      font-weight: bold;
     }
-
-    .resultado {
+    #result {
+      margin-top: 30px;
       font-size: 22px;
       color: lime;
-      margin-top: 25px;
-      text-shadow: 0 0 8px lime;
+      text-shadow: 0 0 10px #000;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <img src="https://i.imgur.com/Lxk8sVm.png" alt="Logo DStreet" class="logo"/>
-    <h1 class="titulo">GIRE E LEVE PRA CASA ATÉ 10</h1>
-    <h2 class="subtitulo">CAMISETAS EXCLUSIVAS!</h2>
+  <img src="logo-dstreet.png" alt="DStreet Logo" class="logo">
+  <h1>GIRE E LEVE PRA CASA ATÉ 10</h1>
+  <h2>CAMISETAS EXCLUSIVAS!</h2>
 
-    <div class="wheel-container">
-      <div class="pointer"></div>
-      <div class="wheel" id="wheel">
-        <span>10 CAMISETAS</span>
-        <span>TENTE OUTRA VEZ</span>
-        <span>5 CAMISETAS</span>
-        <span>TENTE OUTRA VEZ</span>
-        <span>3 CAMISETAS</span>
-        <span>TENTE OUTRA VEZ</span>
-      </div>
-    </div>
-
-    <button class="button" onclick="girarRoleta()">GIRAR</button>
-    <div class="resultado" id="resultado"></div>
+  <div id="wheel">
+    <div id="arrow"></div>
+    <canvas id="canvas" width="300" height="300"></canvas>
   </div>
-
-  <audio id="somGiro" src="https://assets.mixkit.co/active_storage/sfx/1415/1415-preview.mp3"></audio>
-  <audio id="somResultado" src="https://assets.mixkit.co/active_storage/sfx/3954/3954-preview.mp3"></audio>
+  <button id="spin">GIRAR</button>
+  <div id="result">RESULTADO:</div>
 
   <script>
-    const wheel = document.getElementById('wheel');
-    const resultado = document.getElementById('resultado');
-    const somGiro = document.getElementById('somGiro');
-    const somResultado = document.getElementById('somResultado');
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    const segments = ["10 CAMISETAS", "TENTE OUTRA VEZ", "5 CAMISETAS", "TENTE OUTRA VEZ", "3 CAMISETAS", "TENTE OUTRA VEZ"];
+    const colors = ["#444", "#555", "#666", "#777", "#888", "#999"];
+    const spinBtn = document.getElementById("spin");
+    const result = document.getElementById("result");
+    const size = canvas.width / 2;
+    let angle = 0;
 
-    const premios = [
-      "10 CAMISETAS",
-      "TENTE OUTRA VEZ",
-      "5 CAMISETAS",
-      "TENTE OUTRA VEZ",
-      "3 CAMISETAS",
-      "TENTE OUTRA VEZ"
-    ];
-
-    function girarRoleta() {
-      const angle = Math.floor(Math.random() * 360) + 1080;
-      wheel.style.transform = `rotate(${angle}deg)`;
-      somGiro.play();
-      resultado.textContent = '';
-
-      setTimeout(() => {
-        const pos = angle % 360;
-        const index = Math.floor((360 - pos + 30) % 360 / 60);
-        const premio = premios[index];
-        resultado.textContent = `RESULTADO: ${premio}`;
-        somResultado.play();
-      }, 4200);
+    function drawWheel() {
+      const angleSize = (2 * Math.PI) / segments.length;
+      for (let i = 0; i < segments.length; i++) {
+        ctx.beginPath();
+        ctx.fillStyle = colors[i];
+        ctx.moveTo(size, size);
+        ctx.arc(size, size, size, angleSize * i, angleSize * (i + 1));
+        ctx.fill();
+        ctx.save();
+        ctx.translate(size, size);
+        ctx.rotate(angleSize * i + angleSize / 2);
+        ctx.textAlign = "right";
+        ctx.fillStyle = "white";
+        ctx.font = "bold 16px Arial";
+        ctx.fillText(segments[i], size - 10, 10);
+        ctx.restore();
+      }
     }
+
+    drawWheel();
+
+    function spinWheel() {
+      let spinAngle = Math.random() * 360 + 720;
+      let duration = 3000;
+      let start = null;
+      const sound = new Audio("https://www.soundjay.com/mechanical/sounds/mechanical-gear-turning-4.mp3");
+      sound.play();
+
+      function animate(timestamp) {
+        if (!start) start = timestamp;
+        const progress = timestamp - start;
+        const eased = easeOut(progress / duration);
+        angle = eased * spinAngle;
+        canvas.style.transform = `rotate(${angle}deg)`;
+        if (progress < duration) {
+          requestAnimationFrame(animate);
+        } else {
+          const finalAngle = angle % 360;
+          const segmentAngle = 360 / segments.length;
+          const index = Math.floor((360 - finalAngle + segmentAngle / 2) % 360 / segmentAngle);
+          result.textContent = `RESULTADO: ${segments[index]}`;
+        }
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    function easeOut(t) {
+      return --t * t * t + 1;
+    }
+
+    spinBtn.addEventListener("click", spinWheel);
   </script>
 </body>
 </html>
-
