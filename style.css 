@@ -1,0 +1,75 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: url('fundo-sacolas.jpg') no-repeat center center fixed;
+  background-size: cover;
+  font-family: 'Arial Black', sans-serif;
+  color: #fff;
+  text-align: center;
+}
+
+.container {
+  padding: 20px;
+}
+
+.logo {
+  width: 150px;
+  margin-bottom: 20px;
+}
+
+.frase-impacto {
+  font-size: 26px;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 5px #000;
+}
+
+.frase-impacto span {
+  color: #FFD700;
+}
+
+.roleta-container {
+  position: relative;
+  width: 500px;
+  margin: 0 auto;
+}
+
+#wheel {
+  border-radius: 50%;
+  box-shadow: 0 0 30px #fff;
+}
+
+.ponteiro {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 50px;
+  transform: translateX(-50%);
+  z-index: 10;
+}
+
+#girarBtn {
+  margin-top: 20px;
+  padding: 15px 40px;
+  font-size: 22px;
+  background: #00ffcc;
+  border: none;
+  color: #000;
+  border-radius: 12px;
+  box-shadow: 0 0 20px #00ffcc, 0 0 40px #00ffcc;
+  cursor: pointer;
+}
+
+.resultado-texto {
+  margin-top: 20px;
+  font-size: 24px;
+  color: #FFD700;
+  text-shadow: 2px 2px 5px #000;
+}
+
+.regras {
+  margin-top: 10px;
+  font-size: 18px;
+  color: #ccc;
+  font-family: 'Comic Sans MS', cursive;
+}
+
