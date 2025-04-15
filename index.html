@@ -1,182 +1,177 @@
-
-index.html
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DStreet Roleta</title>
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Arial', sans-serif;
+      background-color: #111;
+      color: #fff;
+      text-align: center;
+    }
+
+    .logo {
+      width: 120px;
+      margin: 20px auto;
+      display: block;
+    }
+
+    h1 {
+      color: #f1c40f;
+      animation: piscar 1s infinite;
+      margin-top: 10px;
+    }
+
+    @keyframes piscar {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.2; }
+    }
+
+    .regras {
+      color: #00eaff;
+      font-size: 18px;
+      margin-bottom: 30px;
+      font-family: 'Comic Sans MS', cursive;
+    }
+
+    .roleta-container {
+      position: relative;
+      display: inline-block;
+    }
+
+    .ponteiro {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 20px solid transparent;
+      border-right: 20px solid transparent;
+      border-bottom: 40px solid yellow;
+      z-index: 10;
+    }
+
+    canvas {
+      border-radius: 50%;
+    }
+
+    #resultado {
+      font-size: 24px;
+      font-weight: bold;
+      color: #00eaff;
+      margin-top: 20px;
+    }
+
+    #girar {
+      background-color: #f1c40f;
+      color: black;
+      padding: 15px 30px;
+      font-size: 20px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
     <img src="logo-dstreet.png" alt="Logo DStreet Company" class="logo" />
     <h1>Gire e leve para casa até 10 camisetas!</h1>
     <p class="regras">R$5 = 1 giro | R$10 = 3 giros | R$20 = 4 giros</p>
-    
+
     <div class="roleta-container">
-      <canvas id="wheel" width="500" height="500"></canvas>
       <div class="ponteiro"></div>
+      <canvas id="wheel" width="500" height="500"></canvas>
     </div>
-    
+
     <button id="girar">GIRAR</button>
     <p id="resultado" class="resultado"></p>
   </div>
 
-  <script src="script.js"></script>
+  <script>
+    const canvas = document.getElementById("wheel");
+    const ctx = canvas.getContext("2d");
+    const girarBtn = document.getElementById("girar");
+    const resultado = document.getElementById("resultado");
+
+    const premios = [
+      "10 camisetas", "Tente outra vez", "5 camisetas",
+      "Tente outra vez", "3 camisetas", "Tente outra vez"
+    ];
+
+    const colors = ["#e74c3c", "#34495e", "#2ecc71", "#8e44ad", "#3498db", "#f39c12"];
+
+    const size = canvas.width;
+    const center = size / 2;
+    const total = premios.length;
+    const angle = 2 * Math.PI / total;
+    let rotation = 0;
+    let isSpinning = false;
+
+    function drawWheel() {
+      for (let i = 0; i < total; i++) {
+        const startAngle = angle * i + rotation;
+        const endAngle = startAngle + angle;
+
+        ctx.beginPath();
+        ctx.moveTo(center, center);
+        ctx.arc(center, center, center, startAngle, endAngle);
+        ctx.fillStyle = colors[i % colors.length];
+        ctx.fill();
+        ctx.save();
+
+        ctx.translate(center, center);
+        ctx.rotate(startAngle + angle / 2);
+        ctx.textAlign = "right";
+        ctx.fillStyle = "white";
+        ctx.font = "bold 16px Arial";
+        ctx.fillText(premios[i], center - 10, 10);
+        ctx.restore();
+      }
+    }
+
+    function girarRoleta() {
+      if (isSpinning) return;
+      isSpinning = true;
+      resultado.textContent = "";
+
+      const giroExtra = Math.random() * 360;
+      const giros = 360 * 5 + giroExtra;
+
+      const duracao = 5000;
+      const inicio = performance.now();
+
+      function animar(agora) {
+        const tempo = agora - inicio;
+        const progresso = Math.min(tempo / duracao, 1);
+        const easeOut = 1 - Math.pow(1 - progresso, 3);
+
+        rotation = (giros * easeOut * Math.PI) / 180;
+        ctx.clearRect(0, 0, size, size);
+        drawWheel();
+
+        if (progresso < 1) {
+          requestAnimationFrame(animar);
+        } else {
+          const grausFinal = (rotation * 180 / Math.PI) % 360;
+          const index = total - Math.floor((grausFinal / 360) * total) - 1;
+          resultado.textContent = `Resultado: ${premios[index]}`;
+          isSpinning = false;
+        }
+      }
+
+      requestAnimationFrame(animar);
+    }
+
+    drawWheel();
+    girarBtn.addEventListener("click", girarRoleta);
+  </script>
 </body>
 </html>
-
-
----
-
-style.css
-
-body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Arial', sans-serif;
-  background-color: #111;
-  color: #fff;
-  text-align: center;
-}
-
-.logo {
-  width: 120px;
-  margin: 20px auto;
-  display: block;
-}
-
-h1 {
-  color: #f1c40f;
-  margin-top: 10px;
-}
-
-.regras {
-  color: #00eaff;
-  font-size: 18px;
-  margin-bottom: 30px;
-  font-family: 'Comic Sans MS', cursive;
-}
-
-.roleta-container {
-  position: relative;
-  display: inline-block;
-}
-
-.ponteiro {
-  position: absolute;
-  top: 0;
-  right: -12px;
-  width: 0;
-  height: 0;
-  border-left: 20px solid transparent;
-  border-right: 20px solid transparent;
-  border-bottom: 40px solid yellow;
-  transform: translateY(-20px);
-  z-index: 10;
-}
-
-#resultado {
-  font-size: 22px;
-  font-weight: bold;
-  color: #00eaff;
-  margin-top: 20px;
-}
-
-#girar {
-  background-color: #f1c40f;
-  color: black;
-  padding: 15px 30px;
-  font-size: 20px;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  margin-top: 20px;
-}
-
-
----
-
-script.js
-
-const canvas = document.getElementById("wheel");
-const ctx = canvas.getContext("2d");
-const girarBtn = document.getElementById("girar");
-const resultado = document.getElementById("resultado");
-
-const premios = [
-  "10 camisetas", "Tente outra vez", "5 camisetas",
-  "Tente outra vez", "3 camisetas", "Tente outra vez"
-];
-
-const colors = ["#e74c3c", "#34495e", "#2ecc71", "#8e44ad", "#3498db", "#f39c12"];
-
-const size = canvas.width;
-const center = size / 2;
-const total = premios.length;
-const angle = 2 * Math.PI / total;
-let rotation = 0;
-let isSpinning = false;
-
-function drawWheel() {
-  for (let i = 0; i < total; i++) {
-    const startAngle = angle * i + rotation;
-    const endAngle = startAngle + angle;
-
-    ctx.beginPath();
-    ctx.moveTo(center, center);
-    ctx.arc(center, center, center, startAngle, endAngle);
-    ctx.fillStyle = colors[i % colors.length];
-    ctx.fill();
-    ctx.save();
-
-    // Texto
-    ctx.translate(center, center);
-    ctx.rotate(startAngle + angle / 2);
-    ctx.textAlign = "right";
-    ctx.fillStyle = "white";
-    ctx.font = "bold 16px Arial";
-    ctx.fillText(premios[i], center - 10, 10);
-    ctx.restore();
-  }
-}
-
-function girarRoleta() {
-  if (isSpinning) return;
-  isSpinning = true;
-  resultado.textContent = "";
-
-  const giroExtra = Math.random() * 360;
-  const giros = 360 * 5 + giroExtra;
-
-  let rot = 0;
-  const duracao = 5000;
-  const inicio = performance.now();
-
-  function animar(agora) {
-    const tempo = agora - inicio;
-    const progresso = Math.min(tempo / duracao, 1);
-    const easeOut = 1 - Math.pow(1 - progresso, 3);
-
-    rotation = (giros * easeOut * Math.PI) / 180;
-    ctx.clearRect(0, 0, size, size);
-    drawWheel();
-
-    if (progresso < 1) {
-      requestAnimationFrame(animar);
-    } else {
-      const grausFinal = (rotation * 180 / Math.PI) % 360;
-      const index = total - Math.floor((grausFinal / 360) * total) - 1;
-      resultado.textContent = `Resultado: ${premios[index]}`;
-      isSpinning = false;
-    }
-  }
-
-  requestAnimationFrame(animar);
-}
-
-drawWheel();
-girarBtn.addEventListener("click", girarRoleta);
 
