@@ -1,158 +1,169 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Roleta DStreet</title>
+  <title>Roleta DStreet Company</title>
   <style>
     body {
       background-color: #111;
-      color: white;
-      font-family: 'Arial', sans-serif;
+      color: #fff;
+      font-family: Arial, sans-serif;
       text-align: center;
       margin: 0;
       padding: 0;
     }
 
     .logo {
-      margin-top: 20px;
-      height: 80px;
-    }
-
-    .titulo {
-      font-size: 22px;
-      font-weight: bold;
-      color: #f1c40f;
       margin-top: 10px;
     }
 
+    .logo img {
+      height: 60px;
+    }
+
+    .frase-animada {
+      font-size: 24px;
+      font-weight: bold;
+      color: gold;
+      animation: piscar 1s infinite;
+      margin-top: 10px;
+    }
+
+    @keyframes piscar {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.2; }
+    }
+
     .regras {
-      font-size: 16px;
+      font-size: 18px;
+      color: #00FFFF;
       font-family: 'Brush Script MT', cursive;
-      color: #00e6e6;
-      margin-bottom: 20px;
+      margin-top: 5px;
+    }
+
+    .seta {
+      width: 0;
+      height: 0;
+      border-left: 20px solid transparent;
+      border-right: 20px solid transparent;
+      border-bottom: 30px solid red;
+      margin: 10px auto;
+      transform: rotate(180deg);
     }
 
     #roleta {
       width: 300px;
       height: 300px;
       border-radius: 50%;
-      border: 8px solid #fff;
-      margin: 0 auto;
+      border: 10px solid white;
+      margin: 20px auto;
       position: relative;
-      overflow: hidden;
-      transform: rotate(0deg);
-      transition: transform 4s cubic-bezier(0.25, 0.1, 0.25, 1);
     }
 
-    .seta {
-      width: 0;
-      height: 0;
-      border-left: 15px solid transparent;
-      border-right: 15px solid transparent;
-      border-bottom: 30px solid red;
-      position: absolute;
-      top: -35px;
-      left: calc(50% - 15px);
-      z-index: 10;
-    }
-
-    canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
-
-    .btn {
-      margin-top: 40px;
-      padding: 12px 24px;
-      background-color: #f1c40f;
-      color: #000;
+    #girar {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: gold;
+      color: black;
+      font-size: 18px;
       font-weight: bold;
-      font-size: 16px;
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
     }
 
-    .resultado {
-      margin-top: 25px;
+    #resultado {
       font-size: 20px;
-      font-weight: bold;
-      color: #00e6e6;
+      color: cyan;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
 
-  <img src="logo_dstreet.png" alt="Logo DStreet Company" class="logo"/>
-
-  <div class="titulo">Gire e leve para casa até 10 camisetas!</div>
-  <div class="regras">R$5 = 1 giro | R$10 = 3 giros | R$20 = 4 giros</div>
-
-  <div style="position: relative; display: flex; justify-content: center; align-items: center;">
-    <div class="seta"></div>
-    <canvas id="roleta" width="300" height="300"></canvas>
+  <div class="logo">
+    <img src="https://dstreetcompany.vercel.app/logo.png" alt="Logo DStreet Company" />
   </div>
 
-  <button class="btn" onclick="girarRoleta()">GIRAR</button>
-  <div class="resultado" id="resultado">Resultado: </div>
+  <div class="frase-animada">Gire e leve para casa até 10 camisetas!</div>
+  <div class="regras">R$5 = 1 giro | R$10 = 3 giros | R$20 = 4 giros</div>
+
+  <div class="seta"></div>
+
+  <canvas id="roleta" width="300" height="300"></canvas>
+
+  <button id="girar">GIRAR</button>
+
+  <div id="resultado">Resultado:</div>
 
   <script>
     const canvas = document.getElementById("roleta");
     const ctx = canvas.getContext("2d");
-    const resultado = document.getElementById("resultado");
 
-    const setores = [
+    const segmentos = [
       { texto: "10 camisetas", cor: "#e74c3c" },
-      { texto: "Tente outra vez", cor: "#333" },
+      { texto: "Tente outra vez", cor: "#2c3e50" },
       { texto: "5 camisetas", cor: "#2ecc71" },
-      { texto: "Tente outra vez", cor: "#333" },
+      { texto: "Tente outra vez", cor: "#2c3e50" },
       { texto: "3 camisetas", cor: "#3498db" },
-      { texto: "Tente outra vez", cor: "#333" }
+      { texto: "Tente outra vez", cor: "#2c3e50" },
     ];
 
-    const totalSetores = setores.length;
-    const anguloSetor = 2 * Math.PI / totalSetores;
-    let rotacaoAtual = 0;
+    const tamanho = segmentos.length;
+    const angulo = (2 * Math.PI) / tamanho;
 
     function desenharRoleta() {
-      for (let i = 0; i < totalSetores; i++) {
-        const inicio = i * anguloSetor;
-        const fim = inicio + anguloSetor;
+      for (let i = 0; i < tamanho; i++) {
+        const inicio = i * angulo;
+        const fim = inicio + angulo;
 
         ctx.beginPath();
         ctx.moveTo(150, 150);
         ctx.arc(150, 150, 150, inicio, fim);
-        ctx.fillStyle = setores[i].cor;
+        ctx.fillStyle = segmentos[i].cor;
         ctx.fill();
 
         ctx.save();
         ctx.translate(150, 150);
-        ctx.rotate(inicio + anguloSetor / 2);
+        ctx.rotate(inicio + angulo / 2);
         ctx.textAlign = "right";
-        ctx.fillStyle = "white";
+        ctx.fillStyle = "#fff";
         ctx.font = "bold 14px Arial";
-        ctx.fillText(setores[i].texto, 140, 10);
+        ctx.fillText(segmentos[i].texto, 140, 5);
         ctx.restore();
       }
     }
 
-    function girarRoleta() {
-      const voltas = Math.floor(Math.random() * 4) + 4;
-      const destino = Math.floor(Math.random() * totalSetores);
-      const anguloDestino = destino * anguloSetor;
-      const novaRotacao = (2 * Math.PI * voltas) - anguloDestino - anguloSetor / 2;
-
-      rotacaoAtual += novaRotacao;
-      canvas.style.transform = `rotate(${rotacaoAtual}rad)`;
-
-      setTimeout(() => {
-        resultado.innerText = `Resultado: ${setores[destino].texto}`;
-      }, 4000);
-    }
-
     desenharRoleta();
+
+    document.getElementById("girar").addEventListener("click", () => {
+      const giro = Math.floor(Math.random() * 360 + 1440);
+      const duracao = 3000;
+      const inicio = Date.now();
+
+      function animar() {
+        const agora = Date.now();
+        const tempo = agora - inicio;
+        const progresso = tempo / duracao;
+
+        if (progresso < 1) {
+          const anguloAtual = giro * progresso;
+          canvas.style.transform = `rotate(${anguloAtual}deg)`;
+          requestAnimationFrame(animar);
+        } else {
+          canvas.style.transform = `rotate(${giro}deg)`;
+
+          const anguloFinal = (giro % 360) * (Math.PI / 180);
+          const index = tamanho - Math.floor((anguloFinal / (2 * Math.PI)) * tamanho) - 1;
+
+          const resultado = segmentos[(index + tamanho) % tamanho].texto;
+          document.getElementById("resultado").textContent = `Resultado: ${resultado}`;
+        }
+      }
+
+      animar();
+    });
   </script>
 
 </body>
