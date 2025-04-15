@@ -1,194 +1,168 @@
-!DOCTYPE html>
+
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Roleta DStreet Company</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Orbitron:wght@700&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
-      font-family: 'Bebas Neue', sans-serif;
-      background: radial-gradient(#222, #000);
-      color: #fff;
-      overflow: hidden;
+      font-family: 'Arial Black', sans-serif;
+      color: white;
+      background: url('https://dstreetcompany.vercel.app/assets/bg-loja.jpg') no-repeat center center fixed;
+      background-size: cover;
+      position: relative;
     }
-    header {
+
+    body::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
       text-align: center;
       padding: 20px;
     }
-    header img {
-      max-height: 80px;
+
+    .logo {
+      max-width: 200px;
+      margin: 10px auto 20px;
+      display: block;
+      filter: drop-shadow(0 0 10px white);
     }
-    .impacto {
-      text-align: center;
-      font-size: 36px;
-      margin-top: 10px;
-      color: #f5ff4a;
-      text-shadow: 2px 2px 8px #fff;
+
+    .titulo {
+      font-size: 24px;
+      color: yellow;
+      text-shadow: 0 0 10px #ff00ff;
     }
-    .roleta-container {
+
+    .subtitulo {
+      font-size: 20px;
+      color: #ff00ff;
+      text-shadow: 0 0 10px #00ffff;
+      margin-bottom: 30px;
+    }
+
+    .wheel-container {
       position: relative;
-      width: 500px;
-      height: 500px;
-      margin: 50px auto;
+      width: 300px;
+      height: 300px;
+      margin: 0 auto;
     }
-    canvas {
+
+    .wheel {
       width: 100%;
       height: 100%;
+      border-radius: 50%;
+      border: 5px solid #fff;
+      background: conic-gradient(
+        #2f2f2f 0deg 60deg,
+        #666 60deg 120deg,
+        #2f2f2f 120deg 180deg,
+        #666 180deg 240deg,
+        #2f2f2f 240deg 300deg,
+        #666 300deg 360deg
+      );
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: transform 4s cubic-bezier(0.33, 1, 0.68, 1);
     }
-    .ponteiro {
+
+    .pointer {
       position: absolute;
       top: -20px;
       left: 50%;
       transform: translateX(-50%);
-      width: 0;
-      height: 0;
-      border-left: 25px solid transparent;
-      border-right: 25px solid transparent;
-      border-bottom: 40px solid red;
-      z-index: 10;
+      width: 0; 
+      height: 0; 
+      border-left: 15px solid transparent;
+      border-right: 15px solid transparent;
+      border-bottom: 20px solid red;
     }
-    #girarBtn {
-      display: block;
-      margin: 30px auto;
-      padding: 15px 40px;
-      font-size: 24px;
-      background: #00f2ff;
+
+    .button {
+      background: #00f0ff;
+      color: black;
+      font-weight: bold;
+      font-size: 20px;
+      padding: 15px 30px;
       border: none;
+      margin-top: 30px;
       border-radius: 10px;
-      color: #000;
-      font-weight: bold;
       cursor: pointer;
-      box-shadow: 0 0 20px #00f2ff, 0 0 60px #00f2ff;
-      font-family: 'Orbitron', sans-serif;
+      box-shadow: 0 0 15px #00f0ff;
     }
+
     .resultado {
-      text-align: center;
-      font-size: 28px;
-      margin-top: 20px;
-      font-weight: bold;
-      color: #0f0;
-      text-shadow: 1px 1px 5px #fff;
-    }
-    .sacola {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 80px;
-      height: 100px;
-      transform: translate(-50%, -50%);
-      background: url('https://i.imgur.com/BtcXBkC.png') no-repeat center/cover;
-      z-index: -1;
-      opacity: 0.3;
+      font-size: 22px;
+      color: lime;
+      margin-top: 25px;
+      text-shadow: 0 0 8px lime;
     }
   </style>
 </head>
 <body>
-  <header>
-    <img src="https://i.imgur.com/vRSgQZp.png" alt="DStreet Logo"/>
-    <div class="impacto">GIRE E LEVE PRA CASA ATÉ <span style="color:#ff4af5">10 CAMISETAS EXCLUSIVAS!</span></div>
-  </header>
+  <div class="container">
+    <img src="https://i.imgur.com/Lxk8sVm.png" alt="Logo DStreet" class="logo"/>
+    <h1 class="titulo">GIRE E LEVE PRA CASA ATÉ 10</h1>
+    <h2 class="subtitulo">CAMISETAS EXCLUSIVAS!</h2>
 
-  <div class="roleta-container">
-    <div class="ponteiro"></div>
-    <canvas id="roleta" width="500" height="500"></canvas>
-    <div class="sacola"></div>
+    <div class="wheel-container">
+      <div class="pointer"></div>
+      <div class="wheel" id="wheel">
+        <span style="position:absolute; transform: rotate(30deg) translate(120px); color:white;">10 CAMISETAS</span>
+        <span style="position:absolute; transform: rotate(90deg) translate(120px); color:white;">TENTE OUTRA VEZ</span>
+        <span style="position:absolute; transform: rotate(150deg) translate(120px); color:white;">5 CAMISETAS</span>
+        <span style="position:absolute; transform: rotate(210deg) translate(120px); color:white;">TENTE OUTRA VEZ</span>
+        <span style="position:absolute; transform: rotate(270deg) translate(120px); color:white;">3 CAMISETAS</span>
+        <span style="position:absolute; transform: rotate(330deg) translate(120px); color:white;">TENTE OUTRA VEZ</span>
+      </div>
+    </div>
+
+    <button class="button" onclick="girarRoleta()">GIRAR</button>
+    <div class="resultado" id="resultado"></div>
   </div>
 
-  <button id="girarBtn">GIRAR</button>
-  <div class="resultado" id="resultado"></div>
-
-  <audio id="somGiro" src="https://www.soundjay.com/misc/sounds/slot-machine-1.mp3"></audio>
-  <audio id="somWin" src="https://www.soundjay.com/human/sounds/applause-01.mp3"></audio>
-  <audio id="somLose" src="https://www.soundjay.com/button/sounds/button-10.mp3"></audio>
+  <audio id="somGiro" src="https://assets.mixkit.co/active_storage/sfx/1415/1415-preview.mp3"></audio>
+  <audio id="somResultado" src="https://assets.mixkit.co/active_storage/sfx/3954/3954-preview.mp3"></audio>
 
   <script>
-    const canvas = document.getElementById("roleta");
-    const ctx = canvas.getContext("2d");
-    const resultado = document.getElementById("resultado");
-    const somGiro = document.getElementById("somGiro");
-    const somWin = document.getElementById("somWin");
-    const somLose = document.getElementById("somLose");
+    const wheel = document.getElementById('wheel');
+    const resultado = document.getElementById('resultado');
+    const somGiro = document.getElementById('somGiro');
+    const somResultado = document.getElementById('somResultado');
 
-    const opcoes = [
-      "Tente Outra Vez",
-      "3 Camisetas",
-      "Tente Outra Vez",
-      "5 Camisetas",
-      "Tente Outra Vez",
-      "10 Camisetas"
+    const premios = [
+      "10 CAMISETAS",
+      "TENTE OUTRA VEZ",
+      "5 CAMISETAS",
+      "TENTE OUTRA VEZ",
+      "3 CAMISETAS",
+      "TENTE OUTRA VEZ"
     ];
 
-    const cores = ["#111", "#444", "#111", "#666", "#111", "#888"];
-    let anguloInicial = 0;
-    let girando = false;
-
-    function desenharRoleta() {
-      const raio = canvas.width / 2;
-      const centroX = canvas.width / 2;
-      const centroY = canvas.height / 2;
-      const fatia = 2 * Math.PI / opcoes.length;
-
-      for (let i = 0; i < opcoes.length; i++) {
-        const angulo = anguloInicial + i * fatia;
-        ctx.beginPath();
-        ctx.moveTo(centroX, centroY);
-        ctx.arc(centroX, centroY, raio, angulo, angulo + fatia);
-        ctx.fillStyle = cores[i];
-        ctx.fill();
-        ctx.save();
-        ctx.translate(centroX, centroY);
-        ctx.rotate(angulo + fatia / 2);
-        ctx.fillStyle = "#fff";
-        ctx.font = "bold 18px Bebas Neue";
-        ctx.fillText(opcoes[i], 100, 10);
-        ctx.restore();
-      }
-    }
-
-    desenharRoleta();
-
-    document.getElementById("girarBtn").addEventListener("click", () => {
-      if (girando) return;
-      girando = true;
-      resultado.textContent = "";
+    function girarRoleta() {
+      const angle = Math.floor(Math.random() * 360) + 1080; // 3 voltas + aleatório
+      wheel.style.transform = `rotate(${angle}deg)`;
       somGiro.play();
+      resultado.textContent = '';
 
-      const giroTotal = 360 * 5 + Math.floor(Math.random() * 360);
-      const duracao = 4000;
-      const inicio = performance.now();
-
-      function animarRoleta(agora) {
-        const tempoPassado = agora - inicio;
-        const progresso = Math.min(tempoPassado / duracao, 1);
-        const anguloAtual = (giroTotal * progresso * Math.PI / 180);
-        anguloInicial = anguloAtual;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        desenharRoleta();
-
-        if (progresso < 1) {
-          requestAnimationFrame(animarRoleta);
-        } else {
-          const anguloFinal = (anguloInicial % (2 * Math.PI));
-          const indice = Math.floor((opcoes.length - (anguloFinal / (2 * Math.PI)) * opcoes.length) % opcoes.length);
-          const premio = opcoes[indice];
-          resultado.textContent = `Resultado: ${premio}`;
-
-          if (premio.includes("Camisetas")) {
-            somWin.play();
-          } else {
-            somLose.play();
-          }
-
-          girando = false;
-        }
-      }
-
-      requestAnimationFrame(animarRoleta);
-    });
+      setTimeout(() => {
+        const pos = angle % 360;
+        const index = Math.floor((360 - pos + 30) % 360 / 60);
+        const premio = premios[index];
+        resultado.textContent = `RESULTADO: ${premio}`;
+        somResultado.play();
+      }, 4200);
+    }
   </script>
 </body>
 </html>
-
