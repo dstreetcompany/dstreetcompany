@@ -1,4 +1,5 @@
-l>
+
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
@@ -48,8 +49,9 @@ l>
       border-left: 20px solid transparent;
       border-right: 20px solid transparent;
       border-bottom: 30px solid red;
-      margin: -10px auto -20px auto;
       position: relative;
+      top: -10px;
+      margin: 0 auto;
       z-index: 10;
     }
 
@@ -150,7 +152,7 @@ l>
 
       setTimeout(() => {
         const anguloFinal = (rotacaoAtual % 360 + 360) % 360;
-        const index = Math.floor(((anguloFinal + anguloPorSegmento / 2) % 360) / anguloPorSegmento);
+        const index = Math.floor(((anguloFinal + (anguloPorSegmento / 2)) % 360) / anguloPorSegmento);
         const resultado = segmentos[(tamanho - index) % tamanho].texto;
         document.getElementById("resultado").textContent = `Resultado: ${resultado}`;
       }, 4000);
@@ -159,4 +161,3 @@ l>
 
 </body>
 </html>
-
