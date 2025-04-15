@@ -1,145 +1,198 @@
+
+index.html
+
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Roleta DStreet</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Arial Black', sans-serif;
-      background: url('background.jpg') no-repeat center center fixed;
-      background-size: cover;
-      color: #fff;
-      text-align: center;
-    }
-    .logo {
-      width: 160px;
-      margin: 20px auto 10px;
-      display: block;
-    }
-    h1 {
-      font-size: 24px;
-      color: #fdee0c;
-      text-shadow: 0 0 10px #000;
-    }
-    h2 {
-      font-size: 20px;
-      color: #ff00ff;
-      margin-bottom: 30px;
-      text-shadow: 0 0 10px #000;
-    }
-    #wheel {
-      margin: 0 auto;
-      position: relative;
-    }
-    #canvas {
-      border-radius: 50%;
-    }
-    #arrow {
-      position: absolute;
-      top: -20px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 0;
-      height: 0;
-      border-left: 20px solid transparent;
-      border-right: 20px solid transparent;
-      border-bottom: 40px solid red;
-    }
-    #spin {
-      margin-top: 30px;
-      font-size: 22px;
-      padding: 15px 40px;
-      background: cyan;
-      border: none;
-      border-radius: 10px;
-      box-shadow: 0 0 20px cyan;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    #result {
-      margin-top: 30px;
-      font-size: 22px;
-      color: lime;
-      text-shadow: 0 0 10px #000;
-    }
-  </style>
+  <title>DStreet Roleta da Sorte</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <img src="logo-dstreet.png" alt="DStreet Logo" class="logo">
-  <h1>GIRE E LEVE PRA CASA ATÉ 10</h1>
-  <h2>CAMISETAS EXCLUSIVAS!</h2>
-
-  <div id="wheel">
-    <div id="arrow"></div>
-    <canvas id="canvas" width="300" height="300"></canvas>
+  <div class="container">
+    <img src="logo-dstreet.png" alt="Logo DStreet" class="logo" />
+    <h1 class="frase-impacto">GIRE A ROLETA E LEVE PRA CASA ATÉ <span>10 CAMISETAS!</span></h1>
+    <div class="roleta-wrapper">
+      <div class="ponteiro"></div>
+      <canvas id="roleta" width="500" height="500"></canvas>
+    </div>
+    <button id="girar">GIRAR</button>
+    <div id="resultado" class="resultado"></div>
+    <p class="regras">R$5 = 1 giro | R$10 = 3 giros | R$20 = 4 giros</p>
   </div>
-  <button id="spin">GIRAR</button>
-  <div id="result">RESULTADO:</div>
 
-  <script>
-    const canvas = document.getElementById("canvas");
-    const ctx = canvas.getContext("2d");
-    const segments = ["10 CAMISETAS", "TENTE OUTRA VEZ", "5 CAMISETAS", "TENTE OUTRA VEZ", "3 CAMISETAS", "TENTE OUTRA VEZ"];
-    const colors = ["#444", "#555", "#666", "#777", "#888", "#999"];
-    const spinBtn = document.getElementById("spin");
-    const result = document.getElementById("result");
-    const size = canvas.width / 2;
-    let angle = 0;
+  <audio id="som-roleta" src="roleta.mp3"></audio>
+  <audio id="som-ganhou" src="ganhou.mp3"></audio>
+  <audio id="som-perdeu" src="perdeu.mp3"></audio>
 
-    function drawWheel() {
-      const angleSize = (2 * Math.PI) / segments.length;
-      for (let i = 0; i < segments.length; i++) {
-        ctx.beginPath();
-        ctx.fillStyle = colors[i];
-        ctx.moveTo(size, size);
-        ctx.arc(size, size, size, angleSize * i, angleSize * (i + 1));
-        ctx.fill();
-        ctx.save();
-        ctx.translate(size, size);
-        ctx.rotate(angleSize * i + angleSize / 2);
-        ctx.textAlign = "right";
-        ctx.fillStyle = "white";
-        ctx.font = "bold 16px Arial";
-        ctx.fillText(segments[i], size - 10, 10);
-        ctx.restore();
-      }
-    }
-
-    drawWheel();
-
-    function spinWheel() {
-      let spinAngle = Math.random() * 360 + 720;
-      let duration = 3000;
-      let start = null;
-      const sound = new Audio("https://www.soundjay.com/mechanical/sounds/mechanical-gear-turning-4.mp3");
-      sound.play();
-
-      function animate(timestamp) {
-        if (!start) start = timestamp;
-        const progress = timestamp - start;
-        const eased = easeOut(progress / duration);
-        angle = eased * spinAngle;
-        canvas.style.transform = `rotate(${angle}deg)`;
-        if (progress < duration) {
-          requestAnimationFrame(animate);
-        } else {
-          const finalAngle = angle % 360;
-          const segmentAngle = 360 / segments.length;
-          const index = Math.floor((360 - finalAngle + segmentAngle / 2) % 360 / segmentAngle);
-          result.textContent = `RESULTADO: ${segments[index]}`;
-        }
-      }
-
-      requestAnimationFrame(animate);
-    }
-
-    function easeOut(t) {
-      return --t * t * t + 1;
-    }
-
-    spinBtn.addEventListener("click", spinWheel);
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
+
+
+---
+
+style.css
+
+body {
+  margin: 0;
+  font-family: 'Arial Black', sans-serif;
+  background-image: url('fundo-sacolas-dstreet.jpg');
+  background-size: cover;
+  background-position: center;
+  color: white;
+  text-align: center;
+}
+
+.logo {
+  width: 120px;
+  margin: 20px auto;
+  display: block;
+}
+
+.frase-impacto {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  text-shadow: 0 0 10px black;
+}
+
+.frase-impacto span {
+  color: #ffde59;
+  text-shadow: 0 0 15px #ffde59;
+}
+
+.container {
+  padding: 20px;
+}
+
+.roleta-wrapper {
+  position: relative;
+  width: 500px;
+  height: 500px;
+  margin: 0 auto;
+}
+
+.ponteiro {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-bottom: 40px solid red;
+  z-index: 10;
+}
+
+#girar {
+  margin-top: 30px;
+  font-size: 1.5rem;
+  padding: 15px 30px;
+  border: none;
+  background: #00ffcc;
+  color: black;
+  border-radius: 10px;
+  box-shadow: 0 0 20px #00ffcc, 0 0 60px #00ffcc;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.resultado {
+  margin-top: 30px;
+  font-size: 2rem;
+  font-weight: bold;
+  color: yellow;
+  text-shadow: 0 0 10px black;
+}
+
+.regras {
+  margin-top: 40px;
+  font-size: 1.2rem;
+  color: #ffffff;
+  font-family: 'Comic Sans MS', cursive;
+}
+
+
+---
+
+script.js
+
+const canvas = document.getElementById('roleta');
+const ctx = canvas.getContext('2d');
+const resultado = document.getElementById('resultado');
+const somRoleta = document.getElementById('som-roleta');
+const somGanhou = document.getElementById('som-ganhou');
+const somPerdeu = document.getElementById('som-perdeu');
+
+const prêmios = ['10 camisetas', 'Tente outra vez', '5 camisetas', 'Tente outra vez', '3 camisetas', 'Tente outra vez'];
+const colors = ['#1f1f1f', '#444', '#1f1f1f', '#444', '#1f1f1f', '#444'];
+
+let angle = 0;
+let spinning = false;
+
+function desenharRoleta() {
+  const raio = canvas.width / 2;
+  const centroX = canvas.width / 2;
+  const centroY = canvas.height / 2;
+  const fatias = prêmios.length;
+  const anguloFatia = (2 * Math.PI) / fatias;
+
+  for (let i = 0; i < fatias; i++) {
+    const start = angle + i * anguloFatia;
+    const end = start + anguloFatia;
+
+    ctx.beginPath();
+    ctx.moveTo(centroX, centroY);
+    ctx.arc(centroX, centroY, raio, start, end);
+    ctx.fillStyle = colors[i];
+    ctx.fill();
+
+    ctx.save();
+    ctx.translate(centroX, centroY);
+    ctx.rotate(start + anguloFatia / 2);
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 18px Arial';
+    ctx.fillText(prêmios[i], raio - 10, 10);
+    ctx.restore();
+  }
+}
+
+desenharRoleta();
+
+document.getElementById('girar').addEventListener('click', () => {
+  if (spinning) return;
+  spinning = true;
+  resultado.textContent = '';
+  somRoleta.play();
+
+  let rotação = Math.random() * 360 + 1800;
+  let destino = (angle * 180 / Math.PI + rotação) % 360;
+  let fatiaIndex = Math.floor((360 - destino + 30) % 360 / (360 / prêmios.length));
+
+  let novaAngle = angle + (rotação * Math.PI / 180);
+  let passos = 100;
+  let contador = 0;
+
+  const anima = setInterval(() => {
+    contador++;
+    angle += (novaAngle - angle) / (passos - contador + 1);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    desenharRoleta();
+
+    if (contador >= passos) {
+      clearInterval(anima);
+      spinning = false;
+      const premio = prêmios[fatiaIndex];
+      resultado.textContent = premio;
+
+      if (premio.includes('camisetas')) {
+        somGanhou.play();
+      } else {
+        somPerdeu.play();
+      }
+    }
+  }, 20);
+});
