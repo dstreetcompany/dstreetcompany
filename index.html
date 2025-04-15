@@ -48,8 +48,9 @@
       border-left: 20px solid transparent;
       border-right: 20px solid transparent;
       border-bottom: 30px solid red;
-      margin: 10px auto;
-      transform: rotate(180deg);
+      margin: -5px auto -25px auto;
+      position: relative;
+      z-index: 10;
     }
 
     #roleta {
@@ -57,8 +58,9 @@
       height: 300px;
       border-radius: 50%;
       border: 10px solid white;
-      margin: 20px auto;
+      margin: 0 auto;
       position: relative;
+      transition: transform 4s ease-out;
     }
 
     #girar {
@@ -111,12 +113,13 @@
     ];
 
     const tamanho = segmentos.length;
-    const angulo = (2 * Math.PI) / tamanho;
+    const anguloPorSegmento = 360 / tamanho;
+    let rotacaoAtual = 0;
 
     function desenharRoleta() {
       for (let i = 0; i < tamanho; i++) {
-        const inicio = i * angulo;
-        const fim = inicio + angulo;
+        const inicio = (i * 2 * Math.PI) / tamanho;
+        const fim = ((i + 1) * 2 * Math.PI) / tamanho;
 
         ctx.beginPath();
         ctx.moveTo(150, 150);
@@ -126,7 +129,7 @@
 
         ctx.save();
         ctx.translate(150, 150);
-        ctx.rotate(inicio + angulo / 2);
+        ctx.rotate(inicio + (Math.PI / tamanho));
         ctx.textAlign = "right";
         ctx.fillStyle = "#fff";
         ctx.font = "bold 14px Arial";
@@ -138,33 +141,23 @@
     desenharRoleta();
 
     document.getElementById("girar").addEventListener("click", () => {
-      const giro = Math.floor(Math.random() * 360 + 1440);
-      const duracao = 3000;
-      const inicio = Date.now();
+      const voltas = Math.floor(Math.random() * 3) + 5;
+      const anguloExtra = Math.floor(Math.random() * 360);
+      const totalGiro = (voltas * 360) + anguloExtra;
 
-      function animar() {
-        const agora = Date.now();
-        const tempo = agora - inicio;
-        const progresso = tempo / duracao;
+      rotacaoAtual += totalGiro;
+      canvas.style.transform = `rotate(${rotacaoAtual}deg)`;
 
-        if (progresso < 1) {
-          const anguloAtual = giro * progresso;
-          canvas.style.transform = `rotate(${anguloAtual}deg)`;
-          requestAnimationFrame(animar);
-        } else {
-          canvas.style.transform = `rotate(${giro}deg)`;
-
-          const anguloFinal = (giro % 360) * (Math.PI / 180);
-          const index = tamanho - Math.floor((anguloFinal / (2 * Math.PI)) * tamanho) - 1;
-
-          const resultado = segmentos[(index + tamanho) % tamanho].texto;
-          document.getElementById("resultado").textContent = `Resultado: ${resultado}`;
-        }
-      }
-
-      animar();
+      // Espera a roleta girar antes de mostrar resultado
+      setTimeout(() => {
+        const anguloFinal = rotacaoAtual % 360;
+        const index = Math.floor((tamanho - (anguloFinal / anguloPorSegmento)) % tamanho);
+        const resultado = segmentos[index >= 0 ? index : index + tamanho].texto;
+        document.getElementById("resultado").textContent = `Resultado: ${resultado}`;
+      }, 4000);
     });
   </script>
 
 </body>
 </html>
+
