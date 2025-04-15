@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
@@ -106,7 +106,6 @@
     ];
 
     const colors = ["#e74c3c", "#34495e", "#2ecc71", "#8e44ad", "#3498db", "#f39c12"];
-
     const size = canvas.width;
     const center = size / 2;
     const total = premios.length;
@@ -160,7 +159,7 @@
           requestAnimationFrame(animar);
         } else {
           const grausFinal = (rotation * 180 / Math.PI) % 360;
-          const index = total - Math.floor((grausFinal / 360) * total) - 1;
+          const index = Math.floor((360 - grausFinal) / (360 / total)) % total;
           resultado.textContent = `Resultado: ${premios[index]}`;
           isSpinning = false;
         }
