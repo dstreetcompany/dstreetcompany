@@ -10,7 +10,7 @@
       margin: 0;
       font-family: 'Arial Black', sans-serif;
       color: white;
-      background: url('https://dstreetcompany.vercel.app/assets/bg-loja.jpg') no-repeat center center fixed;
+      background: url('background.jpg') no-repeat center center fixed;
       background-size: cover;
       position: relative;
     }
@@ -70,23 +70,38 @@
         #2f2f2f 240deg 300deg,
         #666 300deg 360deg
       );
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      position: relative;
       transition: transform 4s cubic-bezier(0.33, 1, 0.68, 1);
     }
 
     .pointer {
       position: absolute;
-      top: -20px;
+      top: 50%;
       left: 50%;
-      transform: translateX(-50%);
-      width: 0; 
-      height: 0; 
+      transform: translate(-50%, -165px);
+      width: 0;
+      height: 0;
       border-left: 15px solid transparent;
       border-right: 15px solid transparent;
-      border-bottom: 20px solid red;
+      border-bottom: 25px solid red;
+      z-index: 2;
     }
+
+    .wheel span {
+      position: absolute;
+      width: 100%;
+      text-align: center;
+      transform-origin: center;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .wheel span:nth-child(1) { transform: rotate(30deg) translateY(-130px); }
+    .wheel span:nth-child(2) { transform: rotate(90deg) translateY(-130px); }
+    .wheel span:nth-child(3) { transform: rotate(150deg) translateY(-130px); }
+    .wheel span:nth-child(4) { transform: rotate(210deg) translateY(-130px); }
+    .wheel span:nth-child(5) { transform: rotate(270deg) translateY(-130px); }
+    .wheel span:nth-child(6) { transform: rotate(330deg) translateY(-130px); }
 
     .button {
       background: #00f0ff;
@@ -118,12 +133,12 @@
     <div class="wheel-container">
       <div class="pointer"></div>
       <div class="wheel" id="wheel">
-        <span style="position:absolute; transform: rotate(30deg) translate(120px); color:white;">10 CAMISETAS</span>
-        <span style="position:absolute; transform: rotate(90deg) translate(120px); color:white;">TENTE OUTRA VEZ</span>
-        <span style="position:absolute; transform: rotate(150deg) translate(120px); color:white;">5 CAMISETAS</span>
-        <span style="position:absolute; transform: rotate(210deg) translate(120px); color:white;">TENTE OUTRA VEZ</span>
-        <span style="position:absolute; transform: rotate(270deg) translate(120px); color:white;">3 CAMISETAS</span>
-        <span style="position:absolute; transform: rotate(330deg) translate(120px); color:white;">TENTE OUTRA VEZ</span>
+        <span>10 CAMISETAS</span>
+        <span>TENTE OUTRA VEZ</span>
+        <span>5 CAMISETAS</span>
+        <span>TENTE OUTRA VEZ</span>
+        <span>3 CAMISETAS</span>
+        <span>TENTE OUTRA VEZ</span>
       </div>
     </div>
 
@@ -150,7 +165,7 @@
     ];
 
     function girarRoleta() {
-      const angle = Math.floor(Math.random() * 360) + 1080; // 3 voltas + aleatório
+      const angle = Math.floor(Math.random() * 360) + 1080;
       wheel.style.transform = `rotate(${angle}deg)`;
       somGiro.play();
       resultado.textContent = '';
@@ -166,3 +181,4 @@
   </script>
 </body>
 </html>
+
