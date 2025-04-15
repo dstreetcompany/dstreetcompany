@@ -192,7 +192,253 @@ document.getElementById('girar').addEventListener('click', () => {
         somGanhou.play();
       } else {
         somPerdeu.play();
+ 
+style.css
+
+body {
+  margin: 0;
+  font-family: 'Arial Black', sans-serif;
+  background-image: url('fundo-sacolas-dstreet.jpg');
+  background-size: cover;
+  background-position: center;
+  color: white;
+  text-align: center;
+}
+
+.logo {
+  width: 120px;
+  margin: 20px auto;
+  display: block;
+}
+
+.frase-impacto {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  text-shadow: 0 0 10px black;
+}
+
+.frase-impacto span {
+  color: #ffde59;
+  text-shadow: 0 0 15px #ffde59;
+}
+
+.container {
+  padding: 20px;
+}
+
+.roleta-wrapper {
+  position: relative;
+  width: 500px;
+  height: 500px;
+  margin: 0 auto;
+}
+
+.ponteiro {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-bottom: 40px solid red;
+  z-index: 10;
+}
+
+#girar {
+  margin-top: 30px;
+  font-size: 1.5rem;
+  padding: 15px 30px;
+  border: none;
+  background: #00ffcc;
+  color: black;
+  border-radius: 10px;
+  box-shadow: 0 0 20px #00ffcc, 0 0 60px #00ffcc;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.resultado {
+  margin-top: 30px;
+  font-size: 2rem;
+  font-weight: bold;
+  color: yellow;
+  text-shadow: 0 0 10px black;
+}
+
+.regras {
+  margin-top: 40px;
+  font-size: 1.2rem;
+  color: #ffffff;
+  font-family: 'Comic Sans MS', cursive;
+}
+
+
+---
+
+script.js
+
+const canvas = document.getElementById('roleta');
+const ctx = canvas.getContext('2d');
+const resultado = document.getElementById('resultado');
+const somRoleta = document.getElementById('som-roleta');
+const somGanhou = document.getElementById('som-ganhou');
+const somPerdeu = document.getElementById('som-perdeu');
+
+const prêmios = ['10 camisetas', 'Tente outra vez', '5 camisetas', 'Tente outra vez', '3 camisetas', 'Tente outra vez'];
+const colors = ['#1f1f1f', '#444', '#1f1f1f', '#444', '#1f1f1f', '#444'];
+
+let angle = 0;
+let spinning = false;
+
+function desenharRoleta() {
+  const raio = canvas.width / 2;
+  const centroX = canvas.width / 2;
+  const centroY = canvas.height / 2;
+  const fatias = prêmios.length;
+  const anguloFatia = (2 * Math.PI) / fatias;
+
+  for (let i = 0; i < fatias; i++) {
+    const start = angle + i * anguloFatia;
+    const end = start + anguloFatia;
+
+    ctx.beginPath();
+    ctx.moveTo(centroX, centroY);
+    ctx.arc(centroX, centroY, raio, start, end);
+    ctx.fillStyle = colors[i];
+    ctx.fill();
+
+    ctx.save();
+    ctx.translate(centroX, centroY);
+    ctx.rotate(start + anguloFatia / 2);
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 18px Arial';
+    ctx.fillText(prêmios[i], raio - 10, 10);
+    ctx.restore();
+  }
+}
+
+desenharRoleta();
+
+document.getElementById('girar').addEventListener('click', () => {
+  if (spinning) return;
+  spinning = true;
+  resultado.textContent = '';
+  somRoleta.play();
+
+  let rotação = Math.random() * 360 + 1800;
+  let destino = (angle * 180 / Math.PI + rotação) % 360;
+  let fatiaIndex = Math.floor((360 - destino + 30) % 360 / (360 / prêmios.length));
+
+  let novaAngle = angle + (rotação * Math.PI / 180);
+  let passos = 100;
+  let contador = 0;
+
+  const anima = setInterval(() => {
+    contador++;
+    angle += (novaAngle - angle) / (passos - contador + 1);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    desenharRoleta();
+
+    if (contador >= passos) {
+      clearInterval(anima);
+      spinning = false;
+      const premio = prêmios[fatiaIndex];
+      resultado.textContent = premio;
+
+      if (premio.includes('camisetas')) {
+        somGanhou.play();
+      } else {
+        somPerdeu.play();
       }
     }
   }, 20);
 });
+
+
+
+script.js
+
+const canvas = document.getElementById('roleta');
+const ctx = canvas.getContext('2d');
+const resultado = document.getElementById('resultado');
+const somRoleta = document.getElementById('som-roleta');
+const somGanhou = document.getElementById('som-ganhou');
+const somPerdeu = document.getElementById('som-perdeu');
+
+const prêmios = ['10 camisetas', 'Tente outra vez', '5 camisetas', 'Tente outra vez', '3 camisetas', 'Tente outra vez'];
+const colors = ['#1f1f1f', '#444', '#1f1f1f', '#444', '#1f1f1f', '#444'];
+
+let angle = 0;
+let spinning = false;
+
+function desenharRoleta() {
+  const raio = canvas.width / 2;
+  const centroX = canvas.width / 2;
+  const centroY = canvas.height / 2;
+  const fatias = prêmios.length;
+  const anguloFatia = (2 * Math.PI) / fatias;
+
+  for (let i = 0; i < fatias; i++) {
+    const start = angle + i * anguloFatia;
+    const end = start + anguloFatia;
+
+    ctx.beginPath();
+    ctx.moveTo(centroX, centroY);
+    ctx.arc(centroX, centroY, raio, start, end);
+    ctx.fillStyle = colors[i];
+    ctx.fill();
+
+    ctx.save();
+    ctx.translate(centroX, centroY);
+    ctx.rotate(start + anguloFatia / 2);
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 18px Arial';
+    ctx.fillText(prêmios[i], raio - 10, 10);
+    ctx.restore();
+  }
+}
+
+desenharRoleta();
+
+document.getElementById('girar').addEventListener('click', () => {
+  if (spinning) return;
+  spinning = true;
+  resultado.textContent = '';
+  somRoleta.play();
+
+  let rotação = Math.random() * 360 + 1800;
+  let destino = (angle * 180 / Math.PI + rotação) % 360;
+  let fatiaIndex = Math.floor((360 - destino + 30) % 360 / (360 / prêmios.length));
+
+  let novaAngle = angle + (rotação * Math.PI / 180);
+  let passos = 100;
+  let contador = 0;
+
+  const anima = setInterval(() => {
+    contador++;
+    angle += (novaAngle - angle) / (passos - contador + 1);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    desenharRoleta();
+
+    if (contador >= passos) {
+      clearInterval(anima);
+      spinning = false;
+      const premio = prêmios[fatiaIndex];
+      resultado.textContent = premio;
+
+      if (premio.includes('camisetas')) {
+        somGanhou.play();
+      } else {
+        somPerdeu.play();
+      }
+    }
+  }, 20);
+});
+
+
+---
+
