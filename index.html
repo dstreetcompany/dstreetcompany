@@ -1,155 +1,192 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+!DOCTYPE html>
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Roleta Premiada DStreet</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Roleta Premiada - DStreet</title>
   <style>
     body {
       margin: 0;
-      padding: 0;
-      background: url('https://i.imgur.com/6s7kH5K.jpeg') no-repeat center center fixed;
-      background-size: cover;
-      font-family: Arial, sans-serif;
+      font-family: 'Arial Black', sans-serif;
+      background: #111;
       color: white;
       text-align: center;
     }
 
-    .titulo {
-      font-size: 2.5em;
-      font-weight: bold;
+    .logo {
+      width: 100px;
       margin-top: 20px;
     }
 
-    .subtitulo {
-      font-size: 1.5em;
-      margin-top: 10px;
-      color: #f1c40f;
-    }
-
-    .destaque {
-      font-size: 1.3em;
-      color: #e74c3c;
+    .impacto {
+      font-size: 26px;
       font-weight: bold;
+      margin-top: 10px;
+      color: #FFD700;
+      text-shadow: 0 0 10px #FF4500;
     }
 
-    .roleta-container {
-      position: relative;
-      margin: 40px auto;
+    .impacto span {
+      color: #FF4500;
+      font-size: 30px;
+    }
+
+    #wheel {
       width: 300px;
       height: 300px;
+      border-radius: 50%;
+      border: 10px solid #FFD700;
+      margin: 30px auto;
+      position: relative;
+      box-shadow: 0 0 20px #FFD700;
     }
 
-    .ponteiro {
-      position: absolute;
-      top: -30px;
-      left: 50%;
-      transform: translateX(-50%) rotate(0deg);
+    #pointer {
       width: 0;
       height: 0;
       border-left: 20px solid transparent;
       border-right: 20px solid transparent;
       border-bottom: 30px solid red;
-      z-index: 2;
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
     }
 
-    .roleta {
+    #spin {
+      background: cyan;
+      color: black;
+      padding: 15px 40px;
+      border: none;
+      font-size: 20px;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 0 10px cyan;
+    }
+
+    #result {
+      margin-top: 30px;
+      font-size: 28px;
+      font-weight: bold;
+      color: #00FFFF;
+      text-shadow: 0 0 5px #0ff;
+    }
+
+    canvas {
       width: 100%;
       height: 100%;
       border-radius: 50%;
-      border: 10px solid #f1c40f;
-      box-shadow: 0 0 30px yellow;
-      position: relative;
-    }
-
-    .botao-girar {
-      padding: 20px 40px;
-      font-size: 1.3em;
-      background: #00ffff;
-      color: black;
-      border: none;
-      border-radius: 15px;
-      cursor: pointer;
-      font-weight: bold;
-      box-shadow: 0 0 20px #00ffff;
-    }
-
-    #resultado {
-      margin-top: 20px;
-      font-size: 2em;
-      font-weight: bold;
-      color: #00ffff;
-      text-shadow: 0 0 10px black;
     }
   </style>
 </head>
 <body>
-  <div class="titulo">ROLETA PREMIADA</div>
-  <div class="subtitulo">GIRE E LEVE PRA CASA ATÉ <span style="color:red">10</span></div>
-  <div class="subtitulo destaque">CAMISETAS EXCLUSIVAS!</div>
-
-  <div class="roleta-container">
-    <div class="ponteiro"></div>
-    <canvas id="wheel" class="roleta"></canvas>
+  <img src="https://dstreetcompany.com/wp-content/uploads/2024/03/cropped-LOGO-DSTREETBRANCO-1.png" class="logo" />
+  
+  <div class="impacto">
+    GIRE E LEVE PRA CASA ATÉ <span>10 CAMISETAS EXCLUSIVAS!</span>
   </div>
 
-  <button class="botao-girar" onclick="girarRoleta()">GIRAR</button>
+  <div id="wheel-container" style="position: relative; width: 300px; margin: auto;">
+    <div id="pointer"></div>
+    <canvas id="wheel" width="300" height="300"></canvas>
+  </div>
 
-  <div id="resultado"></div>
+  <button id="spin">GIRAR</button>
 
-  <audio id="somRoleta" src="https://www.myinstants.com/media/sounds/ruleta.mp3"></audio>
+  <div id="result"></div>
+
+  <audio id="tick-sound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_9f2c11cd05.mp3" preload="auto"></audio>
 
   <script>
     const canvas = document.getElementById("wheel");
     const ctx = canvas.getContext("2d");
-    const resultado = document.getElementById("resultado");
-    const som = document.getElementById("somRoleta");
+    const tickSound = document.getElementById("tick-sound");
 
-    let width = canvas.width = 300;
-    let height = canvas.height = 300;
-    let centerX = width / 2;
-    let centerY = height / 2;
-    let numSetores = 6;
-    let anguloPorSetor = 2 * Math.PI / numSetores;
-    let premios = ["TENTE OUTRA VEZ", "3 CAMISETAS", "TENTE OUTRA VEZ", "5 CAMISETAS", "TENTE OUTRA VEZ", "10 CAMISETAS"];
+    const segments = ["10 CAMISETAS", "TENTE OUTRA VEZ", "3 CAMISETAS", "TENTE OUTRA VEZ", "5 CAMISETAS", "TENTE OUTRA VEZ"];
+    const colors = ["#333", "#222", "#444", "#222", "#333", "#222"];
+    const spinBtn = document.getElementById("spin");
+    const resultText = document.getElementById("result");
 
-    function desenharRoleta() {
-      for (let i = 0; i < numSetores; i++) {
-        let anguloInicial = i * anguloPorSetor;
-        let anguloFinal = anguloInicial + anguloPorSetor;
+    const segAngle = 360 / segments.length;
+    let currentAngle = 0;
+    let isSpinning = false;
+    let tickInterval;
+
+    function drawWheel() {
+      for (let i = 0; i < segments.length; i++) {
+        const angle = (segAngle * i) * Math.PI / 180;
         ctx.beginPath();
-        ctx.moveTo(centerX, centerY);
-        ctx.arc(centerX, centerY, centerX, anguloInicial, anguloFinal);
-        ctx.fillStyle = i % 2 === 0 ? "#2c2c2c" : "#444";
+        ctx.fillStyle = colors[i];
+        ctx.moveTo(150, 150);
+        ctx.arc(150, 150, 150, angle, angle + segAngle * Math.PI / 180);
         ctx.fill();
         ctx.save();
-        ctx.translate(centerX, centerY);
-        ctx.rotate(anguloInicial + anguloPorSetor / 2);
-        ctx.textAlign = "right";
+        ctx.translate(150, 150);
+        ctx.rotate(angle + segAngle * Math.PI / 360);
         ctx.fillStyle = "white";
         ctx.font = "bold 14px Arial";
-        ctx.fillText(premios[i], centerX - 10, 10);
+        ctx.textAlign = "right";
+        ctx.fillText(segments[i], 140, 5);
         ctx.restore();
       }
     }
 
-    desenharRoleta();
-
-    function girarRoleta() {
-      som.play();
-      let rotacoes = Math.floor(Math.random() * 3) + 4;
-      let grauFinal = Math.floor(Math.random() * 360);
-      let anguloTotal = rotacoes * 360 + grauFinal;
-
-      canvas.style.transition = "transform 4s ease-out";
-      canvas.style.transform = `rotate(${anguloTotal}deg)`;
-
-      setTimeout(() => {
-        let anguloFinal = anguloTotal % 360;
-        let indexPremio = Math.floor((360 - anguloFinal + 30) % 360 / 60);
-        resultado.textContent = premios[indexPremio];
-      }, 4000);
+    function rotateWheel(angle) {
+      canvas.style.transform = `rotate(${angle}deg)`;
     }
+
+    function playTickSound() {
+      tickSound.currentTime = 0;
+      tickSound.play();
+    }
+
+    function getSegmentByAngle(angle) {
+      const normalized = (360 - (angle % 360) + 30) % 360;
+      const index = Math.floor(normalized / segAngle) % segments.length;
+      return segments[index];
+    }
+
+    spinBtn.addEventListener("click", () => {
+      if (isSpinning) return;
+
+      isSpinning = true;
+      resultText.textContent = "";
+
+      let rotation = 3600 + Math.floor(Math.random() * 360);
+      let duration = 4000;
+      let start = null;
+
+      tickInterval = setInterval(playTickSound, 100);
+
+      function animate(timestamp) {
+        if (!start) start = timestamp;
+        const elapsed = timestamp - start;
+
+        const progress = Math.min(elapsed / duration, 1);
+        const angle = currentAngle + rotation * easeOutCubic(progress);
+        rotateWheel(angle);
+
+        if (elapsed < duration) {
+          requestAnimationFrame(animate);
+        } else {
+          clearInterval(tickInterval);
+          isSpinning = false;
+          currentAngle = angle % 360;
+          const result = getSegmentByAngle(currentAngle);
+          resultText.textContent = result;
+        }
+      }
+
+      requestAnimationFrame(animate);
+    });
+
+    function easeOutCubic(x) {
+      return 1 - Math.pow(1 - x, 3);
+    }
+
+    drawWheel();
   </script>
 </body>
 </html>
