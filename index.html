@@ -98,7 +98,6 @@
   <button class="spin-button" onclick="spin()">GIRAR</button>
   <div class="result" id="resultText"></div>
 
-  <!-- Sons -->
   <audio id="spinSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_d324f5ef56.mp3"></audio>
   <audio id="winSound" src="https://www.myinstants.com/media/sounds/win.mp3"></audio>
   <audio id="loseSound" src="https://www.myinstants.com/media/sounds/aww.mp3"></audio>
@@ -149,23 +148,20 @@
       if (spinning) return;
       spinning = true;
       document.getElementById('resultText').textContent = '';
-      spinSound.play();
 
       const segmentAngle = 360 / segments.length;
-      const extraRotation = Math.floor(Math.random() * segments.length); // qual fatia cairá
-      const fullSpins = 5 * 360;
-      const stopAngle = fullSpins + (extraRotation * segmentAngle) + (segmentAngle / 2);
+      const selectedIndex = Math.floor(Math.random() * segments.length);
+      const result = segments[selectedIndex].label;
 
+      const stopAngle = 360 * 5 + (segments.length - selectedIndex) * segmentAngle - (segmentAngle / 2);
       currentAngle += stopAngle;
+
+      spinSound.play();
 
       canvas.style.transition = "transform 5s ease-out";
       canvas.style.transform = `rotate(${currentAngle}deg)`;
 
       setTimeout(() => {
-        const normalizedAngle = currentAngle % 360;
-        const index = Math.floor((segments.length - (normalizedAngle % 360) / segmentAngle)) % segments.length;
-        const result = segments[index].label;
-
         document.getElementById('resultText').textContent = result;
         spinning = false;
 
@@ -181,4 +177,3 @@
   </script>
 </body>
 </html>
-
