@@ -66,7 +66,7 @@
     }
 
     #resultado {
-      font-size: 24px;
+      font-size: 26px;
       font-weight: bold;
       margin-top: 30px;
       color: #00ffcc;
@@ -94,7 +94,8 @@
 </head>
 <body>
 
-  <img src="https://i.imgur.com/2S5jMFi.png" alt="Logo DStreet Company" class="logo">
+  <!-- Logo da DStreet embutida em base64 -->
+  <img src="data:image/png;base64,{{BASE64}}" alt="Logo DStreet Company" class="logo">
 
   <div class="impacto">Gire e leve para casa até 10 camisetas!</div>
   <div class="regras">R$5 = 1 giro | R$10 = 3 giros | R$20 = 4 giros</div>
@@ -121,7 +122,6 @@
     let anguloAtual = 0;
     let girando = false;
     let giros = 0;
-    let premioValidoPor100 = 1;
 
     function desenharRoleta() {
       let numSetores = premios.length;
@@ -151,15 +151,13 @@
 
       girando = true;
       giros++;
-      let roleta = document.getElementById("roleta");
-
       let anguloPorSetor = 360 / premios.length;
       let premioIndex;
 
       if (giros % 100 === 0) {
-        premioIndex = Math.floor(Math.random() * 3) * 2; // 0, 2 ou 4
+        premioIndex = Math.floor(Math.random() * 3) * 2;
       } else {
-        premioIndex = Math.floor(Math.random() * 3) * 2 + 1; // 1, 3 ou 5
+        premioIndex = Math.floor(Math.random() * 3) * 2 + 1;
       }
 
       let anguloFinal = 360 * 5 + (360 - premioIndex * anguloPorSetor - anguloPorSetor / 2);
@@ -184,3 +182,4 @@
     desenharRoleta();
   </script>
 </body>
+</html>
