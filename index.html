@@ -1,153 +1,182 @@
+
+index.html
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Roleta DStreet</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Arial', sans-serif;
-      background-color: #111;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-    }
-
-    .logo {
-      margin-bottom: 10px;
-    }
-
-    .logo img {
-      max-height: 60px;
-    }
-
-    h1 {
-      font-size: 1.5em;
-      color: #f7d43f;
-      margin: 10px;
-      text-align: center;
-    }
-
-    .regras {
-      font-size: 1em;
-      color: #4ee2ec;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-
-    .roleta-container {
-      position: relative;
-    }
-
-    .roleta {
-      width: 300px;
-      height: 300px;
-      border-radius: 50%;
-      border: 10px solid white;
-      position: relative;
-      overflow: hidden;
-      transform: rotate(0deg);
-      transition: transform 4s cubic-bezier(0.33, 1, 0.68, 1);
-    }
-
-    .fatia {
-      width: 50%;
-      height: 50%;
-      position: absolute;
-      transform-origin: 100% 100%;
-      clip-path: polygon(100% 100%, 100% 0, 0 0);
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      padding-left: 10px;
-      font-size: 0.9em;
-      font-weight: bold;
-      color: white;
-    }
-
-    .fatia:nth-child(1) { background: #e74c3c; transform: rotate(0deg); }
-    .fatia:nth-child(2) { background: #2ecc71; transform: rotate(60deg); }
-    .fatia:nth-child(3) { background: #3498db; transform: rotate(120deg); }
-    .fatia:nth-child(4) { background: #34495e; transform: rotate(180deg); }
-    .fatia:nth-child(5) { background: #9b59b6; transform: rotate(240deg); }
-    .fatia:nth-child(6) { background: #f1c40f; transform: rotate(300deg); }
-
-    .ponteiro {
-      width: 0;
-      height: 0;
-      border-top: 20px solid transparent;
-      border-bottom: 20px solid transparent;
-      border-left: 30px solid #f7d43f;
-      position: absolute;
-      right: -20px;
-      top: calc(50% - 20px);
-      z-index: 10;
-    }
-
-    .botao {
-      background-color: #f7d43f;
-      border: none;
-      padding: 12px 24px;
-      font-size: 1em;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-top: 30px;
-      font-weight: bold;
-    }
-
-    .resultado {
-      margin-top: 20px;
-      font-size: 1.3em;
-      color: #00ffff;
-      font-weight: bold;
-    }
-  </style>
+  <title>DStreet Roleta</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="logo">
-    <img src="logo_dstreet.png" alt="Logo DStreet Company" />
-  </div>
-  <h1>Gire e leve para casa até 10 camisetas!</h1>
-  <div class="regras">R$5 = 1 giro | R$10 = 3 giros | R$20 = 4 giros</div>
-
-  <div class="roleta-container">
-    <div class="ponteiro"></div>
-    <div id="roleta" class="roleta">
-      <div class="fatia">10 camisetas</div>
-      <div class="fatia">5 camisetas</div>
-      <div class="fatia">3 camisetas</div>
-      <div class="fatia">Tente outra vez</div>
-      <div class="fatia">Tente outra vez</div>
-      <div class="fatia">Tente outra vez</div>
+  <div class="container">
+    <img src="logo-dstreet.png" alt="Logo DStreet Company" class="logo" />
+    <h1>Gire e leve para casa até 10 camisetas!</h1>
+    <p class="regras">R$5 = 1 giro | R$10 = 3 giros | R$20 = 4 giros</p>
+    
+    <div class="roleta-container">
+      <canvas id="wheel" width="500" height="500"></canvas>
+      <div class="ponteiro"></div>
     </div>
+    
+    <button id="girar">GIRAR</button>
+    <p id="resultado" class="resultado"></p>
   </div>
-  <button class="botao" onclick="girarRoleta()">GIRAR</button>
-  <div id="resultado" class="resultado"></div>
 
-  <script>
-    let anguloAtual = 0;
-    function girarRoleta() {
-      const roleta = document.getElementById('roleta');
-      const resultado = document.getElementById('resultado');
-
-      const setores = ["10 camisetas", "5 camisetas", "3 camisetas", "Tente outra vez", "Tente outra vez", "Tente outra vez"];
-      const setorSorteado = Math.floor(Math.random() * setores.length);
-
-      const anguloPorSetor = 360 / setores.length;
-      const anguloFinal = 360 * 5 + (setorSorteado * anguloPorSetor) + anguloPorSetor / 2;
-
-      anguloAtual += anguloFinal;
-      roleta.style.transform = `rotate(${anguloAtual}deg)`;
-
-      setTimeout(() => {
-        resultado.textContent = `Resultado: ${setores[setorSorteado]}`;
-      }, 4000);
-    }
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
+
+
+---
+
+style.css
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Arial', sans-serif;
+  background-color: #111;
+  color: #fff;
+  text-align: center;
+}
+
+.logo {
+  width: 120px;
+  margin: 20px auto;
+  display: block;
+}
+
+h1 {
+  color: #f1c40f;
+  margin-top: 10px;
+}
+
+.regras {
+  color: #00eaff;
+  font-size: 18px;
+  margin-bottom: 30px;
+  font-family: 'Comic Sans MS', cursive;
+}
+
+.roleta-container {
+  position: relative;
+  display: inline-block;
+}
+
+.ponteiro {
+  position: absolute;
+  top: 0;
+  right: -12px;
+  width: 0;
+  height: 0;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-bottom: 40px solid yellow;
+  transform: translateY(-20px);
+  z-index: 10;
+}
+
+#resultado {
+  font-size: 22px;
+  font-weight: bold;
+  color: #00eaff;
+  margin-top: 20px;
+}
+
+#girar {
+  background-color: #f1c40f;
+  color: black;
+  padding: 15px 30px;
+  font-size: 20px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+
+---
+
+script.js
+
+const canvas = document.getElementById("wheel");
+const ctx = canvas.getContext("2d");
+const girarBtn = document.getElementById("girar");
+const resultado = document.getElementById("resultado");
+
+const premios = [
+  "10 camisetas", "Tente outra vez", "5 camisetas",
+  "Tente outra vez", "3 camisetas", "Tente outra vez"
+];
+
+const colors = ["#e74c3c", "#34495e", "#2ecc71", "#8e44ad", "#3498db", "#f39c12"];
+
+const size = canvas.width;
+const center = size / 2;
+const total = premios.length;
+const angle = 2 * Math.PI / total;
+let rotation = 0;
+let isSpinning = false;
+
+function drawWheel() {
+  for (let i = 0; i < total; i++) {
+    const startAngle = angle * i + rotation;
+    const endAngle = startAngle + angle;
+
+    ctx.beginPath();
+    ctx.moveTo(center, center);
+    ctx.arc(center, center, center, startAngle, endAngle);
+    ctx.fillStyle = colors[i % colors.length];
+    ctx.fill();
+    ctx.save();
+
+    // Texto
+    ctx.translate(center, center);
+    ctx.rotate(startAngle + angle / 2);
+    ctx.textAlign = "right";
+    ctx.fillStyle = "white";
+    ctx.font = "bold 16px Arial";
+    ctx.fillText(premios[i], center - 10, 10);
+    ctx.restore();
+  }
+}
+
+function girarRoleta() {
+  if (isSpinning) return;
+  isSpinning = true;
+  resultado.textContent = "";
+
+  const giroExtra = Math.random() * 360;
+  const giros = 360 * 5 + giroExtra;
+
+  let rot = 0;
+  const duracao = 5000;
+  const inicio = performance.now();
+
+  function animar(agora) {
+    const tempo = agora - inicio;
+    const progresso = Math.min(tempo / duracao, 1);
+    const easeOut = 1 - Math.pow(1 - progresso, 3);
+
+    rotation = (giros * easeOut * Math.PI) / 180;
+    ctx.clearRect(0, 0, size, size);
+    drawWheel();
+
+    if (progresso < 1) {
+      requestAnimationFrame(animar);
+    } else {
+      const grausFinal = (rotation * 180 / Math.PI) % 360;
+      const index = total - Math.floor((grausFinal / 360) * total) - 1;
+      resultado.textContent = `Resultado: ${premios[index]}`;
+      isSpinning = false;
+    }
+  }
+
+  requestAnimationFrame(animar);
+}
+
+drawWheel();
+girarBtn.addEventListener("click", girarRoleta);
+
