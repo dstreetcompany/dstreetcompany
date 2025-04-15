@@ -1,27 +1,163 @@
 !DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Roleta DStreet</title>
-  <link rel="stylesheet" href="style.css"/>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: url('fundo-sacolas.jpg') no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'Arial Black', sans-serif;
+      text-align: center;
+      color: #fff;
+    }
+
+    .logo {
+      width: 140px;
+      margin-top: 20px;
+    }
+
+    .frase-impacto {
+      font-size: 28px;
+      margin: 20px 0 10px;
+      color: #FFD700;
+      text-shadow: 2px 2px 8px #000;
+    }
+
+    .roleta-container {
+      position: relative;
+      width: 320px;
+      height: 320px;
+      margin: 20px auto;
+    }
+
+    .roleta {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 4px solid #fff;
+      box-shadow: 0 0 20px #fff;
+      transition: transform 5s cubic-bezier(0.33, 1, 0.68, 1);
+    }
+
+    .ponteiro {
+      position: absolute;
+      top: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      z-index: 10;
+    }
+
+    #girarBtn {
+      margin-top: 20px;
+      padding: 15px 40px;
+      font-size: 22px;
+      background: #00ffcc;
+      border: none;
+      color: #000;
+      border-radius: 12px;
+      box-shadow: 0 0 20px #00ffcc, 0 0 40px #00ffcc;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .resultado-texto {
+      margin-top: 30px;
+      font-size: 26px;
+      color: #FFD700;
+      font-weight: bold;
+      text-shadow: 2px 2px 6px #000;
+    }
+
+    .regras {
+      font-size: 16px;
+      margin-top: 15px;
+      color: #fff;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <img src="logo.png" alt="DStreet Logo" class="logo" />
-    <h1 class="frase-impacto">GIRE A ROLETA E LEVE PARA CASA ATÉ <span>10 CAMISETAS!</span></h1>
-    <div class="roleta-container">
-      <canvas id="wheel" width="500" height="500"></canvas>
-      <img src="ponteiro.png" class="ponteiro" />
-    </div>
-    <button id="girarBtn">GIRAR</button>
-    <h2 id="resultado" class="resultado-texto"></h2>
-    <p class="regras">R$5 = 1 giro | R$10 = 3 giros | R$20 = 4 giros</p>
+
+  <img src="logo.png" alt="DStreet Logo" class="logo"/>
+
+  <div class="frase-impacto">GIRE A ROLETA E LEVE <br>PARA CASA ATÉ <span style="color:#fff;">10 CAMISETAS!</span></div>
+
+  <div class="roleta-container">
+    <img src="ponteiro.png" class="ponteiro" />
+    <canvas id="roleta" width="320" height="320" class="roleta"></canvas>
   </div>
-  <audio id="somGiro" src="giro.mp3" preload="auto"></audio>
-  <audio id="somVitoria" src="vitoria.mp3" preload="auto"></audio>
-  <audio id="somPerda" src="perda.mp3" preload="auto"></audio>
-  <script src="script.js"></script>
+
+  <button id="girarBtn">GIRAR</button>
+
+  <div class="resultado-texto" id="resultado"></div>
+
+  <div class="regras">R$5 = 1 giro | R$10 = 3 giros | R$20 = 4 giros</div>
+
+  <audio id="somGiro" src="giro.mp3"></audio>
+  <audio id="somVitoria" src="vitoria.mp3"></audio>
+  <audio id="somPerda" src="perda.mp3"></audio>
+
+  <script>
+    const canvas = document.getElementById('roleta');
+    const ctx = canvas.getContext('2d');
+    const resultado = document.getElementById('resultado');
+    const somGiro = document.getElementById('somGiro');
+    const somVitoria = document.getElementById('somVitoria');
+    const somPerda = document.getElementById('somPerda');
+
+    const premios = ['TENTE NOVAMENTE', '10 CAMISETAS', 'TENTE NOVAMENTE', '5 CAMISETAS', 'TENTE NOVAMENTE', '3 CAMISETAS'];
+    const colors = ['#333', '#000', '#333', '#000', '#333', '#000'];
+
+    function desenharRoleta() {
+      const anguloBase = 2 * Math.PI / premios.length;
+      for (let i = 0; i < premios.length; i++) {
+        ctx.beginPath();
+        ctx.fillStyle = colors[i];
+        ctx.moveTo(160, 160);
+        ctx.arc(160, 160, 160, anguloBase * i, anguloBase * (i + 1));
+        ctx.fill();
+        ctx.save();
+        ctx.translate(160, 160);
+        ctx.rotate(anguloBase * (i + 0.5));
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 14px Arial';
+        ctx.textAlign = 'right';
+        ctx.fillText(premios[i], 150, 5);
+        ctx.restore();
+      }
+    }
+
+    desenharRoleta();
+
+    let anguloAtual = 0;
+
+    document.getElementById('girarBtn').addEventListener('click', () => {
+      somGiro.play();
+      const grausPorPremio = 360 / premios.length;
+      const sorteio = Math.floor(Math.random() * premios.length);
+      const giros = 5;
+      const anguloFinal = (360 * giros) + (sorteio * grausPorPremio) + grausPorPremio / 2;
+
+      anguloAtual += anguloFinal;
+
+      canvas.style.transform = `rotate(${anguloAtual}deg)`;
+
+      setTimeout(() => {
+        const premio = premios[sorteio];
+        resultado.innerText = premio;
+
+        if (premio.includes('CAMISETAS')) {
+          somVitoria.play();
+        } else {
+          somPerda.play();
+        }
+      }, 5200);
+    });
+  </script>
+
 </body>
 </html>
-
