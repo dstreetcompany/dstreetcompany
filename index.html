@@ -1,4 +1,4 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
@@ -16,7 +16,6 @@
       background: url('https://i.imgur.com/mxib1ha.jpg') center/cover no-repeat;
       color: white;
       text-align: center;
-      overflow-x: hidden;
     }
     header {
       padding: 20px;
@@ -125,20 +124,20 @@
     const loseSound = document.getElementById('loseSound');
 
     let spinning = false;
-    let currentRotation = 0;
+    let currentAngle = 0;
 
     function drawWheel() {
       const arcSize = (2 * Math.PI) / segments.length;
       for (let i = 0; i < segments.length; i++) {
-        const segAngle = i * arcSize;
+        const angle = i * arcSize;
         ctx.beginPath();
         ctx.fillStyle = segments[i].color;
         ctx.moveTo(size/2, size/2);
-        ctx.arc(size/2, size/2, size/2, segAngle, segAngle + arcSize);
+        ctx.arc(size/2, size/2, size/2, angle, angle + arcSize);
         ctx.fill();
         ctx.save();
         ctx.translate(size/2, size/2);
-        ctx.rotate(segAngle + arcSize / 2);
+        ctx.rotate(angle + arcSize / 2);
         ctx.fillStyle = "white";
         ctx.font = "bold 16px Bebas Neue";
         ctx.fillText(segments[i].label, 60, 0);
@@ -152,30 +151,34 @@
       document.getElementById('resultText').textContent = '';
       spinSound.play();
 
-      const spins = Math.floor(Math.random() * 3) + 4;
-      const segDeg = 360 / segments.length;
-      const finalSegment = Math.floor(Math.random() * segments.length);
-      const stopAngle = finalSegment * segDeg + (segDeg / 2);
+      const segmentAngle = 360 / segments.length;
+      const extraRotation = Math.floor(Math.random() * segments.length); // qual fatia cairá
+      const fullSpins = 5 * 360;
+      const stopAngle = fullSpins + (extraRotation * segmentAngle) + (segmentAngle / 2);
 
-      const totalRotation = (spins * 360) + (360 - stopAngle);
-      currentRotation += totalRotation;
+      currentAngle += stopAngle;
 
       canvas.style.transition = "transform 5s ease-out";
-      canvas.style.transform = `rotate(${currentRotation}deg)`;
+      canvas.style.transform = `rotate(${currentAngle}deg)`;
 
       setTimeout(() => {
-        const result = segments[finalSegment].label;
+        const normalizedAngle = currentAngle % 360;
+        const index = Math.floor((segments.length - (normalizedAngle % 360) / segmentAngle)) % segments.length;
+        const result = segments[index].label;
+
         document.getElementById('resultText').textContent = result;
+        spinning = false;
+
         if (result.includes("CAMISETAS")) {
           winSound.play();
         } else {
           loseSound.play();
         }
-        spinning = false;
-      }, 5000);
+      }, 5200);
     }
 
     drawWheel();
   </script>
 </body>
 </html>
+
