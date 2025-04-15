@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -11,153 +10,152 @@
       color: #fff;
       font-family: Arial, sans-serif;
       text-align: center;
-      margin: 0;
-      padding: 0;
+      padding: 20px;
     }
 
-    .logo {
-      margin-top: 10px;
+    img {
+      max-width: 150px;
+      margin-bottom: 10px;
     }
 
-    .logo img {
-      height: 60px;
-    }
-
-    .frase-animada {
-      font-size: 24px;
-      font-weight: bold;
-      color: gold;
-      animation: piscar 1s infinite;
-      margin-top: 10px;
-    }
-
-    @keyframes piscar {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.2; }
+    h1 {
+      color: #d4af37;
+      font-size: 1.5rem;
     }
 
     .regras {
-      font-size: 18px;
-      color: #00FFFF;
-      font-family: 'Brush Script MT', cursive;
-      margin-top: 5px;
+      font-size: 1.2rem;
+      color: #00ffff;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      margin-bottom: 10px;
     }
 
-    .seta {
+    #wheelCanvas {
+      border-radius: 50%;
+      border: 10px solid white;
+      margin-top: 10px;
+    }
+
+    #pointer {
       width: 0;
       height: 0;
-      border-left: 20px solid transparent;
-      border-right: 20px solid transparent;
-      border-bottom: 30px solid red;
-      position: relative;
-      top: -10px;
-      margin: 0 auto;
+      border-top: 20px solid transparent;
+      border-bottom: 20px solid transparent;
+      border-left: 30px solid red;
+      position: absolute;
+      top: 50%;
+      right: calc(50% - 180px);
+      transform: translateY(-50%);
       z-index: 10;
     }
 
-    #roleta {
-      width: 300px;
-      height: 300px;
-      border-radius: 50%;
-      border: 10px solid white;
-      margin: 0 auto;
-      position: relative;
-      transition: transform 4s ease-out;
-    }
-
-    #girar {
+    #spinButton {
       margin-top: 20px;
-      padding: 10px 20px;
-      background-color: gold;
-      color: black;
-      font-size: 18px;
-      font-weight: bold;
+      padding: 15px 30px;
+      background-color: #ffcc00;
       border: none;
       border-radius: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #000;
       cursor: pointer;
     }
 
-    #resultado {
-      font-size: 20px;
-      color: cyan;
+    #result {
       margin-top: 20px;
+      font-size: 22px;
+      color: cyan;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-
-  <div class="logo">
-    <img src="https://dstreetcompany.vercel.app/logo192.png" alt="Logo DStreet Company" />
-  </div>
-
-  <div class="frase-animada">Gire e leve para casa até 10 camisetas!</div>
+  <img src="logo.png" alt="Logo DStreet Company">
+  <h1>Gire e leve para casa até 10 camisetas!</h1>
   <div class="regras">R$5 = 1 giro | R$10 = 3 giros | R$20 = 4 giros</div>
-
-  <div class="seta"></div>
-
-  <canvas id="roleta" width="300" height="300"></canvas>
-
-  <button id="girar">GIRAR</button>
-
-  <div id="resultado">Resultado:</div>
+  <div id="pointer"></div>
+  <canvas id="wheelCanvas" width="400" height="400"></canvas>
+  <br>
+  <button id="spinButton">GIRAR</button>
+  <div id="result">Resultado:</div>
 
   <script>
-    const canvas = document.getElementById("roleta");
-    const ctx = canvas.getContext("2d");
-
-    const segmentos = [
-      { texto: "10 camisetas", cor: "#e74c3c" },
-      { texto: "Tente outra vez", cor: "#2c3e50" },
-      { texto: "5 camisetas", cor: "#2ecc71" },
-      { texto: "Tente outra vez", cor: "#2c3e50" },
-      { texto: "3 camisetas", cor: "#3498db" },
-      { texto: "Tente outra vez", cor: "#2c3e50" },
+    const wheelCanvas = document.getElementById("wheelCanvas");
+    const ctx = wheelCanvas.getContext("2d");
+    const segments = [
+      "Tente outra vez",
+      "3 camisetas",
+      "Tente outra vez",
+      "10 camisetas",
+      "Tente outra vez",
+      "5 camisetas"
     ];
+    const colors = ["#2c3e50", "#3498db", "#2c3e50", "#e74c3c", "#2c3e50", "#2ecc71"];
+    const spinButton = document.getElementById("spinButton");
+    const resultDiv = document.getElementById("result");
+    const wheelRadius = wheelCanvas.width / 2;
+    const centerX = wheelCanvas.width / 2;
+    const centerY = wheelCanvas.height / 2;
+    let currentAngle = 0;
 
-    const tamanho = segmentos.length;
-    const anguloPorSegmento = 360 / tamanho;
-    let rotacaoAtual = 0;
-
-    function desenharRoleta() {
-      for (let i = 0; i < tamanho; i++) {
-        const inicio = (i * 2 * Math.PI) / tamanho;
-        const fim = ((i + 1) * 2 * Math.PI) / tamanho;
-
+    function drawWheel() {
+      const arcSize = (2 * Math.PI) / segments.length;
+      ctx.clearRect(0, 0, wheelCanvas.width, wheelCanvas.height);
+      segments.forEach((segment, i) => {
+        const startAngle = i * arcSize;
+        const endAngle = startAngle + arcSize;
         ctx.beginPath();
-        ctx.moveTo(150, 150);
-        ctx.arc(150, 150, 150, inicio, fim);
-        ctx.fillStyle = segmentos[i].cor;
+        ctx.fillStyle = colors[i];
+        ctx.moveTo(centerX, centerY);
+        ctx.arc(centerX, centerY, wheelRadius, startAngle, endAngle);
+        ctx.lineTo(centerX, centerY);
         ctx.fill();
-
         ctx.save();
-        ctx.translate(150, 150);
-        ctx.rotate(inicio + (Math.PI / tamanho));
-        ctx.textAlign = "right";
+        ctx.translate(centerX, centerY);
+        ctx.rotate(startAngle + arcSize / 2);
         ctx.fillStyle = "#fff";
         ctx.font = "bold 14px Arial";
-        ctx.fillText(segmentos[i].texto, 140, 5);
+        ctx.textAlign = "right";
+        ctx.fillText(segment, wheelRadius - 10, 10);
         ctx.restore();
-      }
+      });
     }
 
-    desenharRoleta();
+    function spinWheel() {
+      const arcSize = (2 * Math.PI) / segments.length;
+      const spinAngle = Math.random() * 360 + 720;
+      const finalAngle = (currentAngle + spinAngle) % 360;
+      const index = Math.floor(((360 - finalAngle + 90) % 360) / (360 / segments.length));
+      const result = segments[index];
+      let duration = 3000;
+      let start = null;
 
-    document.getElementById("girar").addEventListener("click", () => {
-      const voltas = Math.floor(Math.random() * 3) + 5;
-      const anguloExtra = Math.floor(Math.random() * 360);
-      const totalGiro = (voltas * 360) + anguloExtra;
+      function animate(timestamp) {
+        if (!start) start = timestamp;
+        const elapsed = timestamp - start;
+        const progress = Math.min(elapsed / duration, 1);
+        const angle = currentAngle + progress * spinAngle;
+        currentAngle = angle % 360;
+        const rad = (currentAngle * Math.PI) / 180;
+        ctx.save();
+        ctx.translate(centerX, centerY);
+        ctx.rotate(rad);
+        ctx.translate(-centerX, -centerY);
+        drawWheel();
+        ctx.restore();
 
-      rotacaoAtual += totalGiro;
-      canvas.style.transform = `rotate(${rotacaoAtual}deg)`;
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        } else {
+          resultDiv.textContent = "Resultado: " + result;
+        }
+      }
 
-      setTimeout(() => {
-        const anguloFinal = (rotacaoAtual % 360 + 360) % 360;
-        const index = Math.floor(((anguloFinal + (anguloPorSegmento / 2)) % 360) / anguloPorSegmento);
-        const resultado = segmentos[(tamanho - index) % tamanho].texto;
-        document.getElementById("resultado").textContent = `Resultado: ${resultado}`;
-      }, 4000);
-    });
+      requestAnimationFrame(animate);
+    }
+
+    drawWheel();
+    spinButton.addEventListener("click", spinWheel);
   </script>
-
 </body>
 </html>
