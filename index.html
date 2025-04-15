@@ -2,184 +2,151 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>DStreet Company - Roleta Premiada</title>
+  <title>Roleta DStreet</title>
   <style>
     body {
-      margin: 0;
-      font-family: 'Arial', sans-serif;
       background-color: #111;
-      color: white;
+      color: #fff;
+      font-family: 'Arial', sans-serif;
       text-align: center;
+      margin: 0;
+      padding: 0;
     }
 
     .logo {
-      width: 180px;
       margin-top: 20px;
+      height: 80px;
     }
 
-    .impacto {
-      font-size: 26px;
+    .headline {
+      font-size: 1.5rem;
       font-weight: bold;
-      color: #fff200;
-      margin: 20px 0;
-      animation: piscar 1s infinite alternate;
+      color: #f2e800;
+      animation: blink 1.5s infinite alternate;
     }
 
-    @keyframes piscar {
-      from { opacity: 1; }
-      to { opacity: 0.3; }
+    @keyframes blink {
+      0% { opacity: 1; }
+      100% { opacity: 0.6; }
     }
 
-    .regras {
-      font-size: 18px;
-      color: #ffcc00;
-      margin-bottom: 30px;
-      font-family: 'Comic Sans MS', cursive, sans-serif;
+    .rules {
+      font-family: 'Cursive', sans-serif;
+      font-size: 1rem;
+      color: #00ffff;
+      margin-bottom: 20px;
     }
 
-    #roleta-container {
-      position: relative;
-      width: 400px;
-      height: 400px;
+    .arrow {
+      width: 0; 
+      height: 0; 
+      border-left: 15px solid transparent;
+      border-right: 15px solid transparent;
+      border-bottom: 30px solid red;
       margin: 0 auto;
     }
 
-    #roleta {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      border: 10px solid #fff;
-      box-shadow: 0 0 15px #ffcc00;
-      transition: transform 5s cubic-bezier(0.33, 1, 0.68, 1);
-    }
-
-    .seta {
-      position: absolute;
-      top: -20px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 0; 
-      height: 0; 
-      border-left: 20px solid transparent;
-      border-right: 20px solid transparent;
-      border-bottom: 30px solid red;
-    }
-
-    #resultado {
-      font-size: 26px;
-      font-weight: bold;
-      margin-top: 30px;
-      color: #00ffcc;
+    canvas {
+      display: block;
+      margin: 20px auto;
     }
 
     button {
-      padding: 12px 24px;
-      background-color: #00ffcc;
+      background-color: #FFD700;
+      color: #000;
       border: none;
-      border-radius: 10px;
-      color: black;
+      padding: 10px 30px;
+      font-size: 1.2rem;
       font-weight: bold;
+      border-radius: 10px;
       cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .result {
       margin-top: 30px;
-      font-size: 16px;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #00ffcc;
     }
-
-    canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
-
   </style>
 </head>
 <body>
+  <img class="logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAArMAAAYACAIAAADqlFeEAAABBmlDQ1BJQ0MgUHJvZmlsZQAAeJxjYGCSYAACFgMGhty8kqIgdyeFiMgoBQYkkJhcXMCAGzAyMHy7BiIZGC7r4lGHC3CmpBYnA+kPQFxSBLQcaGQKkC2SDmFXgNhJEHYPiF0UEuQMZC8AsjXSkdhJSOzy" alt="Logo DStreet Company">
 
-  <!-- Logo da DStreet embutida em base64 -->
-  <img src="data:image/png;base64,{{BASE64}}" alt="Logo DStreet Company" class="logo">
+  <div class="headline">Gire e leve para casa até 10 camisetas!</div>
+  <div class="rules">R$5 = 1 giro | R$10 = 3 giros | R$20 = 4 giros</div>
 
-  <div class="impacto">Gire e leve para casa até 10 camisetas!</div>
-  <div class="regras">R$5 = 1 giro | R$10 = 3 giros | R$20 = 4 giros</div>
-
-  <div id="roleta-container">
-    <canvas id="canvas" width="400" height="400"></canvas>
-    <div class="seta"></div>
-  </div>
-
-  <button onclick="girarRoleta()">GIRAR</button>
-  <div id="resultado"></div>
+  <div class="arrow"></div>
+  <canvas id="wheel" width="300" height="300"></canvas>
+  <button onclick="spin()">GIRAR</button>
+  <div class="result" id="result"></div>
 
   <script>
-    const premios = [
-      "10 CAMISETAS", "TENTE OUTRA VEZ",
-      "5 CAMISETAS", "TENTE OUTRA VEZ",
-      "3 CAMISETAS", "TENTE OUTRA VEZ"
-    ];
+    const canvas = document.getElementById('wheel');
+    const ctx = canvas.getContext('2d');
+    const segments = ["10 CAMISETAS", "TENTE OUTRA VEZ", "5 CAMISETAS", "TENTE OUTRA VEZ", "3 CAMISETAS", "TENTE OUTRA VEZ"];
+    const colors = ["#FFD700", "#444", "#00ff66", "#444", "#3399ff", "#444"];
+    const size = canvas.width / 2;
+    const arc = Math.PI * 2 / segments.length;
+    let angle = 0;
+    let spinning = false;
 
-    const cores = ["#FFD700", "#444", "#00FF7F", "#444", "#1E90FF", "#444"];
-
-    let canvas = document.getElementById("canvas");
-    let ctx = canvas.getContext("2d");
-    let anguloAtual = 0;
-    let girando = false;
-    let giros = 0;
-
-    function desenharRoleta() {
-      let numSetores = premios.length;
-      let anguloSetor = 2 * Math.PI / numSetores;
-
-      for (let i = 0; i < numSetores; i++) {
-        let inicio = anguloAtual + i * anguloSetor;
-        let fim = inicio + anguloSetor;
+    function drawWheel() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.save();
+      ctx.translate(size, size);
+      ctx.rotate(angle);
+      for (let i = 0; i < segments.length; i++) {
         ctx.beginPath();
-        ctx.moveTo(200, 200);
-        ctx.arc(200, 200, 200, inicio, fim);
-        ctx.fillStyle = cores[i];
+        ctx.fillStyle = colors[i];
+        ctx.moveTo(0, 0);
+        ctx.arc(0, 0, size, i * arc, (i + 1) * arc);
         ctx.fill();
         ctx.save();
-        ctx.translate(200, 200);
-        ctx.rotate(inicio + anguloSetor / 2);
-        ctx.textAlign = "right";
-        ctx.fillStyle = "#fff";
-        ctx.font = "bold 16px Arial";
-        ctx.fillText(premios[i], 180, 5);
+        ctx.fillStyle = "white";
+        ctx.font = "bold 14px Arial";
+        ctx.rotate(i * arc + arc / 2);
+        ctx.translate(size - 60, 0);
+        ctx.rotate(Math.PI / 2);
+        ctx.fillText(segments[i], -ctx.measureText(segments[i]).width / 2, 0);
         ctx.restore();
       }
+      ctx.restore();
     }
 
-    function girarRoleta() {
-      if (girando) return;
+    function spin() {
+      if (spinning) return;
+      spinning = true;
+      const randomSpin = Math.random() * Math.PI * 10 + Math.PI * 10;
+      const duration = 4000;
+      const start = performance.now();
 
-      girando = true;
-      giros++;
-      let anguloPorSetor = 360 / premios.length;
-      let premioIndex;
-
-      if (giros % 100 === 0) {
-        premioIndex = Math.floor(Math.random() * 3) * 2;
-      } else {
-        premioIndex = Math.floor(Math.random() * 3) * 2 + 1;
+      function animate(now) {
+        const elapsed = now - start;
+        const t = elapsed / duration;
+        if (t < 1) {
+          angle += easeOut(t) * 0.3;
+          drawWheel();
+          requestAnimationFrame(animate);
+        } else {
+          angle += randomSpin;
+          angle %= Math.PI * 2;
+          drawWheel();
+          const index = Math.floor((segments.length - angle / arc) % segments.length);
+          const result = segments[index >= 0 ? index : index + segments.length];
+          document.getElementById("result").textContent = `Resultado: ${result.toUpperCase()}`;
+          spinning = false;
+        }
       }
 
-      let anguloFinal = 360 * 5 + (360 - premioIndex * anguloPorSetor - anguloPorSetor / 2);
-      let anguloRad = anguloFinal * Math.PI / 180;
-      anguloAtual = anguloRad % (2 * Math.PI);
-
-      let graus = anguloFinal;
-
-      canvas.style.transition = "transform 5s ease-out";
-      canvas.style.transform = `rotate(${graus}deg)`;
-
-      setTimeout(() => {
-        canvas.style.transition = "none";
-        canvas.style.transform = `rotate(${graus % 360}deg)`;
-
-        let resultado = premios[premioIndex];
-        document.getElementById("resultado").innerText = "Resultado: " + resultado;
-        girando = false;
-      }, 5200);
+      requestAnimationFrame(animate);
     }
 
-    desenharRoleta();
+    function easeOut(t) {
+      return 1 - Math.pow(1 - t, 3);
+    }
+
+    drawWheel();
   </script>
 </body>
-</html>
