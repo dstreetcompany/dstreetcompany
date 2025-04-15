@@ -1,6 +1,4 @@
-
-
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
@@ -113,29 +111,3 @@
     </script>
   </body>
 </html>
-
-O que fazer agora:
-
-1. Vá no seu repositório do GitHub.
-
-
-2. Clique no arquivo index.html.
-
-
-3. Clique em “Editar”.
-
-
-4. Cole todo o código acima.
-
-
-5. Lá embaixo, no campo “Descrição do commit”, escreva algo como: Adicionando código da roleta.
-
-
-6. Clique em “Commit changes”.
-
-
-
-Depois me avisa que te ajudo a publicar no Vercel rapidinho. Bora colocar essa roleta no ar!
-
-
-   
