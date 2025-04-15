@@ -1,173 +1,141 @@
-!DOCTYPE html>
+
+
+<!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <title>Roleta DStreet</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      background-color: #111;
-      color: #fff;
-      padding: 20px;
-    }
-    #logo {
-      max-width: 200px;
-      margin-bottom: 20px;
-    }
-    #wheel {
-      margin: 20px auto;
-      width: 300px;
-      height: 300px;
-      border-radius: 50%;
-      border: 10px solid #fff;
-      position: relative;
-      overflow: hidden;
-      transition: transform 4s ease-out;
-    }
-    .segment {
-      position: absolute;
-      width: 50%;
-      height: 50%;
-      top: 50%;
-      left: 50%;
-      transform-origin: 0% 0%;
-      background-color: #333;
-      color: #fff;
-      padding: 5px;
-      font-size: 12px;
-    }
-    #spinBtn {
-      padding: 10px 20px;
-      font-size: 18px;
-      background: #00cc66;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-    .addGiroBtn {
-      margin: 5px;
-      padding: 8px 16px;
-      font-size: 14px;
-      background: #007bff;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    #message {
-      margin-top: 20px;
-      font-size: 20px;
-    }
-    #girosRestantes {
-      margin-top: 10px;
-      font-size: 16px;
-    }
-  </style>
-</head>
-<body>
-  <!-- Logo da DSTREET COMPANY -->
-  <img id=\"logo\" src=\"logo.png\" alt=\"DStreet Logo\">
-
-  <h1>Roleta da Sorte - DStreet</h1>
-  
-  <!-- Botões para liberação manual de giros -->
-  <div>
-    <button class="addGiroBtn" onclick="adicionarGiros(1)">R$5 - 1 Giro</button>
-    <button class="addGiroBtn" onclick="adicionarGiros(3)">R$10 - 3 Giros</button>
-    <button class="addGiroBtn" onclick="adicionarGiros(4)">R$20 - 4 Giros</button>
-  </div>
-
-  <!-- Roleta e controles -->
-  <div id="wheel"></div>
-  <button id="spinBtn">GIRAR</button>
-  <div id="girosRestantes"></div>
-  <div id="message"></div>
-
-  <script>
-    // Lista de prêmios
-    const premios = [
-      'PARABÉNS VOCÊ GANHOU 10 CAMISETAS!',
-      'TENTE OUTRA VEZ!',
-      'PARABÉNS VOCÊ GANHOU 5 CAMISETAS!',
-      'TENTE OUTRA VEZ!',
-      'PARABÉNS VOCÊ GANHOU 3 CAMISETAS!',
-      'TENTE OUTRA VEZ!'
-    ];
-
-    const wheel = document.getElementById('wheel');
-    const spinBtn = document.getElementById('spinBtn');
-    const message = document.getElementById('message');
-    const girosRestantesDiv = document.getElementById('girosRestantes');
-
-    // Variáveis de controle
-    let girosRestantes = 0;
-    let totalGiros = 0; // Contador global de giros
-
-    // Desenha a roleta com os segmentos
-    function desenharRoleta() {
-      const total = premios.length;
-      for (let i = 0; i < total; i++) {
-        const el = document.createElement('div');
-        el.className = 'segment';
-        el.style.transform = `rotate(${(360 / total) * i}deg) skewY(-60deg)`;
-        el.innerHTML = premios[i];
-        wheel.appendChild(el);
+  <head>
+    <meta charset="UTF-8" />
+    <title>Roleta DStreet</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background: #111;
+        color: #fff;
+        margin: 0;
+        padding: 20px;
       }
-    }
-
-    // Atualiza a exibição dos giros restantes
-    function atualizarGiros() {
-      girosRestantesDiv.innerText = `Giros restantes: ${girosRestantes}`;
-    }
-
-    // Função para girar a roleta
-    function girarRoleta() {
-      if (girosRestantes <= 0) {
-        message.innerText = 'Você não tem mais giros. Faça um novo pagamento!';
-        return;
+      #logo {
+        width: 150px;
+        margin-bottom: 20px;
       }
-      spinBtn.disabled = true;
-      totalGiros++;  // Incrementa o contador de giros
+      #roleta {
+        margin: 0 auto;
+        width: 300px;
+        height: 300px;
+        border: 10px solid #fff;
+        border-radius: 50%;
+        position: relative;
+        overflow: hidden;
+      }
+      .fatia {
+        width: 50%;
+        height: 50%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform-origin: 0% 0%;
+        background: #333;
+        color: #fff;
+        padding: 20px;
+        box-sizing: border-box;
+        font-size: 14px;
+      }
+      #ponteiro {
+        width: 0;
+        height: 0;
+        border-left: 20px solid transparent;
+        border-right: 20px solid transparent;
+        border-bottom: 30px solid red;
+        margin: 20px auto;
+      }
+      #girar {
+        padding: 10px 20px;
+        font-size: 18px;
+        background-color: #28a745;
+        border: none;
+        color: white;
+        border-radius: 10px;
+        cursor: pointer;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <img id="logo" src="https://i.imgur.com/Qga2j3v.png" alt="Logo DStreet" />
+    <div id="ponteiro"></div>
+    <div id="roleta"></div>
+    <button id="girar">Girar</button>
 
-      const total = premios.length;
-      let premioIndex;
+    <script>
+      const premios = [
+        "10 camisetas",
+        "Tente outra vez",
+        "5 camisetas",
+        "Tente outra vez",
+        "3 camisetas",
+        "Tente outra vez"
+      ];
 
-      // Se não for o 100º giro, força o resultado "TENTE OUTRA VEZ!"
-      if (totalGiros % 100 !== 0) {
-        // Escolhemos o índice 1, que contém "TENTE OUTRA VEZ!"
-        premioIndex = 1;
-      } else {
-        // No giro 100 (ou múltiplo de 100) sorteia aleatoriamente entre os prêmios reais (índices 0, 2 e 4)
-        const winningIndices = [0, 2, 4];
-        premioIndex = winningIndices[Math.floor(Math.random() * winningIndices.length)];
+      const cores = ["#e74c3c", "#2ecc71", "#3498db", "#f39c12", "#9b59b6", "#1abc9c"];
+
+      const roleta = document.getElementById("roleta");
+
+      function desenharRoleta() {
+        for (let i = 0; i < premios.length; i++) {
+          const fatia = document.createElement("div");
+          fatia.className = "fatia";
+          fatia.style.backgroundColor = cores[i % cores.length];
+          fatia.style.transform = `rotate(${(360 / premios.length) * i}deg) skewY(-60deg)`;
+          fatia.innerHTML = `<div style="transform: skewY(60deg) rotate(${(360 / premios.length) / 2}deg); margin-top: 60px;">${premios[i]}</div>`;
+          roleta.appendChild(fatia);
+        }
       }
 
-      // Calcula o ângulo de rotação final para que o prêmio fique no topo
-      const anguloFinal = (360 / total) * premioIndex + (360 * 5);
-      wheel.style.transform = `rotate(-${anguloFinal}deg)`;
+      let girando = false;
 
-      // Após a animação de 4 segundos, exibe o resultado e atualiza os giros restantes
-      setTimeout(() => {
-        message.innerText = `${premios[premioIndex]} (Giro ${totalGiros})`;
-        girosRestantes--;
-        atualizarGiros();
-        spinBtn.disabled = false;
-      }, 4000);
-    }
+      document.getElementById("girar").addEventListener("click", () => {
+        if (girando) return;
+        girando = true;
 
-    // Função para adicionar giros manualmente (simulando o pagamento)
-    function adicionarGiros(qtd) {
-      girosRestantes += qtd;
-      atualizarGiros();
-    }
+        const anguloFinal = Math.floor(Math.random() * 360 + 1800); // 1800 = 5 voltas
+        roleta.style.transition = "transform 5s ease-out";
+        roleta.style.transform = `rotate(${anguloFinal}deg)`;
 
-    spinBtn.addEventListener('click', girarRoleta);
-    desenharRoleta();
-    atualizarGiros();
-  </script>
-</body>
+        setTimeout(() => {
+          const angulo = anguloFinal % 360;
+          const index = Math.floor((360 - angulo + 30) % 360 / (360 / premios.length));
+          alert(`Resultado: ${premios[index]}`);
+          girando = false;
+        }, 5200);
+      });
+
+      desenharRoleta();
+    </script>
+  </body>
 </html>
 
+O que fazer agora:
+
+1. Vá no seu repositório do GitHub.
+
+
+2. Clique no arquivo index.html.
+
+
+3. Clique em “Editar”.
+
+
+4. Cole todo o código acima.
+
+
+5. Lá embaixo, no campo “Descrição do commit”, escreva algo como: Adicionando código da roleta.
+
+
+6. Clique em “Commit changes”.
+
+
+
+Depois me avisa que te ajudo a publicar no Vercel rapidinho. Bora colocar essa roleta no ar!
+
+
+   
