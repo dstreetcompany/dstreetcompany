@@ -1,190 +1,174 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>DStreet - Roleta Premiada</title>
+  <title>Roleta DStreet</title>
   <style>
     body {
-      margin: 0;
+      background-color: #111;
+      color: #fff;
       font-family: 'Arial', sans-serif;
-      background-color: #0d0d0d;
-      color: white;
       text-align: center;
+      margin: 0;
+      padding: 0;
     }
 
-    header img {
-      max-width: 120px;
+    .logo {
       margin-top: 20px;
     }
 
+    .logo img {
+      width: 140px;
+    }
+
     h1 {
+      font-size: 24px;
       color: #FFD700;
-      font-size: 1.8em;
       margin: 10px 0;
     }
 
-    p.regras {
-      font-family: 'Cursive', sans-serif;
-      color: #00e6e6;
-      font-size: 1.1em;
-      margin: 5px 0 20px 0;
+    h2 {
+      font-size: 18px;
+      color: #00FFFF;
+      margin-bottom: 20px;
     }
 
-    .wheel-container {
-      position: relative;
-      width: 320px;
-      margin: 20px auto;
-    }
-
-    canvas {
-      width: 100%;
-      height: auto;
+    #wheel {
+      margin: 0 auto;
+      width: 300px;
+      height: 300px;
       border-radius: 50%;
-      background-color: #111;
+      border: 8px solid #222;
+      position: relative;
+      overflow: hidden;
     }
 
-    .pointer {
-      position: absolute;
-      top: -10px;
-      left: 50%;
-      transform: translateX(-50%);
+    #wheel canvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    #pointer {
       width: 0;
       height: 0;
       border-left: 20px solid transparent;
       border-right: 20px solid transparent;
       border-bottom: 30px solid yellow;
+      margin: 0 auto;
+      position: relative;
+      top: 10px;
+      z-index: 10;
     }
 
-    button {
-      background-color: #FFD700;
-      color: black;
-      border: none;
-      padding: 12px 24px;
-      font-size: 16px;
-      border-radius: 8px;
-      cursor: pointer;
+    #spin {
       margin-top: 20px;
+      padding: 10px 30px;
+      background-color: #FFD700;
+      color: #000;
+      font-size: 20px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
     }
 
-    #resultado {
-      font-size: 1.4em;
-      color: #00e6e6;
+    #result {
+      font-size: 20px;
       font-weight: bold;
+      color: #00FFFF;
       margin-top: 20px;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <img src="https://dstreetcompany.com/logo.png" alt="Logo DStreet Company" />
-  </header>
-
-  <h1>Gire e leve para casa até 10 camisetas!</h1>
-  <p class="regras">R$5 = 1 giro | R$10 = 3 giros | R$20 = 4 giros</p>
-
-  <div class="wheel-container">
-    <div class="pointer"></div>
-    <canvas id="wheel" width="300" height="300"></canvas>
+  <div class="logo">
+    <img src="https://dstreetcompany.vercel.app/logo.png" alt="Logo DStreet Company">
   </div>
 
-  <button onclick="girar()">GIRAR</button>
-  <p id="resultado"></p>
+  <h1>Gire e leve para casa até 10 camisetas!</h1>
+  <h2>R$5 = 1 giro | R$10 = 3 giros | R$20 = 4 giros</h2>
 
-  <audio id="tick" src="https://www.soundjay.com/misc/sounds/clock-ticking-1.mp3" preload="auto"></audio>
+  <div id="pointer"></div>
+  <div id="wheel">
+    <canvas id="canvas" width="300" height="300"></canvas>
+  </div>
+  <button id="spin">GIRAR</button>
+
+  <div id="result">Resultado: </div>
+
+  <audio id="tickSound" src="https://www.soundjay.com/mechanical/sounds/mechanical-click-10.mp3" preload="auto"></audio>
 
   <script>
-    const premios = [
-      "Tente outra vez", "3 camisetas", "Tente outra vez",
-      "5 camisetas", "Tente outra vez", "10 camisetas"
-    ];
-    const colors = ["#222", "#007acc", "#222", "#00b36b", "#222", "#e62e00"];
-    const canvas = document.getElementById("wheel");
+    const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
-    const tick = document.getElementById("tick");
-    const numSegments = premios.length;
-    const anglePerSlice = (2 * Math.PI) / numSegments;
+    const tickSound = document.getElementById("tickSound");
+
+    const segments = [
+      "Tente outra vez",
+      "5 camisetas",
+      "Tente outra vez",
+      "10 camisetas",
+      "Tente outra vez",
+      "3 camisetas"
+    ];
+
+    const colors = ["#222", "#28a745", "#222", "#e63946", "#222", "#1d3557"];
+
+    let angle = 0;
     let isSpinning = false;
 
-    function desenharRoleta() {
-      const centerX = canvas.width / 2;
-      const centerY = canvas.height / 2;
-      const radius = canvas.width / 2;
-
-      for (let i = 0; i < numSegments; i++) {
-        const startAngle = i * anglePerSlice;
-        const endAngle = startAngle + anglePerSlice;
-
+    function drawWheel() {
+      const anglePerSegment = 2 * Math.PI / segments.length;
+      for (let i = 0; i < segments.length; i++) {
+        const start = anglePerSegment * i;
+        const end = start + anglePerSegment;
         ctx.beginPath();
-        ctx.moveTo(centerX, centerY);
-        ctx.arc(centerX, centerY, radius, startAngle, endAngle);
         ctx.fillStyle = colors[i];
+        ctx.moveTo(150, 150);
+        ctx.arc(150, 150, 150, start, end);
+        ctx.lineTo(150, 150);
         ctx.fill();
 
         ctx.save();
-        ctx.translate(centerX, centerY);
-        ctx.rotate(startAngle + anglePerSlice / 2);
-        ctx.fillStyle = "white";
-        ctx.font = "bold 13px Arial";
+        ctx.translate(150, 150);
+        ctx.rotate(start + anglePerSegment / 2);
         ctx.textAlign = "right";
-        ctx.fillText(premios[i], radius - 10, 5);
+        ctx.fillStyle = "white";
+        ctx.font = "bold 14px Arial";
+        ctx.fillText(segments[i], 140, 5);
         ctx.restore();
       }
     }
 
-    desenharRoleta();
+    drawWheel();
 
-    function girar() {
+    document.getElementById("spin").addEventListener("click", function () {
       if (isSpinning) return;
+
       isSpinning = true;
+      let spinAngle = Math.floor(3600 + Math.random() * 600);
+      let current = 0;
+      const increment = 10;
 
-      document.getElementById("resultado").innerText = "";
+      const spinInterval = setInterval(() => {
+        angle += increment;
+        current += increment;
+        canvas.style.transform = `rotate(${angle}deg)`;
 
-      const duration = 4000;
-      const rotation = 360 * 5 + Math.floor(Math.random() * 360);
-      const start = performance.now();
-      let lastTickAngle = 0;
+        if (current % 30 === 0) tickSound.play();
 
-      function animate(time) {
-        const elapsed = time - start;
-        const progress = Math.min(elapsed / duration, 1);
-        const eased = easeOutCubic(progress);
-        const angle = rotation * eased;
-
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.save();
-        ctx.translate(canvas.width / 2, canvas.height / 2);
-        ctx.rotate((angle * Math.PI) / 180);
-        ctx.translate(-canvas.width / 2, -canvas.height / 2);
-        desenharRoleta();
-        ctx.restore();
-
-        const currentTickAngle = Math.floor(angle / (360 / numSegments));
-        if (currentTickAngle !== lastTickAngle) {
-          tick.pause();
-          tick.currentTime = 0;
-          tick.play();
-          lastTickAngle = currentTickAngle;
-        }
-
-        if (progress < 1) {
-          requestAnimationFrame(animate);
-        } else {
-          const finalAngle = (angle % 360 + 360) % 360;
-          const index = numSegments - Math.floor(finalAngle / (360 / numSegments)) - 1;
-          const resultado = premios[index];
-          document.getElementById("resultado").innerText = "Resultado: " + resultado;
+        if (current >= spinAngle) {
+          clearInterval(spinInterval);
           isSpinning = false;
+          angle %= 360;
+          const index = segments.length - Math.floor((angle % 360) / (360 / segments.length)) - 1;
+          const resultText = segments[(index + segments.length) % segments.length];
+          document.getElementById("result").textContent = "Resultado: " + resultText;
         }
-      }
-
-      requestAnimationFrame(animate);
-    }
-
-    function easeOutCubic(t) {
-      return 1 - Math.pow(1 - t, 3);
-    }
+      }, 10);
+    });
   </script>
 </body>
 </html>
+
