@@ -1,181 +1,188 @@
-!DOCTYPE html>
-<html lang="pt-BR">
+
+<!DOCTYPE html>
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Roleta Premiada - DStreet</title>
+  <title>DStreet Roleta Premiada</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
-      background: #000;
-      font-family: Arial, sans-serif;
+      font-family: 'Bebas Neue', sans-serif;
+      background: url('https://i.imgur.com/mxib1ha.jpg') center/cover no-repeat;
       color: white;
       text-align: center;
     }
-
+    header {
+      padding: 20px;
+    }
     .logo {
-      width: 120px;
-      margin-top: 20px;
+      width: 150px;
     }
-
-    .impacto {
-      font-size: 24px;
-      font-weight: bold;
-      margin: 20px 0 10px;
-      background: linear-gradient(90deg, yellow, red);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 10px #f00;
+    h1 {
+      font-size: 48px;
+      margin: 0;
+      text-shadow: 2px 2px 5px black;
     }
-
-    .roleta-container {
+    .impact {
+      font-size: 28px;
+      color: #ffe600;
+      text-shadow: 1px 1px 3px #000;
+      margin-top: 10px;
+    }
+    .wheel-container {
       position: relative;
-      width: 300px;
-      height: 300px;
-      margin: 0 auto;
+      margin: 40px auto;
+      width: 400px;
+      height: 400px;
     }
-
-    .seta {
-      position: absolute;
-      top: -30px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 0;
-      height: 0;
-      border-left: 20px solid transparent;
-      border-right: 20px solid transparent;
-      border-bottom: 30px solid red;
-      z-index: 2;
-    }
-
-    .roleta {
+    #wheel {
       width: 100%;
       height: 100%;
       border-radius: 50%;
-      border: 10px solid yellow;
-      box-shadow: 0 0 20px yellow;
-      transition: transform 5s cubic-bezier(0.33, 1, 0.68, 1);
+      border: 12px solid gold;
+      box-shadow: 0 0 30px #fff200, 0 0 40px #fff inset;
+      transition: transform 5s cubic-bezier(0.25, 0.1, 0.25, 1);
     }
-
-    .botao {
-      background: cyan;
-      color: black;
-      font-size: 20px;
-      padding: 15px 30px;
+    #pointer {
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%) rotate(0deg);
+      width: 0;
+      height: 0;
+      border-left: 25px solid transparent;
+      border-right: 25px solid transparent;
+      border-bottom: 40px solid red;
+      z-index: 10;
+    }
+    .spin-button {
       margin-top: 30px;
+      font-size: 28px;
+      padding: 15px 40px;
       border: none;
-      border-radius: 12px;
-      box-shadow: 0 0 10px cyan;
+      border-radius: 10px;
+      background: #00ffff;
+      color: black;
+      box-shadow: 0 0 20px #00ffff;
       cursor: pointer;
     }
-
-    .resultado {
-      margin-top: 25px;
-      font-size: 24px;
-      color: cyan;
-      text-shadow: 0 0 10px cyan;
-      font-weight: bold;
+    .spin-button:hover {
+      box-shadow: 0 0 40px #00ffff;
+    }
+    .result {
+      font-size: 36px;
+      margin-top: 30px;
+      color: #00ffea;
+      text-shadow: 2px 2px 8px black;
     }
   </style>
 </head>
 <body>
-  <img src="logo.png" alt="Logo DStreet" class="logo" />
-  <h2 class="impacto">GIRE E LEVE PRA CASA ATÉ <span style="color:red;">10 CAMISETAS EXCLUSIVAS!</span></h2>
 
-  <div class="roleta-container">
-    <div class="seta"></div>
-    <canvas id="roleta" class="roleta" width="300" height="300"></canvas>
+  <header>
+    <img src="https://i.imgur.com/Z9kXMsT.png" alt="Logo DStreet" class="logo">
+    <h1>Roleta Premiada</h1>
+    <div class="impact">GIRE E LEVE ATÉ <span style="color: #ff3c00;">10 CAMISETAS EXCLUSIVAS!</span></div>
+  </header>
+
+  <div class="wheel-container">
+    <div id="pointer"></div>
+    <canvas id="wheel"></canvas>
   </div>
 
-  <button class="botao" onclick="girar()">GIRAR</button>
-  <div class="resultado" id="resultadoTexto"></div>
+  <button class="spin-button" onclick="spin()">GIRAR</button>
+  <div id="result" class="result"></div>
 
-  <audio id="somTick" src="https://www.fesliyanstudios.com/play-mp3/387" preload="auto"></audio>
+  <audio id="trackSound" src="https://www.myinstants.com/media/sounds/ticktok.mp3" preload="auto"></audio>
+  <audio id="winSound" src="https://www.myinstants.com/media/sounds/win.mp3" preload="auto"></audio>
+  <audio id="loseSound" src="https://www.myinstants.com/media/sounds/aww.mp3" preload="auto"></audio>
 
   <script>
-    const opcoes = ['10 CAMISETAS', 'TENTE OUTRA VEZ', '3 CAMISETAS', 'TENTE OUTRA VEZ', '5 CAMISETAS', 'TENTE OUTRA VEZ'];
-    const cores = ['#333', '#444', '#333', '#444', '#333', '#444'];
-    let anguloAtual = 0;
-    let rodando = false;
-    let audio = document.getElementById("somTick");
-
-    const canvas = document.getElementById("roleta");
+    const canvas = document.getElementById("wheel");
     const ctx = canvas.getContext("2d");
-    const tamanho = canvas.width;
-    const raio = tamanho / 2;
+    const size = 400;
+    canvas.width = size;
+    canvas.height = size;
 
-    function desenharRoleta() {
-      const anguloPorSetor = (2 * Math.PI) / opcoes.length;
-      for (let i = 0; i < opcoes.length; i++) {
-        const inicio = i * anguloPorSetor;
-        const fim = inicio + anguloPorSetor;
+    const segments = [
+      { label: "10 CAMISETAS", color: "#001F3F" },
+      { label: "TENTE OUTRA VEZ", color: "#003366" },
+      { label: "5 CAMISETAS", color: "#001F3F" },
+      { label: "TENTE OUTRA VEZ", color: "#003366" },
+      { label: "3 CAMISETAS", color: "#001F3F" },
+      { label: "TENTE OUTRA VEZ", color: "#003366" },
+    ];
 
+    function drawWheel() {
+      const arc = 2 * Math.PI / segments.length;
+      for (let i = 0; i < segments.length; i++) {
+        const angle = i * arc;
         ctx.beginPath();
-        ctx.moveTo(raio, raio);
-        ctx.arc(raio, raio, raio, inicio, fim);
-        ctx.fillStyle = cores[i];
+        ctx.fillStyle = segments[i].color;
+        ctx.moveTo(size / 2, size / 2);
+        ctx.arc(size / 2, size / 2, size / 2, angle, angle + arc);
         ctx.fill();
-        ctx.save();
 
-        // Texto
-        ctx.translate(raio, raio);
-        ctx.rotate(inicio + anguloPorSetor / 2);
-        ctx.textAlign = "right";
-        ctx.fillStyle = "white";
-        ctx.font = "bold 14px Arial";
-        ctx.fillText(opcoes[i], raio - 10, 5);
+        ctx.save();
+        ctx.translate(size / 2, size / 2);
+        ctx.rotate(angle + arc / 2);
+        ctx.fillStyle = "#fff";
+        ctx.font = "bold 18px Bebas Neue";
+        ctx.fillText(segments[i].label, 60, 0);
         ctx.restore();
       }
     }
 
-    function girar() {
-      if (rodando) return;
-      rodando = true;
+    drawWheel();
 
-      document.getElementById("resultadoTexto").textContent = "";
+    const resultText = document.getElementById("result");
+    const trackSound = document.getElementById("trackSound");
+    const winSound = document.getElementById("winSound");
+    const loseSound = document.getElementById("loseSound");
 
-      let voltas = Math.floor(Math.random() * 3 + 5); // 5 a 7 voltas
-      let anguloFinal = anguloAtual + (360 * voltas) + Math.floor(Math.random() * 360);
-      let duracao = 5000;
-      let inicio = null;
-      let tickTimer;
+    let isSpinning = false;
+    let intervalId;
 
-      const animar = (timestamp) => {
-        if (!inicio) inicio = timestamp;
-        let progresso = timestamp - inicio;
-        let percentual = Math.min(progresso / duracao, 1);
-        let easeOut = 1 - Math.pow(1 - percentual, 3);
-        let angulo = anguloAtual + (anguloFinal - anguloAtual) * easeOut;
+    function playTicking(duration) {
+      let tickCount = 0;
+      intervalId = setInterval(() => {
+        trackSound.currentTime = 0;
+        trackSound.play();
+        tickCount += 1;
+        if (tickCount > duration / 100) clearInterval(intervalId);
+      }, 100);
+    }
 
-        canvas.style.transform = `rotate(${angulo}deg)`;
+    function spin() {
+      if (isSpinning) return;
+      isSpinning = true;
+      resultText.textContent = "";
 
-        if (percentual < 1) {
-          requestAnimationFrame(animar);
+      const spins = Math.floor(Math.random() * 5) + 5;
+      const degreesPerSegment = 360 / segments.length;
+      const chosen = Math.floor(Math.random() * segments.length);
+      const stopAngle = 360 - (chosen * degreesPerSegment) - (degreesPerSegment / 2);
+      const totalDeg = (spins * 360) + stopAngle;
+
+      playTicking(5000);
+      canvas.style.transform = `rotate(${totalDeg}deg)`;
+
+      setTimeout(() => {
+        const result = segments[chosen].label;
+        resultText.textContent = result;
+        if (result.includes("CAMISETAS")) {
+          winSound.play();
         } else {
-          anguloAtual = angulo % 360;
-          rodando = false;
-          clearInterval(tickTimer);
-          mostrarResultado();
+          loseSound.play();
         }
-      };
-
-      tickTimer = setInterval(() => {
-        if (!rodando) return;
-        audio.currentTime = 0;
-        audio.play();
-      }, 90);
-
-      requestAnimationFrame(animar);
+        clearInterval(intervalId);
+        isSpinning = false;
+      }, 5000);
     }
-
-    function mostrarResultado() {
-      const grausPorSetor = 360 / opcoes.length;
-      const indice = Math.floor(((360 - anguloAtual + grausPorSetor / 2) % 360) / grausPorSetor);
-      const resultado = opcoes[indice];
-      document.getElementById("resultadoTexto").textContent = resultado;
-    }
-
-    desenharRoleta();
   </script>
+
 </body>
 </html>
+
