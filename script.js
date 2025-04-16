@@ -1,89 +1,62 @@
-const canvas = document.getElementById("wheel");
-const ctx = canvas.getContext("2d");
-const girarBtn = document.getElementById("girarBtn");
-const resultado = document.getElementById("resultado");
+const wheel = document.getElementById("wheel");
+const spinBtn = document.getElementById("spin");
+const result = document.getElementById("result");
+const trackSound = new Audio("track.mp3"); // som de roleta
+const winSound = new Audio("win.mp3");
+const loseSound = new Audio("lose.mp3");
 
-const somGiro = document.getElementById("somGiro");
-const somVitoria = document.getElementById("somVitoria");
-const somPerda = document.getElementById("somPerda");
-
-const premios = [
-  "10 CAMISETAS", "TENTE NOVAMENTE",
-  "5 CAMISETAS", "TENTE NOVAMENTE",
-  "3 CAMISETAS", "TENTE NOVAMENTE"
+const sectors = [
+  "Tente outra vez", "3 camisetas", "Tente outra vez",
+  "5 camisetas", "Tente outra vez", "10 camisetas"
 ];
 
-const cores = ["#222", "#444", "#222", "#444", "#222", "#444"];
-const slice = 360 / premios.length;
+let spinning = false;
+let spinCount = 0;
 
-let anguloAtual = 0;
-let girando = false;
-
-function desenharRoleta() {
-  for (let i = 0; i < premios.length; i++) {
-    const inicio = (i * slice) * Math.PI / 180;
-    const fim = ((i + 1) * slice) * Math.PI / 180;
-
-    ctx.beginPath();
-    ctx.moveTo(250, 250);
-    ctx.arc(250, 250, 240, inicio, fim);
-    ctx.fillStyle = cores[i];
-    ctx.fill();
-
-    ctx.save();
-    ctx.translate(250, 250);
-    ctx.rotate(inicio + (slice * Math.PI / 360));
-    ctx.textAlign = "right";
-    ctx.fillStyle = "#fff";
-    ctx.font = "bold 16px Arial";
-    ctx.fillText(premios[i], 230, 10);
-    ctx.restore();
-  }
+function playTrackSound(duration) {
+  trackSound.loop = true;
+  trackSound.play();
+  setTimeout(() => {
+    trackSound.pause();
+    trackSound.currentTime = 0;
+  }, duration);
 }
 
-function girarRoleta() {
-  if (girando) return;
-  girando = true;
-  resultado.textContent = "";
-  somGiro.play();
+function spinWheel() {
+  if (spinning) return;
+  spinning = true;
+  spinCount++;
 
-  const sorteio = Math.floor(Math.random() * premios.length);
-  const rotacoes = 5 * 360;
-  const anguloFinal = rotacoes + (sorteio * slice) + slice / 2;
+  let duration = 5000;
+  let anglePerSector = 360 / sectors.length;
+  let randomSectorIndex;
 
-  let tempo = 0;
-  const intervalo = setInterval(() => {
-    anguloAtual += 10;
-    if (anguloAtual >= anguloFinal) {
-      clearInterval(intervalo);
-      anguloAtual = anguloFinal % 360;
-      mostrarResultado(sorteio);
-      girando = false;
-    }
-    desenharAnimacao(anguloAtual);
-  }, 20);
-}
-
-function desenharAnimacao(angulo) {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.save();
-  ctx.translate(250, 250);
-  ctx.rotate(angulo * Math.PI / 180);
-  ctx.translate(-250, -250);
-  desenharRoleta();
-  ctx.restore();
-}
-
-function mostrarResultado(i) {
-  const texto = premios[i];
-  resultado.textContent = texto;
-  if (texto.includes("CAMISETAS")) {
-    somVitoria.play();
+  // Garante 1 prêmio real a cada 100 giros
+  if (spinCount % 100 === 0) {
+    const prizeIndexes = [1, 3, 5];
+    randomSectorIndex = prizeIndexes[Math.floor(Math.random() * prizeIndexes.length)];
   } else {
-    somPerda.play();
+    const loseIndexes = [0, 2, 4];
+    randomSectorIndex = loseIndexes[Math.floor(Math.random() * loseIndexes.length)];
   }
-}
 
-desenharRoleta();
-girarBtn.addEventListener("click", girarRoleta);
+  let targetAngle = 360 * 10 + (sectors.length - randomSectorIndex) * anglePerSector + anglePerSector / 2;
+  playTrackSound(duration);
+
+  wheel.style.transition = `transform ${duration}ms cubic-bezier(0.33, 1, 0.68, 1)`;
+  wheel.style.transform = `rotate(${targetAngle}deg)`;
+
+  setTimeout(() => {
+    const resultText = sectors[randomSectorIndex];
+    result.innerText = resultText;
+
+    if (resultText.includes("camisetas")) {
+      winSound.play();
+    } else {
+      loseSound.play();
+    }
+
+    spinning = false;
+  }, duration + 100);
+}
 
