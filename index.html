@@ -1,34 +1,205 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DStreet Roleta</title>
-  <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet" />
+  <meta charset="UTF-8">
+  <title>DSTREET Roleta</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background: url('https://i.imgur.com/Fxdwt0W.jpg') center/cover no-repeat;
+      font-family: 'Orbitron', sans-serif;
+      color: #fff;
+      text-align: center;
+    }
+    h1 {
+      font-size: 2.5em;
+      margin-top: 30px;
+      color: #FFD700;
+      text-shadow: 0 0 10px #FFD700;
+    }
+    .logo {
+      width: 100px;
+      margin: 20px auto;
+    }
+    .impacto {
+      font-size: 1.4em;
+      margin-top: 10px;
+      color: #fff;
+      text-shadow: 0 0 10px #fff;
+    }
+    .regras {
+      margin: 15px 0;
+      font-size: 1.2em;
+      color: #ccc;
+    }
+    #roleta-container {
+      position: relative;
+      margin: 0 auto;
+      margin-top: 20px;
+      width: 320px;
+      height: 320px;
+    }
+    #seta {
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 40px;
+      z-index: 10;
+    }
+    canvas {
+      border-radius: 50%;
+      background-color: #000;
+      box-shadow: 0 0 20px #FFD700, 0 0 40px #fff;
+    }
+    #girar {
+      margin-top: 20px;
+      padding: 12px 25px;
+      font-size: 1.3em;
+      background: #FFD700;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      color: #000;
+      text-shadow: 0 0 5px #fff;
+      box-shadow: 0 0 15px #FFD700;
+    }
+    #resultado {
+      margin-top: 25px;
+      font-size: 1.5em;
+      color: #fff;
+      font-weight: bold;
+      text-shadow: 0 0 8px #00f0ff;
+    }
+    .nota {
+      margin-top: 15px;
+      font-size: 0.95em;
+      color: #aaa;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h1 class="vegas-title">DSTREET</h1>
-    <img src="logo.png" alt="Logo DSTREET" class="logo" />
-    <p class="phrase">Gire e leve para casa até <strong>10 camisetas</strong>!</p>
-    <div class="rules">R$5 = 1 giro | R$10 = 3 giros | R$20 = 4 giros</div>
+  <h1>DSTREET</h1>
+  <img class="logo" src="https://i.imgur.com/MBq0PBG.png" alt="Logo DSTREET">
+  <div class="impacto">Gire e leve para casa até <strong>10 camisetas!</strong></div>
+  <div class="regras">R$5 = 1 giro | R$10 = 3 giros | R$20 = 4 giros</div>
 
-    <div class="wheel-container">
-      <div class="pointer"></div>
-      <canvas id="wheel" width="500" height="500"></canvas>
-      <button id="spin">DSTREET</button>
-    </div>
-
-    <div id="result"></div>
-
-    <p class="note">* A cada 100 giros, 1 prêmio verdadeiro é sorteado.</p>
+  <div id="roleta-container">
+    <img id="seta" src="https://i.imgur.com/XFMJ0ev.png" alt="Seta">
+    <canvas id="roleta" width="300" height="300"></canvas>
   </div>
 
-  <audio id="tick-sound" src="tick.mp3" preload="auto"></audio>
-  <audio id="win-sound" src="win.mp3" preload="auto"></audio>
-  <audio id="lose-sound" src="lose.mp3" preload="auto"></audio>
+  <button id="girar">DSTREET</button>
+  <div id="resultado"></div>
+  <div class="nota">* A cada 100 giros, 1 prêmio verdadeiro é sorteado.</div>
 
-  <script src="script.js"></script>
+  <audio id="som" src="https://www.soundjay.com/mechanical/sounds/mechanical-clunk-3.mp3" preload="auto"></audio>
+
+  <script>
+    const canvas = document.getElementById("roleta");
+    const ctx = canvas.getContext("2d");
+    const largura = canvas.width;
+    const altura = canvas.height;
+    const centro = largura / 2;
+    const segmentos = [
+      "10 camisetas", "Tente outra vez", "5 camisetas",
+      "Tente outra vez", "3 camisetas", "Tente outra vez"
+    ];
+    const cores = ["#FF0000", "#ffffff", "#00008B", "#ffffff", "#8B0000", "#ffffff"];
+    let anguloAtual = 0;
+    let contadorGiros = 0;
+
+    function desenharRoleta() {
+      const raio = largura / 2;
+      const anguloPorSegmento = 2 * Math.PI / segmentos.length;
+
+      for (let i = 0; i < segmentos.length; i++) {
+        const anguloInicio = i * anguloPorSegmento;
+        const anguloFim = anguloInicio + anguloPorSegmento;
+
+        ctx.beginPath();
+        ctx.moveTo(centro, centro);
+        ctx.arc(centro, centro, raio, anguloInicio, anguloFim);
+        ctx.fillStyle = cores[i];
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.save();
+        ctx.translate(centro, centro);
+        ctx.rotate(anguloInicio + anguloPorSegmento / 2);
+        ctx.fillStyle = "#000";
+        ctx.font = "bold 14px Orbitron";
+        ctx.textAlign = "right";
+        ctx.fillText(segmentos[i], raio - 10, 5);
+        ctx.restore();
+      }
+    }
+
+    desenharRoleta();
+
+    document.getElementById("girar").addEventListener("click", function () {
+      const audio = document.getElementById("som");
+      audio.currentTime = 0;
+      audio.play();
+
+      const giros = Math.floor(Math.random() * 3) + 5;
+      const rotacaoExtra = Math.random() * 360;
+      const rotacaoTotal = giros * 360 + rotacaoExtra;
+
+      let duracao = 4000;
+      let inicio = null;
+
+      function animar(timestamp) {
+        if (!inicio) inicio = timestamp;
+        const progresso = timestamp - inicio;
+        const progressoRotacao = Math.min(progresso / duracao, 1);
+        const rotacao = progressoRotacao * rotacaoTotal;
+        anguloAtual = rotacao;
+
+        ctx.clearRect(0, 0, largura, altura);
+        ctx.save();
+        ctx.translate(centro, centro);
+        ctx.rotate(anguloAtual * Math.PI / 180);
+        ctx.translate(-centro, -centro);
+        desenharRoleta();
+        ctx.restore();
+
+        if (progresso < duracao) {
+          if (progresso % 100 < 50) audio.play();
+          requestAnimationFrame(animar);
+        } else {
+          audio.pause();
+          audio.currentTime = 0;
+          mostrarResultado(rotacaoTotal);
+        }
+      }
+
+      requestAnimationFrame(animar);
+    });
+
+    function mostrarResultado(anguloTotal) {
+      const anguloFinal = (anguloTotal % 360 + 360) % 360;
+      const indice = Math.floor(((360 - anguloFinal + 30) % 360) / (360 / segmentos.length));
+      contadorGiros++;
+
+      let resultado;
+      if (contadorGiros % 100 === 0) {
+        resultado = segmentos.find(p => p !== "Tente outra vez");
+      } else {
+        resultado = segmentos[indice];
+      }
+
+      document.getElementById("resultado").textContent = resultado.toUpperCase();
+    }
+  </script>
 </body>
 </html>
+
