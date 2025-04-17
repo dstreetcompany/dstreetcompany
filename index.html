@@ -1,126 +1,163 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>DStreet Raspadinha</title>
+  <title>DSTREET Raspadinha</title>
   <style>
     body {
-      background-color: #000;
+      background: black;
       color: white;
       font-family: Arial, sans-serif;
       text-align: center;
-      padding: 20px;
+      padding: 30px;
     }
 
     h1 {
-      color: yellow;
-      text-shadow: 0 0 10px yellow;
+      font-size: 32px;
+      color: #fffd42;
+      text-shadow: 0 0 10px #fffd42;
     }
 
     h2 {
-      color: cyan;
+      font-size: 22px;
+      color: #00eaff;
+      margin-top: -10px;
     }
 
     .button {
-      background-color: yellow;
-      color: black;
-      padding: 15px;
-      margin: 10px;
-      font-size: 18px;
+      background: yellow;
       border: none;
-      border-radius: 10px;
-      cursor: pointer;
+      color: black;
+      font-size: 18px;
+      padding: 15px;
+      margin: 15px auto;
       width: 80%;
-      max-width: 300px;
+      border-radius: 12px;
+      cursor: pointer;
     }
 
     .pix-code {
-      display: none;
-      background: #fff;
-      color: #000;
+      background: white;
+      color: black;
       margin: 10px auto;
       padding: 10px;
       width: 90%;
-      max-width: 400px;
-      border-radius: 8px;
-      word-break: break-all;
+      border-radius: 10px;
       font-size: 14px;
     }
 
-    .pix-success {
+    .copiado {
       color: lightgreen;
       margin-top: 5px;
+      font-size: 14px;
     }
 
-    a {
-      color: lightgreen;
-      font-weight: bold;
-    }
-
-    #scratch-screen {
+    #scratch-section {
       display: none;
-      background: #111;
-      color: white;
-      padding: 30px;
       margin-top: 30px;
-      border-radius: 15px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 80px);
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .cell {
+      background: gray;
+      width: 80px;
+      height: 80px;
+      font-size: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    #whatsapp {
+      color: #00ff88;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
   <h1>DSTREET COMPANY</h1>
   <h2>ACHE 3 FIGURAS IGUAIS E GANHE O PRÊMIO!</h2>
-  <p id="chances">Chances restantes: 0</p>
+  <p>Chances restantes: <span id="chances">0</span></p>
 
-  <button class="button" onclick="showPix(5)">Pagar R$5,00 (1 chance)</button>
-  <div class="pix-code" id="pix5"></div>
+  <button class="button" onclick="registrarClique('5')">Pagar R$5,00 (1 chance)</button>
+  <div class="pix-code" id="pix5">
+    00020126930014br.gov.bcb.pix0136a7072ee1-b3f4-465a-a0cf-a348646a275f02311 chance de levar 10 camisetas 52040000530398654045.005802BR5924David Fonsin Cavalcanti 6008Brasilia 62240520daqr1365757693274784630470DC
+    <div class="copiado">Código Pix copiado!</div>
+  </div>
 
-  <button class="button" onclick="showPix(10)">Pagar R$10,00 (3 chances)</button>
-  <div class="pix-code" id="pix10"></div>
+  <button class="button" onclick="registrarClique('10')">Pagar R$10,00 (3 chances)</button>
+  <div class="pix-code" id="pix10">
+    00020126940014br.gov.bcb.pix0136a7072ee1-b3f4-465a-a0cf-a348646a275f02323 chances de levar 10 camisetas 52040000530398654015.005802BR5924David Fonsin Cavalcanti 6008Brasilia62240520daqr13657576934012906304C907
+    <div class="copiado">Código Pix copiado!</div>
+  </div>
 
-  <button class="button" onclick="showPix(20)">Pagar R$20,00 (6 chances)</button>
-  <div class="pix-code" id="pix20"></div>
+  <button class="button" onclick="registrarClique('20')">Pagar R$20,00 (6 chances)</button>
+  <div class="pix-code" id="pix20">
+    00020126940014br.gov.bcb.pix0136a7072ee1-b3f4-465a-a0cf-a348646a275f02326 chances de levar 10 camisetas 520400005303986540520.005802BR5924David Fonsin Cavalcanti 6008Brasilia62240520daqr13657576935260736304DE32
+    <div class="copiado">Código Pix copiado!</div>
+  </div>
 
-  <p style="margin-top: 20px;">APÓS O PAGAMENTO, ENVIE O COMPROVANTE PELO <a href="https://wa.me/5511913304443" target="_blank">WHATSAPP</a>.<br>VOCÊ RECEBERÁ O LINK COM SUAS CHANCES PRONTAS PARA USAR!</p>
+  <p style="margin-top: 30px;">APÓS O PAGAMENTO, ENVIE O COMPROVANTE PELO <a id="whatsapp" href="https://wa.me/5511913304443" target="_blank">WHATSAPP</a>.<br>
+  VOCÊ RECEBERÁ O LINK COM SUAS CHANCES PRONTAS PARA USAR!</p>
 
-  <div id="scratch-screen">
-    <h2>RASPADINHA LIBERADA!</h2>
-    <p>Agora você pode jogar!</p>
-    <!-- Aqui entra o componente da raspadinha quando for integrado -->
+  <div id="scratch-section">
+    <h2>Raspadinha liberada!</h2>
+    <div class="grid" id="scratch-grid">
+      <!-- Geração dinâmica -->
+    </div>
   </div>
 
   <script>
-    const pixCodes = {
-      5: "00020126930014br.gov.bcb.pix0136a7072ee1-b3f4-465a-a0cf-a348646a275f02311 chance de levar 10 camisetas 52040000530398654045.005802BR5924David Fonsin Cavalcanti 6008Brasilia62240520daqr1365757693274784630470DC",
-      10: "00020126940014br.gov.bcb.pix0136a7072ee1-b3f4-465a-a0cf-a348646a275f02323 chances de levar 10 camisetas!520400005303986540510.005802BR5924David Fonsin Cavalcanti 6008Brasilia62240520daqr13657576934012906304C907",
-      20: "00020126940014br.gov.bcb.pix0136a7072ee1-b3f4-465a-a0cf-a348646a275f02326 chances de levar 10 camisetas 520400005303986540520.005802BR5924David Fonsin Cavalcanti 6008Brasilia62240520daqr13657576935260736304DE32"
-    };
+    const chancesPorValor = { '5': 1, '10': 3, '20': 6 };
+    const cliquesNecessarios = 10;
+    const cliquesRegistrados = { '5': 0, '10': 0, '20': 0 };
+    let chancesRestantes = 0;
 
-    function showPix(value) {
-      const pixText = pixCodes[value];
-      const elementId = `pix${value}`;
-      const pixDiv = document.getElementById(elementId);
-      pixDiv.style.display = "block";
-      pixDiv.innerHTML = pixText;
-
-      // Copiar para área de transferência imediatamente
-      navigator.clipboard.writeText(pixText).then(() => {
-        pixDiv.insertAdjacentHTML('beforeend', '<div class="pix-success">Código Pix copiado!</div>');
-      });
+    function registrarClique(valor) {
+      cliquesRegistrados[valor]++;
+      if (cliquesRegistrados[valor] === cliquesNecessarios) {
+        chancesRestantes += chancesPorValor[valor];
+        document.getElementById('chances').textContent = chancesRestantes;
+        document.getElementById('scratch-section').style.display = 'block';
+        alert(`Raspadinha liberada com ${chancesPorValor[valor]} chance(s)!`);
+      }
     }
 
-    // Segurar por 5 segundos para liberar raspadinha
-    let holdTimer;
-    document.body.addEventListener('touchstart', function () {
-      holdTimer = setTimeout(() => {
-        document.getElementById('scratch-screen').style.display = 'block';
-      }, 5000); // 5 segundos
-    });
+    // Raspadinha básica simulada
+    const figuras = ["👕", "🔥", "⭐", "🎁"];
+    const grid = document.getElementById("scratch-grid");
 
-    document.body.addEventListener('touchend', function () {
-      clearTimeout(holdTimer);
-    });
+    function gerarRaspadinha() {
+      grid.innerHTML = "";
+      for (let i = 0; i < 9; i++) {
+        const cell = document.createElement("div");
+        cell.className = "cell";
+        const figura = figuras[Math.floor(Math.random() * figuras.length)];
+        cell.textContent = figura;
+        cell.style.color = "transparent";
+        cell.addEventListener("click", function () {
+          if (chancesRestantes <= 0) return;
+          cell.style.color = "white";
+          chancesRestantes--;
+          document.getElementById("chances").textContent = chancesRestantes;
+        });
+        grid.appendChild(cell);
+      }
+    }
+
+    setInterval(() => {
+      if (chancesRestantes > 0) gerarRaspadinha();
+    }, 1000);
   </script>
 </body>
 </html>
