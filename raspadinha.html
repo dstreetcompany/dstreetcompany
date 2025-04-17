@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Raspadinha</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      gap: 10px;
+      justify-content: center;
+      margin-top: 50px;
+    }
+    .card {
+      width: 100px;
+      height: 100px;
+      background: #ccc;
+      font-size: 24px;
+      text-align: center;
+      line-height: 100px;
+      cursor: pointer;
+    }
+    .hidden {
+      background: #222;
+      color: transparent;
+    }
+    .button {
+      margin-top: 30px;
+      padding: 10px 20px;
+      font-size: 18px;
+      border: 2px solid yellow;
+      background: white;
+      color: black;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Boa sorte!</h1>
+  <div class="grid" id="grid"></div>
+  <button class="button" onclick="location.href='index.html'">COMPRAR MAIS CHANCES</button>
+
+  <script>
+    const palavras = ["👕", "👕", "👕", "X", "X", "X", "X", "X", "X"];
+    const grid = document.getElementById('grid');
+    let chances = 1;
+
+    function embaralhar(array) {
+      return array.sort(() => Math.random() - 0.5);
+    }
+
+    function criarRaspadinha() {
+      grid.innerHTML = "";
+      const embaralhado = embaralhar(palavras);
+      embaralhado.forEach(palavra => {
+        const div = document.createElement("div");
+        div.className = "card hidden";
+        div.dataset.valor = palavra;
+        div.onclick = () => {
+          if (chances > 0 && div.classList.contains("hidden")) {
+            div.textContent = palavra;
+            div.classList.remove("hidden");
+            chances--;
+            if (chances === 0) {
+              setTimeout(() => alert("Fim da chance. Compre mais para continuar!"), 500);
+            }
+          }
+        };
+        grid.appendChild(div);
+      });
+    }
+
+    criarRaspadinha();
+  </script>
+</body>
+</html>
+
