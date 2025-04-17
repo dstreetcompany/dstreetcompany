@@ -1,15 +1,176 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>DStreet Raspadinha</title>
-  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #fff;
+      text-align: center;
+    }
+    header {
+      background: #222;
+      padding: 20px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+    section {
+      padding: 30px;
+    }
+    .button {
+      padding: 15px 30px;
+      font-size: 18px;
+      background: #ffcc00;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    .grid {
+      display: none;
+      grid-template-columns: repeat(3, 80px);
+      grid-gap: 10px;
+      justify-content: center;
+      margin-top: 30px;
+    }
+    .cell {
+      width: 80px;
+      height: 80px;
+      background: #ccc;
+      color: transparent;
+      font-size: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      user-select: none;
+    }
+    .cell.scratched {
+      background: #fff;
+      color: #000;
+      cursor: default;
+    }
+    #comprarMais {
+      display: none;
+      margin-top: 30px;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>RASPADINHA DStreet</h1>
-    <p><strong>Regras:</strong> <br> R$5,00 = 1 chance</p>
-    <button onclick="window.location.href='checkout.html'">COMPRAR 1 CHANCE - R$5</button>
-  </div>
+
+<header>DStreet Raspadinha</header>
+
+<section id="inicio">
+  <h2>Regras</h2>
+  <p>R$5 = 1 chance para raspar e ganhar até 10 camisetas!</p>
+  <button class="button" onclick="startPagamento()">COMPRAR 1 CHANCE - R$5</button>
+</section>
+
+<section id="raspadinha">
+  <h2>Boa sorte!</h2>
+  <div class="grid" id="grid"></div>
+  <div id="resultado" style="font-size: 24px; margin-top: 20px;"></div>
+  <button id="comprarMais" class="button" onclick="voltarInicio()">COMPRAR MAIS CHANCES!</button>
+</section>
+
+<script src="https://sdk.mercadopago.com/js/v2"></script>
+<script>
+  const mp = new MercadoPago('APP_USR-f59036c8-617c-49e9-b725-6074083f34f4');
+
+  function startPagamento() {
+    fetch('https://api.mercadopago.com/checkout/preferences', {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer APP_USR-6372813920950397-041707-d3bff240f9d62f32fe15c6945573969b-1365757693",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        items: [
+          {
+            title: "1 chance raspadinha",
+            quantity: 1,
+            currency_id: "BRL",
+            unit_price: 5
+          }
+        ],
+        back_urls: {
+          success: window.location.href + "#raspadinha",
+          failure: window.location.href,
+          pending: window.location.href
+        },
+        auto_return: "approved"
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      window.location.href = data.init_point;
+    });
+  }
+
+  if (window.location.hash === "#raspadinha") {
+    iniciarRaspadinha();
+  }
+
+  function iniciarRaspadinha() {
+    document.getElementById('inicio').style.display = 'none';
+    document.getElementById('raspadinha').style.display = 'block';
+
+    const grid = document.getElementById('grid');
+    const resultado = document.getElementById('resultado');
+    const comprarMais = document.getElementById('comprarMais');
+
+    const simbolos = ['👕', '🔥', '✨'];
+    const sorteio = [];
+
+    for (let i = 0; i < 9; i++) {
+      const s = simbolos[Math.floor(Math.random() * simbolos.length)];
+      sorteio.push(s);
+    }
+
+    grid.innerHTML = '';
+    grid.style.display = 'grid';
+
+    let raspadas = 0;
+    const reveladas = {};
+
+    for (let i = 0; i < 9; i++) {
+      const cell = document.createElement('div');
+      cell.classList.add('cell');
+      cell.textContent = sorteio[i];
+      cell.onclick = () => {
+        if (!cell.classList.contains('scratched')) {
+          cell.classList.add('scratched');
+          raspadas++;
+          reveladas[sorteio[i]] = (reveladas[sorteio[i]] || 0) + 1;
+
+          if (raspadas === 9) {
+            let ganhou = false;
+            for (const simbolo in reveladas) {
+              if (reveladas[simbolo] >= 3) {
+                resultado.textContent = `Você ganhou com "${simbolo}"!`;
+                ganhou = true;
+              }
+            }
+            if (!ganhou) {
+              resultado.textContent = "Não foi dessa vez. Tente novamente!";
+            }
+            comprarMais.style.display = 'inline-block';
+          }
+        }
+      };
+      grid.appendChild(cell);
+    }
+  }
+
+  function voltarInicio() {
+    location.href = "#";
+    location.reload();
+  }
+</script>
+
 </body>
 </html>
