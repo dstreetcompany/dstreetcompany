@@ -1,148 +1,128 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DStreet Roleta Premiada</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Raspadinha DSTREET</title>
   <style>
     body {
-      margin: 0;
-      background: url('https://dstreetcompany.vercel.app/bg-sacolas.png') no-repeat center center fixed;
-      background-size: cover;
-      font-family: 'Orbitron', sans-serif;
+      background: #0a0a0a;
       color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    h1 {
+      color: #FFD700;
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    #grid {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      grid-gap: 10px;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+
+    .cell {
+      width: 100px;
+      height: 100px;
+      background-color: #999;
+      border: 2px solid #fff;
+      font-size: 2rem;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100vh;
-    }
-    .logo {
-      width: 200px;
-      margin-bottom: 10px;
-    }
-    h1 {
-      font-size: 2.5em;
-      margin: 10px 0;
-      text-shadow: 0 0 10px #FFD700;
-    }
-    #wheel {
-      width: 300px;
-      height: 300px;
-      border-radius: 50%;
-      border: 10px solid gold;
-      box-shadow: 0 0 20px gold;
-      position: relative;
-    }
-    #wheel canvas {
-      border-radius: 50%;
-    }
-    #pointer {
-      position: absolute;
-      top: -30px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 0; 
-      height: 0; 
-      border-left: 20px solid transparent;
-      border-right: 20px solid transparent;
-      border-bottom: 30px solid gold;
-    }
-    .btn-girar {
-      margin-top: 20px;
-      padding: 15px 40px;
-      font-size: 1.5em;
-      color: gold;
-      background: #000;
-      border: 3px solid gold;
-      border-radius: 10px;
-      text-shadow: 0 0 5px #FFD700;
-      box-shadow: 0 0 15px #00f0ff;
       cursor: pointer;
+      user-select: none;
     }
-    .resultado {
-      margin-top: 20px;
-      font-size: 1.5em;
-      color: #00f0ff;
-      text-shadow: 0 0 10px #00f0ff;
+
+    .revealed {
+      background-color: #fff;
+      color: #000;
+      cursor: default;
+    }
+
+    #result {
+      margin-top: 2rem;
+      font-size: 1.5rem;
+      color: #00FF99;
     }
   </style>
 </head>
 <body>
-  <img src="https://dstreetcompany.vercel.app/logo.png" alt="DSTREET Logo" class="logo">
-  <h1>DSTREET COMPANY</h1>
-  <div id="wheel">
-    <div id="pointer"></div>
-    <canvas id="canvas" width="300" height="300"></canvas>
-  </div>
-  <button class="btn-girar" onclick="girarRoleta()">GIRAR</button>
-  <div class="resultado" id="resultado"></div>
-
-  <audio id="tick-sound" src="https://cdn.pixabay.com/audio/2022/03/15/audio_11b6e31766.mp3"></audio>
+  <h1>RASPE E GANHE COM A DSTREET</h1>
+  <div id="grid"></div>
+  <div id="result"></div>
 
   <script>
-    const canvas = document.getElementById("canvas");
-    const ctx = canvas.getContext("2d");
-    const segmentos = ["Ganhou 10 camisetas", "Tente +1 vez", "Ganhou 5 camisetas", "Tente +1 vez", "Ganhou 3 camisetas", "Ganhou 3 camisetas"];
-    const cores = ["#111", "#a00", "#111", "#a00", "#111", "#a00"];
-    let anguloInicial = 0;
-    const somTick = document.getElementById("tick-sound");
+    const premios = ["👕", "🎒", "☹️", "☹️", "☹️"];
+    let grid = [];
+    let revealedCount = 0;
+    let revealedValues = [];
 
-    function desenharRoleta() {
-      const raio = canvas.width / 2;
-      const angulo = 2 * Math.PI / segmentos.length;
+    const embaralhar = (arr) => arr.sort(() => Math.random() - 0.5);
 
-      for (let i = 0; i < segmentos.length; i++) {
-        const inicio = anguloInicial + i * angulo;
-        ctx.beginPath();
-        ctx.fillStyle = cores[i];
-        ctx.moveTo(raio, raio);
-        ctx.arc(raio, raio, raio, inicio, inicio + angulo);
-        ctx.fill();
+    function gerarGrid() {
+      const valores = [];
+      let simboloPremio = premios[Math.floor(Math.random() * 2)]; // 👕 ou 🎒
+      for (let i = 0; i < 9; i++) {
+        valores.push(simboloPremio);
+      }
 
-        ctx.save();
-        ctx.translate(raio, raio);
-        ctx.rotate(inicio + angulo / 2);
-        ctx.textAlign = "right";
-        ctx.fillStyle = "white";
-        ctx.font = "bold 14px Orbitron";
-        ctx.fillText(segmentos[i], raio - 10, 10);
-        ctx.restore();
+      // trocar posições aleatórias por ☹️
+      for (let i = 0; i < 6; i++) {
+        valores[Math.floor(Math.random() * 9)] = "☹️";
+      }
+
+      grid = embaralhar(valores);
+
+      const gridEl = document.getElementById("grid");
+      gridEl.innerHTML = "";
+
+      grid.forEach((valor, index) => {
+        const cell = document.createElement("div");
+        cell.classList.add("cell");
+        cell.dataset.index = index;
+        cell.addEventListener("click", raspar);
+        gridEl.appendChild(cell);
+      });
+    }
+
+    function raspar(e) {
+      const cell = e.target;
+      const index = cell.dataset.index;
+
+      if (cell.classList.contains("revealed")) return;
+
+      const valor = grid[index];
+      cell.textContent = valor;
+      cell.classList.add("revealed");
+
+      revealedCount++;
+      revealedValues.push(valor);
+
+      if (revealedCount === 9) verificarPremio();
+    }
+
+    function verificarPremio() {
+      const counts = {};
+      revealedValues.forEach(v => counts[v] = (counts[v] || 0) + 1);
+      
+      const premio = Object.entries(counts).find(([chave, valor]) => valor >= 3 && chave !== "☹️");
+      const result = document.getElementById("result");
+
+      if (premio) {
+        result.textContent = `Parabéns! Você ganhou 10 ${premio[0] === "👕" ? "CAMISAS" : "MOCHILAS"}!`;
+      } else {
+        result.textContent = "Tente novamente!";
       }
     }
 
-    function girarRoleta() {
-      const resultadoDiv = document.getElementById("resultado");
-      resultadoDiv.textContent = "";
-
-      const giros = Math.floor(Math.random() * 3) + 5; // entre 5 e 7 giros
-      const anguloFinal = anguloInicial + giros * 2 * Math.PI + Math.random() * 2 * Math.PI;
-      let inicio = null;
-
-      function animar(timestamp) {
-        if (!inicio) inicio = timestamp;
-        const progresso = timestamp - inicio;
-        const duracao = 5000;
-        const t = progresso / duracao;
-        const easeOut = 1 - Math.pow(1 - t, 3);
-        anguloInicial = anguloInicial + (anguloFinal - anguloInicial) * easeOut;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        desenharRoleta();
-
-        if (progresso < duracao) {
-          if (Math.floor(progresso / 100) % 2 === 0) somTick.play();
-          requestAnimationFrame(animar);
-        } else {
-          const indice = segmentos.length - Math.floor((anguloInicial % (2 * Math.PI)) / (2 * Math.PI / segmentos.length)) - 1;
-          resultadoDiv.textContent = segmentos[indice];
-        }
-      }
-
-      requestAnimationFrame(animar);
-    }
-
-    desenharRoleta();
+    gerarGrid();
   </script>
 </body>
 </html>
