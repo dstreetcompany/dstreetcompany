@@ -1,128 +1,162 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Raspadinha DSTREET</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DStreet Raspadinha</title>
   <style>
     body {
-      background: #0a0a0a;
-      color: white;
+      margin: 0;
+      background: #111;
       font-family: Arial, sans-serif;
+      color: white;
       text-align: center;
-      padding: 2rem;
     }
 
-    h1 {
-      color: #FFD700;
-      font-size: 2rem;
-      margin-bottom: 1rem;
+    .led-title {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #ffea00;
+      text-shadow: 0 0 10px #ffea00, 0 0 20px #ffea00, 0 0 30px #ffea00;
+      margin-top: 30px;
     }
 
-    #grid {
+    .blinking-impact {
+      margin-top: 10px;
+      font-size: 1.4rem;
+      color: #00ffcc;
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .chances {
+      margin: 20px auto;
+      color: #fff;
+      font-size: 1rem;
+    }
+
+    .grid {
       display: grid;
       grid-template-columns: repeat(3, 100px);
       grid-gap: 10px;
       justify-content: center;
-      margin-top: 2rem;
+      margin: 20px auto;
     }
 
     .cell {
       width: 100px;
       height: 100px;
-      background-color: #999;
-      border: 2px solid #fff;
+      background: #222;
+      border: 2px solid #444;
       font-size: 2rem;
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
       cursor: pointer;
-      user-select: none;
+      color: #111;
+      font-weight: bold;
     }
 
     .revealed {
-      background-color: #fff;
-      color: #000;
+      color: white;
       cursor: default;
+      background: #fff;
     }
 
-    #result {
-      margin-top: 2rem;
-      font-size: 1.5rem;
-      color: #00FF99;
+    .message {
+      margin-top: 20px;
+      font-size: 1.2rem;
+      color: #00ff00;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      margin-top: 10px;
+      cursor: pointer;
+      background: #ffea00;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <h1>RASPE E GANHE COM A DSTREET</h1>
-  <div id="grid"></div>
-  <div id="result"></div>
+  <div class="led-title">DSTREET COMPANY</div>
+  <div class="blinking-impact">ACHE 3 FIGURAS IGUAIS E GANHE O PRÊMIO!</div>
+
+  <div class="chances" id="chance-display">Chances restantes: 0</div>
+  <div class="grid" id="grid"></div>
+  <div class="message" id="message"></div>
+
+  <button onclick="comprar(5)">Pagar R$5,00 (1 chance)</button>
+  <button onclick="comprar(10)">Pagar R$10,00 (3 chances)</button>
+  <button onclick="comprar(20)">Pagar R$20,00 (6 chances)</button>
 
   <script>
-    const premios = ["👕", "🎒", "☹️", "☹️", "☹️"];
-    let grid = [];
-    let revealedCount = 0;
-    let revealedValues = [];
+    let chances = 0;
+    let revealed = 0;
+    let cells = [];
 
-    const embaralhar = (arr) => arr.sort(() => Math.random() - 0.5);
+    function comprar(valor) {
+      if (valor === 5) chances += 1;
+      if (valor === 10) chances += 3;
+      if (valor === 20) chances += 6;
+      updateChances();
+      novaRodada();
+    }
 
-    function gerarGrid() {
-      const valores = [];
-      let simboloPremio = premios[Math.floor(Math.random() * 2)]; // 👕 ou 🎒
+    function updateChances() {
+      document.getElementById("chance-display").textContent = `Chances restantes: ${chances}`;
+    }
+
+    function novaRodada() {
+      const grid = document.getElementById("grid");
+      grid.innerHTML = "";
+      revealed = 0;
+      cells = [];
+
+      const valores = Array(9).fill("❌");
+      const pos = Math.floor(Math.random() * 9);
+      valores[pos] = "👕";
+
       for (let i = 0; i < 9; i++) {
-        valores.push(simboloPremio);
+        const div = document.createElement("div");
+        div.className = "cell";
+        div.textContent = "DSTREET";
+        div.onclick = () => revelar(div, valores[i]);
+        grid.appendChild(div);
+        cells.push(div);
       }
 
-      // trocar posições aleatórias por ☹️
-      for (let i = 0; i < 6; i++) {
-        valores[Math.floor(Math.random() * 9)] = "☹️";
-      }
-
-      grid = embaralhar(valores);
-
-      const gridEl = document.getElementById("grid");
-      gridEl.innerHTML = "";
-
-      grid.forEach((valor, index) => {
-        const cell = document.createElement("div");
-        cell.classList.add("cell");
-        cell.dataset.index = index;
-        cell.addEventListener("click", raspar);
-        gridEl.appendChild(cell);
-      });
+      document.getElementById("message").textContent = "";
     }
 
-    function raspar(e) {
-      const cell = e.target;
-      const index = cell.dataset.index;
+    function revelar(div, valor) {
+      if (div.classList.contains("revealed") || revealed >= 3) return;
+      div.textContent = valor;
+      div.classList.add("revealed");
+      revealed++;
 
-      if (cell.classList.contains("revealed")) return;
+      if (revealed === 3) {
+        chances--;
+        updateChances();
+        const acertos = cells.filter(c => c.classList.contains("revealed") && c.textContent === "👕").length;
+        if (acertos === 3) {
+          document.getElementById("message").textContent = "Parabéns! Você ganhou 10 CAMISAS!";
+        } else {
+          document.getElementById("message").textContent = "Tente novamente!";
+        }
 
-      const valor = grid[index];
-      cell.textContent = valor;
-      cell.classList.add("revealed");
-
-      revealedCount++;
-      revealedValues.push(valor);
-
-      if (revealedCount === 9) verificarPremio();
-    }
-
-    function verificarPremio() {
-      const counts = {};
-      revealedValues.forEach(v => counts[v] = (counts[v] || 0) + 1);
-      
-      const premio = Object.entries(counts).find(([chave, valor]) => valor >= 3 && chave !== "☹️");
-      const result = document.getElementById("result");
-
-      if (premio) {
-        result.textContent = `Parabéns! Você ganhou 10 ${premio[0] === "👕" ? "CAMISAS" : "MOCHILAS"}!`;
-      } else {
-        result.textContent = "Tente novamente!";
+        if (chances > 0) {
+          setTimeout(novaRodada, 1500);
+        }
       }
     }
-
-    gerarGrid();
   </script>
 </body>
 </html>
