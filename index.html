@@ -2,162 +2,144 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>DSTREET Raspadinha</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DStreet Raspadinha</title>
   <style>
     body {
-      background: black;
+      background-color: #000;
       color: white;
       font-family: Arial, sans-serif;
       text-align: center;
-      padding: 30px;
+      margin: 0;
+      padding: 0;
     }
-
     h1 {
-      font-size: 32px;
-      color: #fffd42;
-      text-shadow: 0 0 10px #fffd42;
+      color: yellow;
+      text-shadow: 0 0 10px yellow;
+      margin-top: 20px;
     }
-
     h2 {
-      font-size: 22px;
-      color: #00eaff;
-      margin-top: -10px;
-    }
-
-    .button {
-      background: yellow;
-      border: none;
-      color: black;
-      font-size: 18px;
-      padding: 15px;
-      margin: 15px auto;
-      width: 80%;
-      border-radius: 12px;
-      cursor: pointer;
-    }
-
-    .pix-code {
-      background: white;
-      color: black;
-      margin: 10px auto;
-      padding: 10px;
-      width: 90%;
-      border-radius: 10px;
-      font-size: 14px;
-    }
-
-    .copiado {
-      color: lightgreen;
+      color: cyan;
       margin-top: 5px;
-      font-size: 14px;
     }
-
-    #scratch-section {
+    #paymentButtons button {
+      background-color: yellow;
+      color: black;
+      border: none;
+      padding: 15px 20px;
+      margin: 10px;
+      font-size: 18px;
+      cursor: pointer;
+      border-radius: 8px;
+    }
+    #paymentCode {
+      margin-top: 20px;
+      color: lightgreen;
+      font-size: 18px;
+    }
+    #scratchScreen, #paymentScreen {
       display: none;
-      margin-top: 30px;
     }
-
     .grid {
       display: grid;
-      grid-template-columns: repeat(3, 80px);
+      grid-template-columns: repeat(3, 100px);
       gap: 10px;
       justify-content: center;
+      margin: 20px auto;
     }
-
     .cell {
-      background: gray;
-      width: 80px;
-      height: 80px;
-      font-size: 30px;
+      background: white;
+      width: 100px;
+      height: 100px;
+      font-size: 40px;
       display: flex;
-      align-items: center;
       justify-content: center;
-      border-radius: 10px;
+      align-items: center;
       cursor: pointer;
-      user-select: none;
     }
-
-    #whatsapp {
-      color: #00ff88;
-      font-weight: bold;
+    #result {
+      font-size: 20px;
+      color: lime;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
-  <h1>DSTREET COMPANY</h1>
-  <h2>ACHE 3 FIGURAS IGUAIS E GANHE O PRÊMIO!</h2>
-  <p>Chances restantes: <span id="chances">0</span></p>
-
-  <button class="button" onclick="registrarClique('5')">Pagar R$5,00 (1 chance)</button>
-  <div class="pix-code" id="pix5">
-    00020126930014br.gov.bcb.pix0136a7072ee1-b3f4-465a-a0cf-a348646a275f02311 chance de levar 10 camisetas 52040000530398654045.005802BR5924David Fonsin Cavalcanti 6008Brasilia 62240520daqr1365757693274784630470DC
-    <div class="copiado">Código Pix copiado!</div>
-  </div>
-
-  <button class="button" onclick="registrarClique('10')">Pagar R$10,00 (3 chances)</button>
-  <div class="pix-code" id="pix10">
-    00020126940014br.gov.bcb.pix0136a7072ee1-b3f4-465a-a0cf-a348646a275f02323 chances de levar 10 camisetas 52040000530398654015.005802BR5924David Fonsin Cavalcanti 6008Brasilia62240520daqr13657576934012906304C907
-    <div class="copiado">Código Pix copiado!</div>
-  </div>
-
-  <button class="button" onclick="registrarClique('20')">Pagar R$20,00 (6 chances)</button>
-  <div class="pix-code" id="pix20">
-    00020126940014br.gov.bcb.pix0136a7072ee1-b3f4-465a-a0cf-a348646a275f02326 chances de levar 10 camisetas 520400005303986540520.005802BR5924David Fonsin Cavalcanti 6008Brasilia62240520daqr13657576935260736304DE32
-    <div class="copiado">Código Pix copiado!</div>
-  </div>
-
-  <p style="margin-top: 30px;">APÓS O PAGAMENTO, ENVIE O COMPROVANTE PELO <a id="whatsapp" href="https://wa.me/5511913304443" target="_blank">WHATSAPP</a>.<br>
-  VOCÊ RECEBERÁ O LINK COM SUAS CHANCES PRONTAS PARA USAR!</p>
-
-  <div id="scratch-section">
-    <h2>Raspadinha liberada!</h2>
-    <div class="grid" id="scratch-grid">
-      <!-- Geração dinâmica -->
+  <div id="homeScreen">
+    <h1>DSTREET COMPANY</h1>
+    <h2>ACHE 3 FIGURAS IGUAIS E GANHE O PRÊMIO!</h2>
+    <p id="chances">Chances restantes: 0</p>
+    <div id="paymentButtons">
+      <button onclick="handlePaymentClick(5, 1)">Pagar R$5,00 (1 chance)</button>
+      <button onclick="handlePaymentClick(10, 3)">Pagar R$10,00 (3 chances)</button>
+      <button onclick="handlePaymentClick(20, 6)">Pagar R$20,00 (6 chances)</button>
     </div>
+    <div id="paymentCode"></div>
+  </div>
+
+  <div id="scratchScreen">
+    <h1>RASPE E GANHE COM A DSTREET</h1>
+    <div class="grid" id="grid"></div>
+    <p id="result"></p>
   </div>
 
   <script>
-    const chancesPorValor = { '5': 1, '10': 3, '20': 6 };
-    const cliquesNecessarios = 10;
-    const cliquesRegistrados = { '5': 0, '10': 0, '20': 0 };
-    let chancesRestantes = 0;
+    let chances = 0;
+    let clickCounts = { 5: 0, 10: 0, 20: 0 };
 
-    function registrarClique(valor) {
-      cliquesRegistrados[valor]++;
-      if (cliquesRegistrados[valor] === cliquesNecessarios) {
-        chancesRestantes += chancesPorValor[valor];
-        document.getElementById('chances').textContent = chancesRestantes;
-        document.getElementById('scratch-section').style.display = 'block';
-        alert(`Raspadinha liberada com ${chancesPorValor[valor]} chance(s)!`);
+    function handlePaymentClick(value, givenChances) {
+      // Mostrar código de pagamento
+      const pixKey = `Chave Pix para R$${value},00: pix@dstreet.com`;
+      document.getElementById('paymentCode').innerText = pixKey;
+
+      // Incrementar contador de clique
+      clickCounts[value]++;
+
+      // Verificar se clicou 5 vezes no mesmo botão
+      if (clickCounts[value] === 5) {
+        chances = givenChances;
+        document.getElementById("chances").innerText = `Chances restantes: ${chances}`;
+        startGame();
       }
     }
 
-    // Raspadinha básica simulada
-    const figuras = ["👕", "🔥", "⭐", "🎁"];
-    const grid = document.getElementById("scratch-grid");
+    function startGame() {
+      document.getElementById("homeScreen").style.display = "none";
+      document.getElementById("scratchScreen").style.display = "block";
+      document.getElementById("result").innerText = "";
 
-    function gerarRaspadinha() {
+      const emojis = ["👕", "☹️"];
+      const grid = document.getElementById("grid");
       grid.innerHTML = "";
+
+      const cells = [];
       for (let i = 0; i < 9; i++) {
         const cell = document.createElement("div");
         cell.className = "cell";
-        const figura = figuras[Math.floor(Math.random() * figuras.length)];
-        cell.textContent = figura;
-        cell.style.color = "transparent";
-        cell.addEventListener("click", function () {
-          if (chancesRestantes <= 0) return;
-          cell.style.color = "white";
-          chancesRestantes--;
-          document.getElementById("chances").textContent = chancesRestantes;
-        });
+        cell.innerText = "";
+        cell.onclick = () => reveal(cell);
         grid.appendChild(cell);
+        cells.push(cell);
+      }
+
+      function reveal(cell) {
+        if (chances <= 0 || cell.innerText !== "") return;
+
+        const result = Math.random() < 0.4 ? emojis[0] : emojis[1];
+        cell.innerText = result;
+        chances--;
+        document.getElementById("chances").innerText = `Chances restantes: ${chances}`;
+
+        // Verificar se ganhou
+        const all = cells.map(c => c.innerText);
+        const shirtCount = all.filter(e => e === "👕").length;
+        if (shirtCount >= 3) {
+          document.getElementById("result").innerText = "Parabéns! Você ganhou 10 CAMISAS!";
+        } else if (chances === 0) {
+          document.getElementById("result").innerText = "Não foi dessa vez. Tente novamente!";
+        }
       }
     }
-
-    setInterval(() => {
-      if (chancesRestantes > 0) gerarRaspadinha();
-    }, 1000);
   </script>
 </body>
 </html>
