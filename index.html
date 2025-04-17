@@ -1,92 +1,92 @@
-!DOCTYPE html>
-<html lang="pt-br">
+html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>DStreet Raspadinha</title>
+  <title>Raspadinha DStreet</title>
   <style>
     body {
-      background-color: #111;
+      margin: 0;
+      background: black;
       color: white;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 40px 20px;
+      font-family: 'Arial Black', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
     }
 
     h1 {
-      font-size: 2.5em;
-      margin-bottom: 20px;
-    }
-
-    .regras {
-      font-size: 1.2em;
-      margin: 20px 0;
-    }
-
-    .btn-comprar {
-      background-color: #FFD700;
-      color: black;
-      font-weight: bold;
-      font-size: 1.1em;
-      padding: 15px 25px;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-
-    .frase-impacto {
-      font-size: 1.5em;
-      font-weight: bold;
       color: #FFD700;
-      margin-top: 30px;
-      animation: piscar 1s infinite;
+      font-size: 2rem;
+      text-align: center;
+      text-shadow: 0 0 5px #FFD700, 0 0 10px #FF4500, 0 0 20px #FF4500;
+      animation: piscar 1s infinite alternate;
     }
 
     @keyframes piscar {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
+      0% {opacity: 1;}
+      100% {opacity: 0.6;}
     }
 
-    .exemplos {
-      margin-top: 30px;
-      font-size: 1.3em;
-      line-height: 1.8em;
-    }
-
-    .boa-sorte {
-      margin-top: 40px;
-      font-size: 1.8em;
+    .btn-comprar {
+      background: #FFD700;
+      color: black;
+      font-size: 1.5rem;
       font-weight: bold;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 10px;
+      margin-top: 40px;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 0 15px #FFD700;
+      transition: transform 0.2s ease;
+    }
+
+    .btn-comprar:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 25px #FFA500;
+    }
+
+    .exemplo {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 1.2rem;
+      line-height: 1.6;
+    }
+
+    .exemplo span {
+      display: block;
+      margin: 10px 0;
+    }
+
+    .exemplo .ganhou {
+      color: #00FF00;
+      font-weight: bold;
+      font-size: 1.3rem;
+    }
+
+    .exemplo .perdeu {
+      color: #FF6347;
     }
   </style>
 </head>
 <body>
+  <h1>ACHE 3 FIGURAS IGUAIS E<br>LEVE NA HORA 10 CAMISETAS!</h1>
 
-  <h1>DStreet Raspadinha</h1>
-
-  <div class="regras">
-    <p><strong>Regras</strong></p>
-    <p>R$5 = 1 chance para raspar e ganhar até 10 camisetas!</p>
-  </div>
-
-  <a href="https://www.mercadopago.com.br/checkout/v1/redirect?pref_id=SUA_PREFERENCIA_ID_AQUI">
-    <button class="btn-comprar">COMPRAR 1 CHANCE - R$5</button>
+  <a
+    class="btn-comprar"
+    href="https://www.mercadopago.com.br/checkout/v1/redirect?pref_id=226260096-cb3cd6dd-d3e7-4a5e-a8f8-018e22c32c6c"
+    target="_blank"
+  >
+    COMPRAR 1 CHANCE - R$5
   </a>
 
-  <div class="frase-impacto">
-    ACHE 3 FIGURAS IGUAIS E LEVE NA HORA 10 CAMISETAS!
+  <div class="exemplo">
+    <span class="perdeu">❌❌❌ = TENTE NOVAMENTE</span>
+    <span class="ganhou">👕👕👕 = GANHOU 10 CAMISETAS! 🎊</span>
   </div>
-
-  <div class="exemplos">
-    ❌❌❌: TENTE NOVAMENTE<br>
-    👕👕👕: GANHOU 10 CAMISETAS! 🎊
-  </div>
-
-  <div class="boa-sorte">
-    Boa sorte!
-  </div>
-
 </body>
 </html>
-
