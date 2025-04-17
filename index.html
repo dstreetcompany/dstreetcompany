@@ -1,145 +1,93 @@
-<!DOCTYPE html>
-<html lang="pt-br">
+!DOCTYPE html>
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DStreet Raspadinha</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Raspadinha DSTREET</title>
   <style>
     body {
-      background-color: #000;
-      color: white;
-      font-family: Arial, sans-serif;
-      text-align: center;
       margin: 0;
-      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: black;
+      color: white;
+      text-align: center;
+      padding: 20px;
     }
+
     h1 {
+      font-size: 32px;
       color: yellow;
       text-shadow: 0 0 10px yellow;
-      margin-top: 20px;
     }
+
     h2 {
+      font-size: 24px;
       color: cyan;
-      margin-top: 5px;
     }
-    #paymentButtons button {
+
+    button {
       background-color: yellow;
       color: black;
       border: none;
-      padding: 15px 20px;
+      padding: 12px 20px;
       margin: 10px;
       font-size: 18px;
       cursor: pointer;
       border-radius: 8px;
+      font-weight: bold;
     }
-    #paymentCode {
+
+    #pixInfo {
       margin-top: 20px;
-      color: lightgreen;
-      font-size: 18px;
-    }
-    #scratchScreen, #paymentScreen {
-      display: none;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(3, 100px);
-      gap: 10px;
-      justify-content: center;
-      margin: 20px auto;
-    }
-    .cell {
-      background: white;
-      width: 100px;
-      height: 100px;
-      font-size: 40px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-    }
-    #result {
-      font-size: 20px;
       color: lime;
-      margin-top: 20px;
+      font-size: 16px;
+      font-weight: bold;
+      display: none;
     }
   </style>
 </head>
 <body>
-  <div id="homeScreen">
-    <h1>DSTREET COMPANY</h1>
-    <h2>ACHE 3 FIGURAS IGUAIS E GANHE O PRÊMIO!</h2>
-    <p id="chances">Chances restantes: 0</p>
-    <div id="paymentButtons">
-      <button onclick="handlePaymentClick(5, 1)">Pagar R$5,00 (1 chance)</button>
-      <button onclick="handlePaymentClick(10, 3)">Pagar R$10,00 (3 chances)</button>
-      <button onclick="handlePaymentClick(20, 6)">Pagar R$20,00 (6 chances)</button>
-    </div>
-    <div id="paymentCode"></div>
-  </div>
+  <h1>DSTREET COMPANY</h1>
+  <h2>ACHE 3 FIGURAS IGUAIS E GANHE O PRÊMIO!</h2>
+  <p id="chances">Chances restantes: 0</p>
 
-  <div id="scratchScreen">
-    <h1>RASPE E GANHE COM A DSTREET</h1>
-    <div class="grid" id="grid"></div>
-    <p id="result"></p>
-  </div>
+  <button id="pay5">Pagar R$5,00 (1 chance)</button><br>
+  <button id="pay10">Pagar R$10,00 (3 chances)</button><br>
+  <button id="pay20">Pagar R$20,00 (6 chances)</button>
+
+  <div id="pixInfo"></div>
 
   <script>
     let chances = 0;
-    let clickCounts = { 5: 0, 10: 0, 20: 0 };
 
-    function handlePaymentClick(value, givenChances) {
-      // Mostrar código de pagamento
-      const pixKey = `Chave Pix para R$${value},00: pix@dstreet.com`;
-      document.getElementById('paymentCode').innerText = pixKey;
-
-      // Incrementar contador de clique
-      clickCounts[value]++;
-
-      // Verificar se clicou 5 vezes no mesmo botão
-      if (clickCounts[value] === 5) {
-        chances = givenChances;
-        document.getElementById("chances").innerText = `Chances restantes: ${chances}`;
-        startGame();
-      }
+    function updateChances() {
+      document.getElementById("chances").innerText = `Chances restantes: ${chances}`;
     }
 
-    function startGame() {
-      document.getElementById("homeScreen").style.display = "none";
-      document.getElementById("scratchScreen").style.display = "block";
-      document.getElementById("result").innerText = "";
-
-      const emojis = ["👕", "☹️"];
-      const grid = document.getElementById("grid");
-      grid.innerHTML = "";
-
-      const cells = [];
-      for (let i = 0; i < 9; i++) {
-        const cell = document.createElement("div");
-        cell.className = "cell";
-        cell.innerText = "";
-        cell.onclick = () => reveal(cell);
-        grid.appendChild(cell);
-        cells.push(cell);
-      }
-
-      function reveal(cell) {
-        if (chances <= 0 || cell.innerText !== "") return;
-
-        const result = Math.random() < 0.4 ? emojis[0] : emojis[1];
-        cell.innerText = result;
-        chances--;
-        document.getElementById("chances").innerText = `Chances restantes: ${chances}`;
-
-        // Verificar se ganhou
-        const all = cells.map(c => c.innerText);
-        const shirtCount = all.filter(e => e === "👕").length;
-        if (shirtCount >= 3) {
-          document.getElementById("result").innerText = "Parabéns! Você ganhou 10 CAMISAS!";
-        } else if (chances === 0) {
-          document.getElementById("result").innerText = "Não foi dessa vez. Tente novamente!";
-        }
-      }
+    function mostrarChavePix(valor) {
+      const pixInfo = document.getElementById("pixInfo");
+      pixInfo.style.display = "block";
+      pixInfo.innerText = `Chave Pix para R$${valor},00: pix@dstreet.com`;
     }
+
+    document.getElementById("pay5").addEventListener("click", () => {
+      chances += 1;
+      updateChances();
+      mostrarChavePix(5);
+    });
+
+    document.getElementById("pay10").addEventListener("click", () => {
+      chances += 3;
+      updateChances();
+      mostrarChavePix(10);
+    });
+
+    document.getElementById("pay20").addEventListener("click", () => {
+      chances += 6;
+      updateChances();
+      mostrarChavePix(20);
+    });
   </script>
 </body>
 </html>
+
