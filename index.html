@@ -2,46 +2,69 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>DStreet Raspadinha</title>
   <style>
     body {
-      margin: 0;
-      padding: 0;
-      background-color: #0e0e0e;
+      background-color: #000;
       color: white;
       font-family: Arial, sans-serif;
       text-align: center;
+      padding: 20px;
     }
+
     h1 {
       color: yellow;
-      font-size: 2em;
-      margin-top: 20px;
       text-shadow: 0 0 10px yellow;
     }
+
     h2 {
-      color: turquoise;
-      margin-bottom: 10px;
+      color: cyan;
     }
-    .btn {
+
+    .button {
       background-color: yellow;
       color: black;
-      border: none;
-      border-radius: 8px;
-      padding: 15px 20px;
+      padding: 15px;
       margin: 10px;
-      font-size: 1.1em;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
       cursor: pointer;
       width: 80%;
       max-width: 300px;
     }
-    .btn:active {
-      background-color: gold;
+
+    .pix-code {
+      display: none;
+      background: #fff;
+      color: #000;
+      margin: 10px auto;
+      padding: 10px;
+      width: 90%;
+      max-width: 400px;
+      border-radius: 8px;
+      word-break: break-all;
+      font-size: 14px;
     }
-    .info {
-      margin-top: 20px;
-      font-size: 0.95em;
-      color: #ccc;
+
+    .pix-success {
+      color: lightgreen;
+      margin-top: 5px;
+    }
+
+    a {
+      color: lightgreen;
+      font-weight: bold;
+    }
+
+    #scratch-screen {
+      display: none;
+      background: #111;
+      color: white;
+      padding: 30px;
+      margin-top: 30px;
+      border-radius: 15px;
     }
   </style>
 </head>
@@ -50,52 +73,54 @@
   <h2>ACHE 3 FIGURAS IGUAIS E GANHE O PRÊMIO!</h2>
   <p id="chances">Chances restantes: 0</p>
 
-  <button class="btn" ontouchstart="startHold(event, '5')" ontouchend="endHold()" onmousedown="startHold(event, '5')" onmouseup="endHold()">Pagar R$5,00 (1 chance)</button>
-  <button class="btn" ontouchstart="startHold(event, '10')" ontouchend="endHold()" onmousedown="startHold(event, '10')" onmouseup="endHold()">Pagar R$10,00 (3 chances)</button>
-  <button class="btn" ontouchstart="startHold(event, '20')" ontouchend="endHold()" onmousedown="startHold(event, '20')" onmouseup="endHold()">Pagar R$20,00 (6 chances)</button>
+  <button class="button" onclick="showPix(5)">Pagar R$5,00 (1 chance)</button>
+  <div class="pix-code" id="pix5"></div>
 
-  <p class="info">
-    APÓS O PAGAMENTO, ENVIE O COMPROVANTE PELO <a href="https://wa.me/5511913304443" target="_blank" style="color:lightgreen; text-decoration: underline;">WHATSAPP</a>. <br />
-    VOCÊ RECEBERÁ O LINK COM SUAS CHANCES PRONTAS PARA USAR!
-  </p>
+  <button class="button" onclick="showPix(10)">Pagar R$10,00 (3 chances)</button>
+  <div class="pix-code" id="pix10"></div>
+
+  <button class="button" onclick="showPix(20)">Pagar R$20,00 (6 chances)</button>
+  <div class="pix-code" id="pix20"></div>
+
+  <p style="margin-top: 20px;">APÓS O PAGAMENTO, ENVIE O COMPROVANTE PELO <a href="https://wa.me/5511913304443" target="_blank">WHATSAPP</a>.<br>VOCÊ RECEBERÁ O LINK COM SUAS CHANCES PRONTAS PARA USAR!</p>
+
+  <div id="scratch-screen">
+    <h2>RASPADINHA LIBERADA!</h2>
+    <p>Agora você pode jogar!</p>
+    <!-- Aqui entra o componente da raspadinha quando for integrado -->
+  </div>
 
   <script>
+    const pixCodes = {
+      5: "00020126930014br.gov.bcb.pix0136a7072ee1-b3f4-465a-a0cf-a348646a275f02311 chance de levar 10 camisetas 52040000530398654045.005802BR5924David Fonsin Cavalcanti 6008Brasilia62240520daqr1365757693274784630470DC",
+      10: "00020126940014br.gov.bcb.pix0136a7072ee1-b3f4-465a-a0cf-a348646a275f02323 chances de levar 10 camisetas!520400005303986540510.005802BR5924David Fonsin Cavalcanti 6008Brasilia62240520daqr13657576934012906304C907",
+      20: "00020126940014br.gov.bcb.pix0136a7072ee1-b3f4-465a-a0cf-a348646a275f02326 chances de levar 10 camisetas 520400005303986540520.005802BR5924David Fonsin Cavalcanti 6008Brasilia62240520daqr13657576935260736304DE32"
+    };
+
+    function showPix(value) {
+      const pixText = pixCodes[value];
+      const elementId = `pix${value}`;
+      const pixDiv = document.getElementById(elementId);
+      pixDiv.style.display = "block";
+      pixDiv.innerHTML = pixText;
+
+      // Copiar para área de transferência imediatamente
+      navigator.clipboard.writeText(pixText).then(() => {
+        pixDiv.insertAdjacentHTML('beforeend', '<div class="pix-success">Código Pix copiado!</div>');
+      });
+    }
+
+    // Segurar por 5 segundos para liberar raspadinha
     let holdTimer;
-
-    function startHold(event, value) {
-      event.preventDefault();
+    document.body.addEventListener('touchstart', function () {
       holdTimer = setTimeout(() => {
-        liberarChances(value);
-      }, 6000); // 6 segundos
-    }
+        document.getElementById('scratch-screen').style.display = 'block';
+      }, 5000); // 5 segundos
+    });
 
-    function endHold() {
+    document.body.addEventListener('touchend', function () {
       clearTimeout(holdTimer);
-    }
-
-    function liberarChances(valor) {
-      let chances = 0;
-      let codigoPix = '';
-
-      if (valor === '5') {
-        chances = 1;
-        codigoPix = `00020126930014br.gov.bcb.pix0136a7072ee1-b3f4-465a-a0cf-a348646a275f02311 chance de levar 10 camisetas 52040000530398654045.005802BR5924David Fonsin Cavalcanti 6008Brasilia62240520daqr1365757693274784630470DC`;
-      } else if (valor === '10') {
-        chances = 3;
-        codigoPix = `00020126940014br.gov.bcb.pix0136a7072ee1-b3f4-465a-a0cf-a348646a275f02323 chances de levar 10 camisetas!520400005303986540510.005802BR5924David Fonsin Cavalcanti 6008Brasilia62240520daqr13657576934012906304C907`;
-      } else if (valor === '20') {
-        chances = 6;
-        codigoPix = `00020126940014br.gov.bcb.pix0136a7072ee1-b3f4-465a-a0cf-a348646a275f02326 chances de levar 10 camisetas 520400005303986540520.005802BR5924David Fonsin Cavalcanti 6008Brasilia62240520daqr13657576935260736304DE32`;
-      }
-
-      navigator.clipboard.writeText(codigoPix)
-        .then(() => {
-          alert(`Código Pix copiado! Envie o comprovante no WhatsApp para liberar suas ${chances} chance(s).`);
-        })
-        .catch(() => {
-          alert("Não foi possível copiar o código Pix.");
-        });
-    }
+    });
   </script>
 </body>
 </html>
