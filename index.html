@@ -1,5 +1,8 @@
+
+index.html
+
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -8,161 +11,94 @@
     body {
       background: #111;
       color: white;
-      font-family: 'Segoe UI', sans-serif;
+      font-family: Arial, sans-serif;
       text-align: center;
+      margin: 0;
       padding: 40px 20px;
     }
 
     h1 {
       font-size: 2.5em;
-      margin-bottom: 10px;
-      color: #FFD700;
-      text-shadow: 0 0 10px #FFD700;
+      color: yellow;
+      text-shadow: 0 0 15px yellow;
     }
 
-    .button {
-      background: #FFD700;
-      color: black;
-      border: none;
-      padding: 15px 30px;
+    #chanceText {
+      margin-top: 10px;
       font-size: 1.2em;
+    }
+
+    .btn {
+      background-color: #333;
+      border: none;
+      padding: 15px 25px;
+      margin: 10px auto;
+      color: white;
+      font-size: 1em;
       border-radius: 10px;
       cursor: pointer;
-      margin: 20px 10px;
+      display: block;
+      width: fit-content;
     }
 
-    .button[disabled] {
-      background: #555;
-      cursor: not-allowed;
+    .admin-buttons {
+      margin-top: 40px;
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(3, 80px);
-      grid-gap: 10px;
-      justify-content: center;
-      margin-top: 30px;
-    }
-
-    .tile {
-      background: #666;
-      width: 80px;
-      height: 80px;
-      font-size: 2em;
-      line-height: 80px;
-      border-radius: 10px;
-      cursor: pointer;
-      user-select: none;
-      transition: background 0.3s;
-    }
-
-    .tile.scratched {
-      background: white;
-      color: black;
-      cursor: default;
-    }
-
-    .result {
-      font-size: 1.5em;
-      margin-top: 30px;
-      font-weight: bold;
+    .hidden {
+      display: none;
     }
   </style>
 </head>
 <body>
 
   <h1>Raspadinha DStreet</h1>
-  <p>Você tem 1 chance de ganhar ATÉ 10 CAMISETAS!</p>
+  <p id="chanceText">Você tem <span id="chances">0</span> chance(s) de ganhar ATÉ 10 CAMISETAS!</p>
+  
+  <button id="startBtn" class="btn" disabled>Aguardando liberação...</button>
 
-  <!-- Botão de liberação -->
-  <button class="button" id="iniciarBtn" disabled>Aguardando liberação...</button>
-
-  <div id="raspadinha" style="display: none;">
-    <h2>Raspe e descubra seu prêmio!</h2>
-    <div class="grid" id="grid"></div>
-    <div class="result" id="resultadoFinal"></div>
+  <!-- Botões secretos -->
+  <div class="admin-buttons hidden" id="adminControls">
+    <button class="btn" onclick="liberarChances(1)">LIBERAR 1 CHANCE</button>
+    <button class="btn" onclick="liberarChances(4)">LIBERAR 4 CHANCES</button>
+    <button class="btn" onclick="liberarChances(8)">LIBERAR 8 CHANCES</button>
   </div>
 
   <script>
-    const emojisPremio = ["👕", "⭐", "❌"];
-    let selecionados = [];
+    let chances = 0;
+    const chancesSpan = document.getElementById('chances');
+    const startBtn = document.getElementById('startBtn');
 
-    const iniciarBtn = document.getElementById('iniciarBtn');
-    const raspadinhaDiv = document.getElementById('raspadinha');
-
-    // Você ativa manualmente no console digitando: liberarRaspadinha()
-    function liberarRaspadinha() {
-      iniciarBtn.disabled = false;
-      iniciarBtn.textContent = "INICIAR RASPADINHA";
+    function atualizarTexto() {
+      chancesSpan.innerText = chances;
+      startBtn.innerText = chances > 0 ? "Iniciar raspadinha" : "Aguardando liberação...";
+      startBtn.disabled = chances <= 0;
     }
 
-    iniciarBtn.onclick = () => {
-      iniciarBtn.style.display = 'none';
-      raspadinhaDiv.style.display = 'block';
-      iniciarRaspadinha();
-    };
-
-    function iniciarRaspadinha() {
-      const grid = document.getElementById('grid');
-      grid.innerHTML = '';
-      selecionados = [];
-
-      let items = [];
-      const premio = emojisPremio[Math.floor(Math.random() * emojisPremio.length)];
-      for (let i = 0; i < 3; i++) items.push(premio);
-      while (items.length < 9) {
-        const rand = emojisPremio[Math.floor(Math.random() * emojisPremio.length)];
-        items.push(rand);
-      }
-
-      items = items.sort(() => Math.random() - 0.5);
-
-      items.forEach((icon, index) => {
-        const tile = document.createElement('div');
-        tile.className = 'tile';
-        tile.textContent = '?';
-        tile.onclick = () => raspar(tile, icon);
-        grid.appendChild(tile);
-      });
+    function liberarChances(qtd) {
+      chances += qtd;
+      atualizarTexto();
     }
 
-    function raspar(tile, icon) {
-      if (tile.classList.contains('scratched')) return;
-
-      tile.textContent = icon;
-      tile.classList.add('scratched');
-      selecionados.push(icon);
-
-      if (selecionados.length === 9) {
-        verificarResultado();
-      }
+    // Verifica se URL tem ?admin=liberar
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get("admin") === "liberar") {
+      document.getElementById('adminControls').classList.remove("hidden");
     }
 
-    function verificarResultado() {
-      const contagem = {};
-      selecionados.forEach((item) => {
-        contagem[item] = (contagem[item] || 0) + 1;
-      });
-
-      let ganhou = false;
-      for (let item in contagem) {
-        if (contagem[item] >= 3 && item === "👕") {
-          ganhou = true;
-        }
+    // Início raspadinha
+    startBtn.addEventListener("click", () => {
+      if (chances > 0) {
+        chances--;
+        atualizarTexto();
+        alert("Aqui inicia a raspadinha...");
+        // Aqui vai o código da raspadinha
       }
+    });
 
-      const resultado = document.getElementById('resultadoFinal');
-      if (ganhou) {
-        resultado.textContent = "Parabéns! Você ganhou 10 CAMISETAS!";
-        resultado.style.color = "#00ff00";
-      } else {
-        resultado.textContent = "Não foi dessa vez. Tente novamente!";
-        resultado.style.color = "#ff5555";
-      }
-    }
-
-    // Ativação manual pelo console
-    window.liberarRaspadinha = liberarRaspadinha;
+    atualizarTexto();
   </script>
+
 </body>
 </html>
+
