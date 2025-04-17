@@ -1,4 +1,4 @@
-DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
@@ -20,8 +20,6 @@ DOCTYPE html>
       text-shadow: 0 0 10px #FFD700;
     }
 
-    .hidden { display: none; }
-
     .button {
       background: #FFD700;
       color: black;
@@ -33,23 +31,9 @@ DOCTYPE html>
       margin: 20px 10px;
     }
 
-    .pix-box {
-      background: #222;
-      border: 2px solid #FFD700;
-      padding: 20px;
-      border-radius: 15px;
-      max-width: 600px;
-      margin: 20px auto;
-    }
-
-    .pix-code {
-      background: white;
-      color: black;
-      padding: 10px;
-      border-radius: 10px;
-      font-size: 0.95em;
-      word-break: break-word;
-      margin: 20px 0;
+    .button[disabled] {
+      background: #555;
+      cursor: not-allowed;
     }
 
     .grid {
@@ -88,20 +72,12 @@ DOCTYPE html>
 <body>
 
   <h1>Raspadinha DStreet</h1>
-  <p id="etapa1">R$5 = 1 chance para raspar e ganhar até 10 camisetas!</p>
-  <button class="button" onclick="mostrarPix()">COMPRAR 1 CHANCE – R$5</button>
+  <p>Você tem 1 chance de ganhar ATÉ 10 CAMISETAS!</p>
 
-  <div id="etapa2" class="pix-box hidden">
-    <h2>Pagamento via PIX</h2>
-    <p>Copie o código abaixo e cole no seu app de banco:</p>
-    <div class="pix-code" id="pix">
-      00020126950014br.gov.bcb.pix0136a7072ee1-b3f4-465a-a0cf-a348646a275f02331 chance de levar 10 camisetas!!!...
-    </div>
-    <button class="button" onclick="copiarPix()">Copiar código PIX</button>
-    <button class="button" onclick="mostrarRaspadinha()">INICIAR RASPADINHA</button>
-  </div>
+  <!-- Botão de liberação -->
+  <button class="button" id="iniciarBtn" disabled>Aguardando liberação...</button>
 
-  <div id="etapa3" class="hidden">
+  <div id="raspadinha" style="display: none;">
     <h2>Raspe e descubra seu prêmio!</h2>
     <div class="grid" id="grid"></div>
     <div class="result" id="resultadoFinal"></div>
@@ -111,29 +87,26 @@ DOCTYPE html>
     const emojisPremio = ["👕", "⭐", "❌"];
     let selecionados = [];
 
-    function mostrarPix() {
-      document.getElementById('etapa2').classList.remove('hidden');
+    const iniciarBtn = document.getElementById('iniciarBtn');
+    const raspadinhaDiv = document.getElementById('raspadinha');
+
+    // Você ativa manualmente no console digitando: liberarRaspadinha()
+    function liberarRaspadinha() {
+      iniciarBtn.disabled = false;
+      iniciarBtn.textContent = "INICIAR RASPADINHA";
     }
 
-    function copiarPix() {
-      const pix = document.getElementById('pix').innerText;
-      navigator.clipboard.writeText(pix).then(() => {
-        alert("Código PIX copiado!");
-      });
-    }
-
-    function mostrarRaspadinha() {
-      document.getElementById('etapa2').classList.add('hidden');
-      document.getElementById('etapa3').classList.remove('hidden');
+    iniciarBtn.onclick = () => {
+      iniciarBtn.style.display = 'none';
+      raspadinhaDiv.style.display = 'block';
       iniciarRaspadinha();
-    }
+    };
 
     function iniciarRaspadinha() {
       const grid = document.getElementById('grid');
       grid.innerHTML = '';
       selecionados = [];
 
-      // Sorteia os prêmios (ex: 3 iguais e 6 aleatórios)
       let items = [];
       const premio = emojisPremio[Math.floor(Math.random() * emojisPremio.length)];
       for (let i = 0; i < 3; i++) items.push(premio);
@@ -142,10 +115,8 @@ DOCTYPE html>
         items.push(rand);
       }
 
-      // Embaralha os itens
       items = items.sort(() => Math.random() - 0.5);
 
-      // Cria os blocos
       items.forEach((icon, index) => {
         const tile = document.createElement('div');
         tile.className = 'tile';
@@ -189,7 +160,9 @@ DOCTYPE html>
         resultado.style.color = "#ff5555";
       }
     }
+
+    // Ativação manual pelo console
+    window.liberarRaspadinha = liberarRaspadinha;
   </script>
 </body>
 </html>
-
