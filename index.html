@@ -1,85 +1,195 @@
-<!DOCTYPE html>
-<html lang="pt-br">
+DOCTYPE html>
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>DStreet - Pagamento PIX</title>
+  <title>Raspadinha DStreet</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
       background: #111;
-      color: #fff;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
       text-align: center;
-      padding: 50px;
-    }
-
-    .container {
-      background-color: #1e1e1e;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 0 20px #00ffcc44;
-      max-width: 500px;
-      margin: auto;
+      padding: 40px 20px;
     }
 
     h1 {
-      color: #00ffcc;
+      font-size: 2.5em;
+      margin-bottom: 10px;
+      color: #FFD700;
+      text-shadow: 0 0 10px #FFD700;
+    }
+
+    .hidden { display: none; }
+
+    .button {
+      background: #FFD700;
+      color: black;
+      border: none;
+      padding: 15px 30px;
+      font-size: 1.2em;
+      border-radius: 10px;
+      cursor: pointer;
+      margin: 20px 10px;
+    }
+
+    .pix-box {
+      background: #222;
+      border: 2px solid #FFD700;
+      padding: 20px;
+      border-radius: 15px;
+      max-width: 600px;
+      margin: 20px auto;
     }
 
     .pix-code {
-      background: #fff;
-      color: #000;
-      padding: 15px;
-      border-radius: 8px;
-      word-break: break-all;
+      background: white;
+      color: black;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 0.95em;
+      word-break: break-word;
       margin: 20px 0;
     }
 
-    button {
-      background: #00ffcc;
-      border: none;
-      padding: 12px 20px;
-      font-size: 16px;
-      border-radius: 6px;
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 80px);
+      grid-gap: 10px;
+      justify-content: center;
+      margin-top: 30px;
+    }
+
+    .tile {
+      background: #666;
+      width: 80px;
+      height: 80px;
+      font-size: 2em;
+      line-height: 80px;
+      border-radius: 10px;
       cursor: pointer;
-      transition: 0.3s;
+      user-select: none;
+      transition: background 0.3s;
     }
 
-    button:hover {
-      background: #00ccaa;
+    .tile.scratched {
+      background: white;
+      color: black;
+      cursor: default;
     }
 
-    .copy-msg {
-      margin-top: 10px;
-      font-size: 14px;
-      color: #00ffcc;
-      display: none;
+    .result {
+      font-size: 1.5em;
+      margin-top: 30px;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Pague R$5 para girar a roleta!</h1>
-    <p>Copie o código abaixo e cole no app do seu banco:</p>
 
-    <div id="pixCode" class="pix-code">
-      00020126950014br.gov.bcb.pix0136a7072ee1-b3f4-465a-a0cf-a348646a275f02331 chance de levar 10 camisetas!!!52040000530398654045.005802BR5924David Fonsin Cavalcanti 6008Brasilia62240520daqr136575769309628763044A36
+  <h1>Raspadinha DStreet</h1>
+  <p id="etapa1">R$5 = 1 chance para raspar e ganhar até 10 camisetas!</p>
+  <button class="button" onclick="mostrarPix()">COMPRAR 1 CHANCE – R$5</button>
+
+  <div id="etapa2" class="pix-box hidden">
+    <h2>Pagamento via PIX</h2>
+    <p>Copie o código abaixo e cole no seu app de banco:</p>
+    <div class="pix-code" id="pix">
+      00020126950014br.gov.bcb.pix0136a7072ee1-b3f4-465a-a0cf-a348646a275f02331 chance de levar 10 camisetas!!!...
     </div>
+    <button class="button" onclick="copiarPix()">Copiar código PIX</button>
+    <button class="button" onclick="mostrarRaspadinha()">INICIAR RASPADINHA</button>
+  </div>
 
-    <button onclick="copyPix()">Copiar código PIX</button>
-    <div id="copyMsg" class="copy-msg">Código copiado com sucesso!</div>
+  <div id="etapa3" class="hidden">
+    <h2>Raspe e descubra seu prêmio!</h2>
+    <div class="grid" id="grid"></div>
+    <div class="result" id="resultadoFinal"></div>
   </div>
 
   <script>
-    function copyPix() {
-      const pix = document.getElementById("pixCode").innerText;
+    const emojisPremio = ["👕", "⭐", "❌"];
+    let selecionados = [];
+
+    function mostrarPix() {
+      document.getElementById('etapa2').classList.remove('hidden');
+    }
+
+    function copiarPix() {
+      const pix = document.getElementById('pix').innerText;
       navigator.clipboard.writeText(pix).then(() => {
-        document.getElementById("copyMsg").style.display = "block";
-        setTimeout(() => {
-          document.getElementById("copyMsg").style.display = "none";
-        }, 3000);
+        alert("Código PIX copiado!");
       });
+    }
+
+    function mostrarRaspadinha() {
+      document.getElementById('etapa2').classList.add('hidden');
+      document.getElementById('etapa3').classList.remove('hidden');
+      iniciarRaspadinha();
+    }
+
+    function iniciarRaspadinha() {
+      const grid = document.getElementById('grid');
+      grid.innerHTML = '';
+      selecionados = [];
+
+      // Sorteia os prêmios (ex: 3 iguais e 6 aleatórios)
+      let items = [];
+      const premio = emojisPremio[Math.floor(Math.random() * emojisPremio.length)];
+      for (let i = 0; i < 3; i++) items.push(premio);
+      while (items.length < 9) {
+        const rand = emojisPremio[Math.floor(Math.random() * emojisPremio.length)];
+        items.push(rand);
+      }
+
+      // Embaralha os itens
+      items = items.sort(() => Math.random() - 0.5);
+
+      // Cria os blocos
+      items.forEach((icon, index) => {
+        const tile = document.createElement('div');
+        tile.className = 'tile';
+        tile.textContent = '?';
+        tile.onclick = () => raspar(tile, icon);
+        grid.appendChild(tile);
+      });
+    }
+
+    function raspar(tile, icon) {
+      if (tile.classList.contains('scratched')) return;
+
+      tile.textContent = icon;
+      tile.classList.add('scratched');
+      selecionados.push(icon);
+
+      if (selecionados.length === 9) {
+        verificarResultado();
+      }
+    }
+
+    function verificarResultado() {
+      const contagem = {};
+      selecionados.forEach((item) => {
+        contagem[item] = (contagem[item] || 0) + 1;
+      });
+
+      let ganhou = false;
+      for (let item in contagem) {
+        if (contagem[item] >= 3 && item === "👕") {
+          ganhou = true;
+        }
+      }
+
+      const resultado = document.getElementById('resultadoFinal');
+      if (ganhou) {
+        resultado.textContent = "Parabéns! Você ganhou 10 CAMISETAS!";
+        resultado.style.color = "#00ff00";
+      } else {
+        resultado.textContent = "Não foi dessa vez. Tente novamente!";
+        resultado.style.color = "#ff5555";
+      }
     }
   </script>
 </body>
 </html>
+
