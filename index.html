@@ -1,91 +1,165 @@
+!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Raspadinha DSTREET</title>
+  <title>Raspadinha DStreet</title>
   <style>
     body {
-      margin: 0;
       font-family: Arial, sans-serif;
-      background-color: black;
-      color: white;
+      background: #111;
+      color: #fff;
       text-align: center;
       padding: 20px;
     }
-
     h1 {
-      font-size: 32px;
-      color: yellow;
-      text-shadow: 0 0 10px yellow;
+      color: #FFD700;
     }
-
-    h2 {
-      font-size: 24px;
-      color: cyan;
-    }
-
     button {
-      background-color: yellow;
-      color: black;
+      background: #FFD700;
       border: none;
-      padding: 12px 20px;
+      padding: 15px 25px;
       margin: 10px;
       font-size: 18px;
+      font-weight: bold;
+      border-radius: 10px;
       cursor: pointer;
-      border-radius: 8px;
-      font-weight: bold;
     }
-
-    #pixInfo {
-      margin-top: 20px;
-      color: lime;
-      font-size: 16px;
-      font-weight: bold;
+    .pix-code {
+      background: #fff;
+      color: #000;
+      padding: 15px;
+      margin-top: 10px;
+      border-radius: 10px;
+      white-space: pre-wrap;
+      word-break: break-word;
       display: none;
+    }
+    .pix-area {
+      margin-bottom: 30px;
+    }
+    #raspadinha {
+      display: none;
+      margin-top: 30px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      gap: 10px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .cell {
+      background: #ccc;
+      width: 100px;
+      height: 100px;
+      font-size: 36px;
+      line-height: 100px;
+      border-radius: 10px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .hidden {
+      color: transparent;
     }
   </style>
 </head>
 <body>
-  <h1>DSTREET COMPANY</h1>
-  <h2>ACHE 3 FIGURAS IGUAIS E<br>GANHE O PRÊMIO!</h2>
-  <p id="chances">Chances restantes: 0</p>
 
-  <button id="pay5">Pagar R$5,00 (1 chance)</button><br>
-  <button id="pay10">Pagar R$10,00 (3 chances)</button><br>
-  <button id="pay20">Pagar R$20,00 (6 chances)</button>
+  <h1>Raspadinha DStreet</h1>
 
-  <div id="pixInfo"></div>
+  <div class="pix-area">
+    <button id="btn5">PAGAR R$5 - 1 CHANCE</button><br/>
+    <div id="pix5" class="pix-code">
+      00020126930014br.gov.bcb.pix0136a7072ee1-b3f4-465a-a0cf-a348646a275f02311 chance de levar 10 camisetas 52040000530398654045.005802BR5924David Fonsin Cavalcanti 6008Brasilia62240520daqr1365757693274784630470DC
+      <br><br>
+      APÓS PAGAMENTO, MANDAR COMPROVANTE PELO <a href="https://wa.me/5511913304443" target="_blank">WHATSAPP</a>
+    </div>
+  </div>
+
+  <div class="pix-area">
+    <button id="btn10">PAGAR R$10 - 3 CHANCES</button><br/>
+    <div id="pix10" class="pix-code">
+      00020126940014br.gov.bcb.pix0136a7072ee1-b3f4-465a-a0cf-a348646a275f02323 chances de levar 10 camisetas!520400005303986540510.005802BR5924David Fonsin Cavalcanti 6008Brasilia62240520daqr13657576934012906304C907
+      <br><br>
+      APÓS PAGAMENTO, MANDAR COMPROVANTE PELO <a href="https://wa.me/5511913304443" target="_blank">WHATSAPP</a>
+    </div>
+  </div>
+
+  <div class="pix-area">
+    <button id="btn20">PAGAR R$20 - 6 CHANCES</button><br/>
+    <div id="pix20" class="pix-code">
+      00020126940014br.gov.bcb.pix0136a7072ee1-b3f4-465a-a0cf-a348646a275f02326 chances de levar 10 camisetas 520400005303986540520.005802BR5924David Fonsin Cavalcanti 6008Brasilia62240520daqr13657576935260736304DE32
+      <br><br>
+      APÓS PAGAMENTO, MANDAR COMPROVANTE PELO <a href="https://wa.me/5511913304443" target="_blank">WHATSAPP</a>
+    </div>
+  </div>
+
+  <div id="raspadinha">
+    <h2>Raspe e descubra!</h2>
+    <div class="grid" id="grid"></div>
+  </div>
 
   <script>
-    let chances = 0;
+    let holdTimer;
+    const holdDuration = 8000;
+    let currentChances = 0;
 
-    function updateChances() {
-      document.getElementById("chances").innerText = `Chances restantes: ${chances}`;
+    const showPix = (id) => {
+      document.querySelectorAll(".pix-code").forEach(el => el.style.display = "none");
+      document.getElementById("pix" + id).style.display = "block";
     }
 
-    function mostrarChavePix(valor) {
-      const pixInfo = document.getElementById("pixInfo");
-      pixInfo.style.display = "block";
-      pixInfo.innerText = `Chave Pix para R$${valor},00: pix@dstreet.com`;
-    }
+    const startHold = (btn, chances) => {
+      holdTimer = setTimeout(() => {
+        currentChances = chances;
+        startRaspadinha();
+      }, holdDuration);
+    };
 
-    document.getElementById("pay5").addEventListener("click", () => {
-      chances += 1;
-      updateChances();
-      mostrarChavePix(5);
+    const cancelHold = () => {
+      clearTimeout(holdTimer);
+    };
+
+    const buttons = [
+      { id: "btn5", chances: 1 },
+      { id: "btn10", chances: 3 },
+      { id: "btn20", chances: 6 },
+    ];
+
+    buttons.forEach(({ id, chances }) => {
+      const btn = document.getElementById(id);
+      btn.addEventListener("click", () => showPix(id.replace("btn", "")));
+      btn.addEventListener("mousedown", () => startHold(btn, chances));
+      btn.addEventListener("mouseup", cancelHold);
+      btn.addEventListener("mouseleave", cancelHold);
     });
 
-    document.getElementById("pay10").addEventListener("click", () => {
-      chances += 3;
-      updateChances();
-      mostrarChavePix(10);
-    });
+    const startRaspadinha = () => {
+      document.getElementById("raspadinha").style.display = "block";
+      const grid = document.getElementById("grid");
+      grid.innerHTML = "";
 
-    document.getElementById("pay20").addEventListener("click", () => {
-      chances += 6;
-      updateChances();
-      mostrarChavePix(20);
-    });
+      const items = Array(9).fill("❌");
+      let count = 0;
+      while (count < 2) {
+        const rand = Math.floor(Math.random() * 9);
+        if (items[rand] === "❌") {
+          items[rand] = "👕";
+          count++;
+        }
+      }
+
+      items.forEach(item => {
+        const cell = document.createElement("div");
+        cell.className = "cell hidden";
+        cell.textContent = item;
+        cell.addEventListener("click", () => {
+          cell.classList.remove("hidden");
+        });
+        grid.appendChild(cell);
+      });
+    };
   </script>
 </body>
 </html>
