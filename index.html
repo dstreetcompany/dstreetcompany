@@ -1,48 +1,50 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DStreet Raspadinha</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Raspadinha DSTREET</title>
   <style>
     body {
       margin: 0;
-      background: #111;
-      font-family: Arial, sans-serif;
+      background-color: #111;
       color: white;
+      font-family: 'Arial Black', sans-serif;
       text-align: center;
     }
 
     .led-title {
-      font-size: 2.5rem;
-      font-weight: bold;
-      color: #ffea00;
-      text-shadow: 0 0 10px #ffea00, 0 0 20px #ffea00, 0 0 30px #ffea00;
-      margin-top: 30px;
+      font-size: 2.5em;
+      color: yellow;
+      text-shadow: 0 0 20px yellow, 0 0 40px yellow;
+      margin-top: 20px;
     }
 
-    .blinking-impact {
-      margin-top: 10px;
-      font-size: 1.4rem;
-      color: #00ffcc;
-      animation: blink 1s infinite;
+    .blinking {
+      color: white;
+      font-size: 1.2em;
+      animation: blink 1s infinite alternate;
+      margin-top: 5px;
+      text-shadow: 0 0 5px #fff;
     }
 
     @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0; }
+      0% { opacity: 1; }
+      100% { opacity: 0.2; }
     }
 
     .chances {
-      margin: 20px auto;
-      color: #fff;
-      font-size: 1rem;
+      margin: 20px 0;
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #00ffcc;
+      text-shadow: 0 0 10px #00ffcc;
     }
 
     .grid {
       display: grid;
       grid-template-columns: repeat(3, 100px);
-      grid-gap: 10px;
+      gap: 10px;
       justify-content: center;
       margin: 20px auto;
     }
@@ -50,113 +52,156 @@
     .cell {
       width: 100px;
       height: 100px;
-      background: #222;
-      border: 2px solid #444;
-      font-size: 2rem;
+      background-color: #222;
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
+      font-size: 2em;
       cursor: pointer;
-      color: #111;
+      border: 2px solid #555;
+    }
+
+    .cell.revealed {
+      background-color: white;
+      color: red;
+    }
+
+    .result {
+      font-size: 1.5em;
+      margin: 15px 0;
+    }
+
+    .payment-buttons button, .next-button {
+      display: block;
+      margin: 10px auto;
+      padding: 15px 25px;
+      font-size: 1em;
       font-weight: bold;
-    }
-
-    .revealed {
-      color: white;
-      cursor: default;
-      background: #fff;
-    }
-
-    .message {
-      margin-top: 20px;
-      font-size: 1.2rem;
-      color: #00ff00;
-    }
-
-    button {
-      padding: 10px 20px;
-      font-size: 1rem;
-      margin-top: 10px;
+      border-radius: 8px;
       cursor: pointer;
-      background: #ffea00;
+      transition: 0.3s ease;
+    }
+
+    .payment-buttons button {
+      background-color: yellow;
       border: none;
-      border-radius: 5px;
-      font-weight: bold;
     }
+
+    .next-button {
+      background-color: white;
+      color: black;
+      border: 2px solid #ddd;
+      box-shadow: 0 0 10px white;
+    }
+
+    .rules {
+      font-size: 1em;
+      margin-top: 20px;
+    }
+
   </style>
 </head>
 <body>
+
   <div class="led-title">DSTREET COMPANY</div>
-  <div class="blinking-impact">ACHE 3 FIGURAS IGUAIS E GANHE O PRÊMIO!</div>
+  <div class="blinking">ACHE 3 FIGURAS IGUAIS E LEVE 10 CAMISETAS STREETWEAR</div>
 
-  <div class="chances" id="chance-display">Chances restantes: 0</div>
+  <div class="chances" id="chances">Chances restantes: 0</div>
+
   <div class="grid" id="grid"></div>
-  <div class="message" id="message"></div>
 
-  <button onclick="comprar(5)">Pagar R$5,00 (1 chance)</button>
-  <button onclick="comprar(10)">Pagar R$10,00 (3 chances)</button>
-  <button onclick="comprar(20)">Pagar R$20,00 (6 chances)</button>
+  <div class="result" id="resultText"></div>
+
+  <div class="payment-buttons">
+    <button onclick="comprar(1)">Pagar R$5,00 (1 chance)</button>
+    <button onclick="comprar(3)">Pagar R$10,00 (3 chances)</button>
+    <button onclick="comprar(6)">Pagar R$20,00 (6 chances)</button>
+  </div>
+
+  <button class="next-button" id="nextBtn" style="display:none;" onclick="novaTentativa()">PRÓXIMA TENTATIVA</button>
+
+  <div class="rules">
+    <p>❌❌❌ = TENTE OUTRA VEZ</p>
+    <p>👕👕👕 = 🎊GANHOU 10 CAMISETAS🎊</p>
+  </div>
 
   <script>
     let chances = 0;
-    let revealed = 0;
-    let cells = [];
+    let gridEl = document.getElementById('grid');
+    let resultText = document.getElementById('resultText');
+    let chancesEl = document.getElementById('chances');
+    let nextBtn = document.getElementById('nextBtn');
 
-    function comprar(valor) {
-      if (valor === 5) chances += 1;
-      if (valor === 10) chances += 3;
-      if (valor === 20) chances += 6;
-      updateChances();
-      novaRodada();
-    }
-
-    function updateChances() {
-      document.getElementById("chance-display").textContent = `Chances restantes: ${chances}`;
-    }
-
-    function novaRodada() {
-      const grid = document.getElementById("grid");
-      grid.innerHTML = "";
-      revealed = 0;
-      cells = [];
-
-      const valores = Array(9).fill("❌");
-      const pos = Math.floor(Math.random() * 9);
-      valores[pos] = "👕";
-
-      for (let i = 0; i < 9; i++) {
-        const div = document.createElement("div");
-        div.className = "cell";
-        div.textContent = "DSTREET";
-        div.onclick = () => revelar(div, valores[i]);
-        grid.appendChild(div);
-        cells.push(div);
+    function comprar(qtd) {
+      chances += qtd;
+      atualizarChances();
+      if (chances > 0 && gridEl.innerHTML === '') {
+        gerarTabuleiro();
       }
-
-      document.getElementById("message").textContent = "";
     }
 
-    function revelar(div, valor) {
-      if (div.classList.contains("revealed") || revealed >= 3) return;
-      div.textContent = valor;
-      div.classList.add("revealed");
-      revealed++;
+    function atualizarChances() {
+      chancesEl.textContent = `Chances restantes: ${chances}`;
+    }
 
-      if (revealed === 3) {
+    function gerarTabuleiro() {
+      gridEl.innerHTML = '';
+      resultText.textContent = '';
+      nextBtn.style.display = 'none';
+
+      let figuras = ['❌', '👕'];
+      let sorteio = Array.from({ length: 9 }, () =>
+        figuras[Math.floor(Math.random() * figuras.length)]
+      );
+
+      sorteio.forEach((figura, index) => {
+        let cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.onclick = () => revelar(cell, figura);
+        gridEl.appendChild(cell);
+      });
+
+      gridEl.dataset.figuras = JSON.stringify(sorteio);
+    }
+
+    function revelar(cell, figura) {
+      if (cell.classList.contains('revealed') || chances === 0) return;
+
+      cell.classList.add('revealed');
+      cell.textContent = figura;
+
+      let reveladas = document.querySelectorAll('.cell.revealed');
+      if (reveladas.length === 3) {
         chances--;
-        updateChances();
-        const acertos = cells.filter(c => c.classList.contains("revealed") && c.textContent === "👕").length;
-        if (acertos === 3) {
-          document.getElementById("message").textContent = "Parabéns! Você ganhou 10 CAMISAS!";
-        } else {
-          document.getElementById("message").textContent = "Tente novamente!";
-        }
+        atualizarChances();
 
-        if (chances > 0) {
-          setTimeout(novaRodada, 1500);
-        }
+        let valores = [...reveladas].map(c => c.textContent);
+        let ganhou = valores.every(v => v === valores[0]);
+
+        setTimeout(() => {
+          if (ganhou && valores[0] === '👕') {
+            resultText.innerHTML = '🎊 GANHOU 10 CAMISETAS 🎊';
+          } else {
+            resultText.innerHTML = '<span style="color:limegreen;">Tente novamente!</span>';
+          }
+
+          if (chances > 0) {
+            nextBtn.style.display = 'block';
+          }
+        }, 400);
       }
+    }
+
+    function novaTentativa() {
+      gridEl.innerHTML = '';
+      resultText.textContent = '';
+      nextBtn.style.display = 'none';
+      setTimeout(() => {
+        gerarTabuleiro();
+      }, 100); // curto delay pra sumir visualmente
     }
   </script>
+
 </body>
 </html>
+
