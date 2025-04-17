@@ -1,4 +1,5 @@
-!DOCTYPE html>
+
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
@@ -6,137 +7,160 @@
   <title>Raspadinha DStreet</title>
   <style>
     body {
-      background: #111;
       font-family: Arial, sans-serif;
+      background: #111;
+      color: #fff;
       text-align: center;
-      color: white;
-      margin: 0;
-      padding: 0;
+      padding: 20px;
     }
-
     h1 {
       color: #FFD700;
-      font-size: 2em;
-      margin-top: 20px;
     }
-
-    .sub {
-      color: white;
-      font-size: 0.9em;
-      margin-top: 5px;
-    }
-
-    .button {
+    button {
       background: #FFD700;
-      color: black;
-      font-weight: bold;
       border: none;
-      padding: 15px 30px;
-      border-radius: 12px;
-      font-size: 1.2em;
+      padding: 15px 25px;
+      margin: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 10px;
       cursor: pointer;
-      margin: 15px auto;
-      width: 80%;
-      max-width: 300px;
-      display: block;
     }
-
-    .grid {
+    .pix-code {
+      background: #fff;
+      color: #000;
+      padding: 15px;
+      margin-top: 10px;
+      border-radius: 10px;
+      white-space: pre-wrap;
+      word-break: break-word;
       display: none;
-      grid-template-columns: repeat(3, 100px);
-      grid-gap: 10px;
-      justify-content: center;
+    }
+    .pix-area {
+      margin-bottom: 30px;
+    }
+    #raspadinha {
+      display: none;
       margin-top: 30px;
     }
-
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      gap: 10px;
+      justify-content: center;
+      margin-top: 20px;
+    }
     .cell {
-      background: #222;
+      background: #ccc;
       width: 100px;
       height: 100px;
-      font-size: 2.5em;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border-radius: 12px;
-      color: #444;
-      user-select: none;
+      font-size: 36px;
+      line-height: 100px;
+      border-radius: 10px;
       cursor: pointer;
+      user-select: none;
     }
-
-    .scratched {
-      color: white;
+    .hidden {
+      color: transparent;
     }
   </style>
 </head>
 <body>
-  <div class="sub">por Dstreet.company</div>
+
   <h1>Raspadinha DStreet</h1>
 
-  <button class="button" id="btn5">PAGAR R$5 - 1 CHANCE</button>
-  <button class="button" id="btn10">PAGAR R$10 - 3 CHANCES</button>
-  <button class="button" id="btn20">PAGAR R$20 - 6 CHANCES</button>
+  <div class="pix-area">
+    <button id="btn5">PAGAR R$5 - 1 CHANCE</button><br/>
+    <div id="pix5" class="pix-code">
+      00020126930014br.gov.bcb.pix0136a7072ee1-b3f4-465a-a0cf-a348646a275f02311 chance de levar 10 camisetas 52040000530398654045.005802BR5924David Fonsin Cavalcanti 6008Brasilia62240520daqr1365757693274784630470DC
+      <br><br>
+      APÓS PAGAMENTO, MANDAR COMPROVANTE PELO <a href="https://wa.me/5511913304443" target="_blank">WHATSAPP</a>
+    </div>
+  </div>
 
-  <div class="grid" id="raspadinha"></div>
+  <div class="pix-area">
+    <button id="btn10">PAGAR R$10 - 3 CHANCES</button><br/>
+    <div id="pix10" class="pix-code">
+      00020126940014br.gov.bcb.pix0136a7072ee1-b3f4-465a-a0cf-a348646a275f02323 chances de levar 10 camisetas!520400005303986540510.005802BR5924David Fonsin Cavalcanti 6008Brasilia62240520daqr13657576934012906304C907
+      <br><br>
+      APÓS PAGAMENTO, MANDAR COMPROVANTE PELO <a href="https://wa.me/5511913304443" target="_blank">WHATSAPP</a>
+    </div>
+  </div>
+
+  <div class="pix-area">
+    <button id="btn20">PAGAR R$20 - 6 CHANCES</button><br/>
+    <div id="pix20" class="pix-code">
+      00020126940014br.gov.bcb.pix0136a7072ee1-b3f4-465a-a0cf-a348646a275f02326 chances de levar 10 camisetas 520400005303986540520.005802BR5924David Fonsin Cavalcanti 6008Brasilia62240520daqr13657576935260736304DE32
+      <br><br>
+      APÓS PAGAMENTO, MANDAR COMPROVANTE PELO <a href="https://wa.me/5511913304443" target="_blank">WHATSAPP</a>
+    </div>
+  </div>
+
+  <div id="raspadinha">
+    <h2>Raspe e descubra!</h2>
+    <div class="grid" id="grid"></div>
+  </div>
 
   <script>
-    let holdTimer = null;
+    let holdTimer;
+    const holdDuration = 8000;
+    let currentChances = 0;
 
-    function criarRaspadinha() {
-      const grid = document.getElementById("raspadinha");
+    const showPix = (id) => {
+      document.querySelectorAll(".pix-code").forEach(el => el.style.display = "none");
+      document.getElementById("pix" + id).style.display = "block";
+    }
+
+    const startHold = (btn, chances) => {
+      holdTimer = setTimeout(() => {
+        currentChances = chances;
+        startRaspadinha();
+      }, holdDuration);
+    };
+
+    const cancelHold = () => {
+      clearTimeout(holdTimer);
+    };
+
+    const buttons = [
+      { id: "btn5", chances: 1 },
+      { id: "btn10", chances: 3 },
+      { id: "btn20", chances: 6 },
+    ];
+
+    buttons.forEach(({ id, chances }) => {
+      const btn = document.getElementById(id);
+      btn.addEventListener("click", () => showPix(id.replace("btn", "")));
+      btn.addEventListener("mousedown", () => startHold(btn, chances));
+      btn.addEventListener("mouseup", cancelHold);
+      btn.addEventListener("mouseleave", cancelHold);
+    });
+
+    const startRaspadinha = () => {
+      document.getElementById("raspadinha").style.display = "block";
+      const grid = document.getElementById("grid");
       grid.innerHTML = "";
-      grid.style.display = "grid";
 
-      const celulas = Array(9).fill("❌");
-      let prêmios = 0;
-
-      while (prêmios < 2) {
-        const i = Math.floor(Math.random() * 9);
-        if (celulas[i] === "❌") {
-          celulas[i] = "👕";
-          prêmios++;
+      const items = Array(9).fill("❌");
+      let count = 0;
+      while (count < 2) {
+        const rand = Math.floor(Math.random() * 9);
+        if (items[rand] === "❌") {
+          items[rand] = "👕";
+          count++;
         }
       }
 
-      celulas.forEach(valor => {
+      items.forEach(item => {
         const cell = document.createElement("div");
-        cell.className = "cell";
-        cell.textContent = "⬛";
+        cell.className = "cell hidden";
+        cell.textContent = item;
         cell.addEventListener("click", () => {
-          if (!cell.classList.contains("scratched")) {
-            cell.classList.add("scratched");
-            cell.textContent = valor;
-          }
+          cell.classList.remove("hidden");
         });
         grid.appendChild(cell);
       });
-    }
-
-    function ativarBotaoSecreto(id) {
-      const btn = document.getElementById(id);
-
-      const iniciarContagem = () => {
-        holdTimer = setTimeout(() => {
-          criarRaspadinha();
-        }, 8000);
-      };
-
-      const cancelarContagem = () => {
-        clearTimeout(holdTimer);
-      };
-
-      btn.addEventListener("mousedown", iniciarContagem);
-      btn.addEventListener("mouseup", cancelarContagem);
-      btn.addEventListener("mouseleave", cancelarContagem);
-
-      // Touch para mobile
-      btn.addEventListener("touchstart", iniciarContagem);
-      btn.addEventListener("touchend", cancelarContagem);
-      btn.addEventListener("touchcancel", cancelarContagem);
-    }
-
-    ativarBotaoSecreto("btn5");
-    ativarBotaoSecreto("btn10");
-    ativarBotaoSecreto("btn20");
+    };
   </script>
 </body>
 </html>
