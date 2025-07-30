@@ -1,139 +1,170 @@
 
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Motoboy da Sorte</title>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet"/>
   <style>
-    body {
+    * {
       margin: 0;
-      font-family: 'Roboto', sans-serif;
-      background: linear-gradient(to bottom, #111, #222);
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Bebas Neue', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(180deg, #111, #222);
       color: white;
+      text-align: center;
+      padding: 20px;
     }
 
     header {
-      background-color: #e60000;
-      padding: 20px;
-      text-align: center;
-    }
-
-    header h1 {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 48px;
-      margin: 0;
+      background-color: #f00;
+      padding: 15px;
+      font-size: 2.5rem;
       letter-spacing: 2px;
+      text-shadow: 1px 1px #000;
     }
 
-    .container {
-      max-width: 800px;
-      margin: 40px auto;
-      padding: 20px;
-      background-color: #1a1a1a;
-      border-radius: 12px;
-      box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
-    }
-
-    .intro {
-      text-align: center;
-    }
-
-    .intro h2 {
-      font-size: 32px;
-      color: #ffd700;
-    }
-
-    .intro p {
-      font-size: 18px;
-      margin-top: 10px;
-    }
-
-    .oferta {
-      background-color: #333;
-      padding: 20px;
-      margin-top: 30px;
-      border-left: 5px solid #ffd700;
-      border-radius: 8px;
-    }
-
-    .oferta h3 {
-      margin-top: 0;
-      color: #ff4444;
-    }
-
-    .qr-code {
-      text-align: center;
-      margin: 30px 0;
-    }
-
-    .qr-code img {
-      width: 150px;
+    .sub {
+      font-size: 1.2rem;
+      margin-top: 5px;
+      color: #ff0;
     }
 
     .cta {
-      text-align: center;
-      margin-top: 40px;
+      margin: 30px 0;
     }
 
-    .cta a {
-      background-color: #ffd700;
-      color: black;
+    .cta button {
+      background: #ff0;
+      color: #000;
+      border: none;
       padding: 15px 30px;
-      font-weight: bold;
-      border-radius: 8px;
-      text-decoration: none;
-      font-size: 20px;
+      font-size: 1.3rem;
+      margin: 10px;
+      border-radius: 10px;
+      cursor: pointer;
       transition: 0.3s;
     }
 
-    .cta a:hover {
-      background-color: #fff200;
+    .cta button:hover {
+      background: #ffc400;
+    }
+
+    .sorteio {
+      background: #fff;
+      color: #000;
+      padding: 25px;
+      border-radius: 10px;
+      margin: 30px 0;
+    }
+
+    .sorteio h2 {
+      font-size: 2rem;
+      color: #c00;
+    }
+
+    .timer {
+      font-size: 2rem;
+      margin-top: 10px;
+    }
+
+    .galeria {
+      margin-top: 40px;
+    }
+
+    .galeria h3 {
+      margin-bottom: 10px;
+      font-size: 1.8rem;
+      color: #ff0;
+    }
+
+    .qr {
+      margin-top: 30px;
+    }
+
+    .whatsapp {
+      background: #25d366;
+      color: white;
+      padding: 12px 25px;
+      font-size: 1.2rem;
+      border-radius: 8px;
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 25px;
     }
 
     footer {
-      text-align: center;
-      padding: 20px;
-      background-color: #111;
-      font-size: 14px;
-      color: #aaa;
+      margin-top: 50px;
+      font-size: 0.9rem;
+      color: #888;
+    }
+
+    @media(max-width: 600px) {
+      .cta button {
+        width: 100%;
+        margin: 10px 0;
+      }
     }
   </style>
 </head>
 <body>
-
   <header>
-    <h1>MOTOBOY DA SORTE</h1>
+    MOTOBOY DA SORTE 🚀
+    <div class="sub">Participe do sorteio diário por apenas R$2,50!</div>
   </header>
 
-  <div class="container">
-    <div class="intro">
-      <h2>🎉 Novo projeto de sorteio chegou em Mogi das Cruzes!</h2>
-      <p>Participe com apenas <strong>R$2,50</strong> e concorra todos os dias a prêmios reais!</p>
-      <p><strong>Prêmio de hoje:</strong> 🍕 Pizza tamanho família + Refrigerante</p>
-    </div>
-
-    <div class="oferta">
-      <h3>🔥 Oferta Especial:</h3>
-      <p>Pague apenas <strong>R$7,00</strong> e participe de <strong>7 dias consecutivos</strong> com chances em dobro!</p>
-    </div>
-
-    <div class="qr-code">
-      <p>Siga no Instagram para acompanhar os sorteios:</p>
-      <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://www.instagram.com/motoboy_da_sorte/" alt="QR Code Instagram">
-    </div>
-
-    <div class="cta">
-      <a href="https://www.instagram.com/motoboy_da_sorte/" target="_blank">GARANTIR MINHA VAGA!</a>
-    </div>
+  <div class="cta">
+    <button onclick="alert('Sistema de pagamento em breve!')">Sorteio de Hoje - R$2,50</button>
+    <button onclick="alert('Pacote semanal em breve!')">Pacote de 7 Dias - R$7,00</button>
   </div>
 
+  <div class="sorteio">
+    <h2>🎁 Prêmio de Hoje:</h2>
+    <p>🍕 Pizza tamanho família + Refrigerante</p>
+    <div class="timer" id="countdown">Carregando...</div>
+  </div>
+
+  <div class="galeria">
+    <h3>🏆 Últimos Ganhadores</h3>
+    <img src="https://via.placeholder.com/300x200?text=Ganhador+1" alt="Ganhador 1" style="margin:10px; border-radius:10px;">
+    <img src="https://via.placeholder.com/300x200?text=Ganhador+2" alt="Ganhador 2" style="margin:10px; border-radius:10px;">
+  </div>
+
+  <div class="qr">
+    <h3>Siga no Instagram!</h3>
+    <img src="https://api.qrserver.com/v1/create-qr-code/?data=https://instagram.com/motoboy_da_sorte&size=150x150" alt="QR Code Instagram" />
+  </div>
+
+  <a href="https://wa.me/5511913304443" class="whatsapp">💬 Fale com a Gente no WhatsApp</a>
+
   <footer>
-    📍 Mogi das Cruzes – Contato: (11) 91330-4443 / (11) 99910-4178 <br>
-    Instagram: <a href="https://www.instagram.com/motoboy_da_sorte/" target="_blank" style="color: #ffd700;">@motoboy_da_sorte</a>
+    © 2025 Motoboy da Sorte - Todos os direitos reservados.
   </footer>
 
+  <script>
+    function countdown() {
+      const target = new Date();
+      target.setHours(20, 0, 0); // Sorteio às 20h
+
+      const now = new Date();
+      if (now > target) target.setDate(target.getDate() + 1); // Vai para o dia seguinte se já passou
+
+      const diff = target - now;
+      const hrs = Math.floor((diff % 86400000) / 3600000);
+      const mins = Math.floor((diff % 3600000) / 60000);
+      const secs = Math.floor((diff % 60000) / 1000);
+
+      document.getElementById("countdown").innerText = `${hrs}h ${mins}m ${secs}s`;
+    }
+
+    setInterval(countdown, 1000);
+    countdown();
+  </script>
 </body>
 </html>
 
