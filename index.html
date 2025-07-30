@@ -1,166 +1,137 @@
-APÓS REALIZAR O PAGAMENTO E MANDAR O COMPROVANTE! VOCÊ IRA RECEBER UM LINK QUE TE DIRECIONA PARA A RASPADINHA!
-
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Raspadinha DStreet</title>
+  <title>Motoboy da Sorte</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #111;
-      color: #fff;
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(to bottom, #111, #222);
+      color: white;
+    }
+
+    header {
+      background-color: #e60000;
+      padding: 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 48px;
+      margin: 0;
+      letter-spacing: 2px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      background-color: #1a1a1a;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+    }
+
+    .intro {
+      text-align: center;
+    }
+
+    .intro h2 {
+      font-size: 32px;
+      color: #ffd700;
+    }
+
+    .intro p {
+      font-size: 18px;
+      margin-top: 10px;
+    }
+
+    .oferta {
+      background-color: #333;
+      padding: 20px;
+      margin-top: 30px;
+      border-left: 5px solid #ffd700;
+      border-radius: 8px;
+    }
+
+    .oferta h3 {
+      margin-top: 0;
+      color: #ff4444;
+    }
+
+    .qr-code {
+      text-align: center;
+      margin: 30px 0;
+    }
+
+    .qr-code img {
+      width: 150px;
+    }
+
+    .cta {
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    .cta a {
+      background-color: #ffd700;
+      color: black;
+      padding: 15px 30px;
+      font-weight: bold;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 20px;
+      transition: 0.3s;
+    }
+
+    .cta a:hover {
+      background-color: #fff200;
+    }
+
+    footer {
       text-align: center;
       padding: 20px;
-    }
-    h1 {
-      color: #FFD700;
-    }
-    button {
-      background: #FFD700;
-      border: none;
-      padding: 15px 25px;
-      margin: 10px;
-      font-size: 18px;
-      font-weight: bold;
-      border-radius: 10px;
-      cursor: pointer;
-    }
-    .pix-code {
-      background: #fff;
-      color: #000;
-      padding: 15px;
-      margin-top: 10px;
-      border-radius: 10px;
-      white-space: pre-wrap;
-      word-break: break-word;
-      display: none;
-    }
-    .pix-area {
-      margin-bottom: 30px;
-    }
-    #raspadinha {
-      display: none;
-      margin-top: 30px;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(3, 100px);
-      gap: 10px;
-      justify-content: center;
-      margin-top: 20px;
-    }
-    .cell {
-      background: #ccc;
-      width: 100px;
-      height: 100px;
-      font-size: 36px;
-      line-height: 100px;
-      border-radius: 10px;
-      cursor: pointer;
-      user-select: none;
-    }
-    .hidden {
-      color: transparent;
+      background-color: #111;
+      font-size: 14px;
+      color: #aaa;
     }
   </style>
 </head>
 <body>
 
-  <h1>Raspadinha DStreet</h1>
+  <header>
+    <h1>MOTOBOY DA SORTE</h1>
+  </header>
 
-  <div class="pix-area">
-    <button id="btn5">PAGAR R$5 - 1 CHANCE</button><br/>
-    <div id="pix5" class="pix-code">
-      00020126930014br.gov.bcb.pix0136a7072ee1-b3f4-465a-a0cf-a348646a275f02311 chance de levar 10 camisetas 52040000530398654045.005802BR5924David Fonsin Cavalcanti 6008Brasilia62240520daqr1365757693274784630470DC
-      <br><br>
-      APÓS PAGAMENTO, MANDAR COMPROVANTE PELO <a href="https://wa.me/5511913304443" target="_blank">WHATSAPP</a>
+  <div class="container">
+    <div class="intro">
+      <h2>🎉 Novo projeto de sorteio chegou em Mogi das Cruzes!</h2>
+      <p>Participe com apenas <strong>R$2,50</strong> e concorra todos os dias a prêmios reais!</p>
+      <p><strong>Prêmio de hoje:</strong> 🍕 Pizza tamanho família + Refrigerante</p>
+    </div>
+
+    <div class="oferta">
+      <h3>🔥 Oferta Especial:</h3>
+      <p>Pague apenas <strong>R$7,00</strong> e participe de <strong>7 dias consecutivos</strong> com chances em dobro!</p>
+    </div>
+
+    <div class="qr-code">
+      <p>Siga no Instagram para acompanhar os sorteios:</p>
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://www.instagram.com/motoboy_da_sorte/" alt="QR Code Instagram">
+    </div>
+
+    <div class="cta">
+      <a href="https://www.instagram.com/motoboy_da_sorte/" target="_blank">GARANTIR MINHA VAGA!</a>
     </div>
   </div>
 
-  <div class="pix-area">
-    <button id="btn10">PAGAR R$10 - 3 CHANCES</button><br/>
-    <div id="pix10" class="pix-code">
-      00020126940014br.gov.bcb.pix0136a7072ee1-b3f4-465a-a0cf-a348646a275f02323 chances de levar 10 camisetas!520400005303986540510.005802BR5924David Fonsin Cavalcanti 6008Brasilia62240520daqr13657576934012906304C907
-      <br><br>
-      APÓS PAGAMENTO, MANDAR COMPROVANTE PELO <a href="https://wa.me/5511913304443" target="_blank">WHATSAPP</a>
-    </div>
-  </div>
+  <footer>
+    📍 Mogi das Cruzes – Contato: (11) 91330-4443 / (11) 99910-4178 <br>
+    Instagram: <a href="https://www.instagram.com/motoboy_da_sorte/" target="_blank" style="color: #ffd700;">@motoboy_da_sorte</a>
+  </footer>
 
-  <div class="pix-area">
-    <button id="btn20">PAGAR R$20 - 6 CHANCES</button><br/>
-    <div id="pix20" class="pix-code">
-      00020126940014br.gov.bcb.pix0136a7072ee1-b3f4-465a-a0cf-a348646a275f02326 chances de levar 10 camisetas 520400005303986540520.005802BR5924David Fonsin Cavalcanti 6008Brasilia62240520daqr13657576935260736304DE32
-      <br><br>
-      APÓS PAGAMENTO, MANDAR COMPROVANTE PELO <a href="https://wa.me/5511913304443" target="_blank">WHATSAPP</a>
-    </div>
-  </div>
-
-  <div id="raspadinha">
-    <h2>Raspe e descubra!</h2>
-    <div class="grid" id="grid"></div>
-  </div>
-
-  <script>
-    let holdTimer;
-    const holdDuration = 8000;
-    let currentChances = 0;
-
-    const showPix = (id) => {
-      document.querySelectorAll(".pix-code").forEach(el => el.style.display = "none");
-      document.getElementById("pix" + id).style.display = "block";
-    }
-
-    const startHold = (btn, chances) => {
-      holdTimer = setTimeout(() => {
-        currentChances = chances;
-        startRaspadinha();
-      }, holdDuration);
-    };
-
-    const cancelHold = () => {
-      clearTimeout(holdTimer);
-    };
-
-    const buttons = [
-      { id: "btn5", chances: 1 },
-      { id: "btn10", chances: 3 },
-      { id: "btn20", chances: 6 },
-    ];
-
-    buttons.forEach(({ id, chances }) => {
-      const btn = document.getElementById(id);
-      btn.addEventListener("click", () => showPix(id.replace("btn", "")));
-      btn.addEventListener("mousedown", () => startHold(btn, chances));
-      btn.addEventListener("mouseup", cancelHold);
-      btn.addEventListener("mouseleave", cancelHold);
-    });
-
-    const startRaspadinha = () => {
-      document.getElementById("raspadinha").style.display = "block";
-      const grid = document.getElementById("grid");
-      grid.innerHTML = "";
-
-      const items = Array(9).fill("❌");
-      let count = 0;
-      while (count < 2) {
-        const rand = Math.floor(Math.random() * 9);
-        if (items[rand] === "❌") {
-          items[rand] = "👕";
-          count++;
-        }
-      }
-
-      items.forEach(item => {
-        const cell = document.createElement("div");
-        cell.className = "cell hidden";
-        cell.textContent = item;
-        cell.addEventListener("click", () => {
-          cell.classList.remove("hidden");
-        });
-        grid.appendChild(cell);
-      });
-    };
-  </script>
 </body>
 </html>
