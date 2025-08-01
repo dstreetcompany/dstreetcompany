@@ -1,170 +1,186 @@
 
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Motoboy da Sorte</title>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet"/>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Bebas Neue', sans-serif;
-    }
-
-    body {
-      background: linear-gradient(180deg, #111, #222);
-      color: white;
-      text-align: center;
-      padding: 20px;
-    }
-
-    header {
-      background-color: #f00;
-      padding: 15px;
-      font-size: 2.5rem;
-      letter-spacing: 2px;
-      text-shadow: 1px 1px #000;
-    }
-
-    .sub {
-      font-size: 1.2rem;
-      margin-top: 5px;
-      color: #ff0;
-    }
-
-    .cta {
-      margin: 30px 0;
-    }
-
-    .cta button {
-      background: #ff0;
-      color: #000;
-      border: none;
-      padding: 15px 30px;
-      font-size: 1.3rem;
-      margin: 10px;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    .cta button:hover {
-      background: #ffc400;
-    }
-
-    .sorteio {
-      background: #fff;
-      color: #000;
-      padding: 25px;
-      border-radius: 10px;
-      margin: 30px 0;
-    }
-
-    .sorteio h2 {
-      font-size: 2rem;
-      color: #c00;
-    }
-
-    .timer {
-      font-size: 2rem;
-      margin-top: 10px;
-    }
-
-    .galeria {
-      margin-top: 40px;
-    }
-
-    .galeria h3 {
-      margin-bottom: 10px;
-      font-size: 1.8rem;
-      color: #ff0;
-    }
-
-    .qr {
-      margin-top: 30px;
-    }
-
-    .whatsapp {
-      background: #25d366;
-      color: white;
-      padding: 12px 25px;
-      font-size: 1.2rem;
-      border-radius: 8px;
-      text-decoration: none;
-      display: inline-block;
-      margin-top: 25px;
-    }
-
-    footer {
-      margin-top: 50px;
-      font-size: 0.9rem;
-      color: #888;
-    }
-
-    @media(max-width: 600px) {
-      .cta button {
-        width: 100%;
-        margin: 10px 0;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Motoboy da Sorte 🍀🛵</title>
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #111;
+    color: white;
+    text-align: center;
+  }
+  header {
+    background: #e60000;
+    padding: 15px;
+    font-size: 2rem;
+    font-weight: bold;
+  }
+  header span {
+    font-size: 1.5rem;
+    color: #ff0;
+  }
+  .premio-dia {
+    padding: 20px;
+    background: #222;
+  }
+  .premio-dia img {
+    max-width: 100%;
+    border-radius: 12px;
+    margin-top: 10px;
+  }
+  .botoes {
+    margin: 20px 0;
+  }
+  .botoes button {
+    background: #ffd700;
+    color: #000;
+    padding: 15px 30px;
+    margin: 10px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  .botoes button:hover {
+    background: #ffea00;
+  }
+  .contador {
+    font-size: 1.5rem;
+    margin: 15px 0;
+    color: #0f0;
+  }
+  .calendario {
+    background: #1a1a1a;
+    padding: 20px;
+  }
+  .calendario h2 {
+    color: #ffd700;
+  }
+  .dia {
+    margin: 15px 0;
+  }
+  .dia img {
+    max-width: 100%;
+    border-radius: 8px;
+    margin-top: 5px;
+  }
+  .ganhadores {
+    background: #222;
+    padding: 20px;
+  }
+  .ganhadores h2 {
+    color: #ff0;
+  }
+  .ganhadores img {
+    width: 45%;
+    border-radius: 8px;
+    margin: 5px;
+  }
+  .qr {
+    padding: 20px;
+  }
+  footer {
+    background: #000;
+    padding: 10px;
+    color: #aaa;
+    font-size: 0.9rem;
+  }
+</style>
 </head>
 <body>
-  <header>
-    MOTOBOY DA SORTE 🚀
-    <div class="sub">Participe do sorteio diário por apenas R$2,50!</div>
-  </header>
 
-  <div class="cta">
-    <button onclick="alert('Sistema de pagamento em breve!')">Sorteio de Hoje - R$2,50</button>
-    <button onclick="alert('Pacote semanal em breve!')">Pacote de 7 Dias - R$7,00</button>
+<header>
+  🍀 Motoboy da Sorte 🛵 <br><span>Prêmios todos os dias!</span>
+</header>
+
+<div class="premio-dia">
+  <h2>🎁 Prêmio de Hoje: 🍕 Pizza Família + Refrigerante</h2>
+  <img src="https://images.unsplash.com/photo-1594007654729-407eedc4be65?auto=format&fit=crop&w=1200&q=80" alt="Pizza e Refrigerante">
+  <div class="contador" id="contador">Carregando contador...</div>
+</div>
+
+<div class="botoes">
+  <button>🎟 Participar Hoje - R$ 2,50</button>
+  <button>🔥 Pacote 7 Dias - R$ 7,00</button>
+</div>
+
+<div class="calendario">
+  <h2>📅 Calendário de Prêmios da Semana</h2>
+  
+  <div class="dia">
+    <strong>Segunda:</strong> 🍔 Combo de Lanche
+    <img src="https://images.unsplash.com/photo-1603052875305-5f7b50b52e12?auto=format&fit=crop&w=800&q=80" alt="Combo de Lanche">
   </div>
-
-  <div class="sorteio">
-    <h2>🎁 Prêmio de Hoje:</h2>
-    <p>🍕 Pizza tamanho família + Refrigerante</p>
-    <div class="timer" id="countdown">Carregando...</div>
+  
+  <div class="dia">
+    <strong>Terça:</strong> 🍫 Barca de Açaí
+    <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=800&q=80" alt="Barca de Açaí">
   </div>
-
-  <div class="galeria">
-    <h3>🏆 Últimos Ganhadores</h3>
-    <img src="https://via.placeholder.com/300x200?text=Ganhador+1" alt="Ganhador 1" style="margin:10px; border-radius:10px;">
-    <img src="https://via.placeholder.com/300x200?text=Ganhador+2" alt="Ganhador 2" style="margin:10px; border-radius:10px;">
+  
+  <div class="dia">
+    <strong>Quarta:</strong> 🍣 Combo Temaki
+    <img src="https://images.unsplash.com/photo-1604908177350-3407e51c9abf?auto=format&fit=crop&w=800&q=80" alt="Combo Temaki">
   </div>
-
-  <div class="qr">
-    <h3>Siga no Instagram!</h3>
-    <img src="https://api.qrserver.com/v1/create-qr-code/?data=https://instagram.com/motoboy_da_sorte&size=150x150" alt="QR Code Instagram" />
+  
+  <div class="dia">
+    <strong>Quinta:</strong> 🍕 Pizza Família + Refrigerante
+    <img src="https://images.unsplash.com/photo-1594007654729-407eedc4be65?auto=format&fit=crop&w=1200&q=80" alt="Pizza e Refrigerante">
   </div>
+  
+  <div class="dia">
+    <strong>Sexta:</strong> 🍔 + 🍟 Combo Especial
+    <img src="https://images.unsplash.com/photo-1603052875305-5f7b50b52e12?auto=format&fit=crop&w=800&q=80" alt="Combo Especial">
+  </div>
+  
+  <div class="dia">
+    <strong>Sábado:</strong> 🍦 Taça Gigante de Sorvete
+    <img src="https://images.unsplash.com/photo-1542444459-db0c3a32e5f5?auto=format&fit=crop&w=800&q=80" alt="Sorvete">
+  </div>
+  
+  <div class="dia">
+    <strong>Domingo:</strong> 💵 PIX de R$ 50
+    <img src="https://images.unsplash.com/photo-1611432579699-4845e4a0e3f1?auto=format&fit=crop&w=800&q=80" alt="Pix">
+  </div>
+</div>
 
-  <a href="https://wa.me/5511913304443" class="whatsapp">💬 Fale com a Gente no WhatsApp</a>
+<div class="ganhadores">
+  <h2>🏆 Últimos Ganhadores</h2>
+  <img src="https://via.placeholder.com/300x200?text=Ganhador+1" alt="Ganhador 1">
+  <img src="https://via.placeholder.com/300x200?text=Ganhador+2" alt="Ganhador 2">
+</div>
 
-  <footer>
-    © 2025 Motoboy da Sorte - Todos os direitos reservados.
-  </footer>
+<div class="qr">
+  <h2>📲 Siga no Instagram</h2>
+  <img src="https://api.qrserver.com/v1/create-qr-code/?data=https://instagram.com/motoboy_da_sorte&size=150x150" alt="QR Code Instagram">
+</div>
 
-  <script>
-    function countdown() {
-      const target = new Date();
-      target.setHours(20, 0, 0); // Sorteio às 20h
+<footer>
+  📍 Mogi das Cruzes - Contato: (11) 91330-4443 / (11) 99910-4178
+</footer>
 
-      const now = new Date();
-      if (now > target) target.setDate(target.getDate() + 1); // Vai para o dia seguinte se já passou
+<script>
+function atualizarContador() {
+  const agora = new Date();
+  const alvo = new Date();
+  alvo.setHours(20,0,0,0); // 20h
+  if (agora > alvo) alvo.setDate(alvo.getDate() + 1);
+  
+  const diff = alvo - agora;
+  const h = Math.floor(diff / 1000 / 60 / 60);
+  const m = Math.floor(diff / 1000 / 60) % 60;
+  const s = Math.floor(diff / 1000) % 60;
+  
+  document.getElementById('contador').textContent = `⏳ ${h}h ${m}m ${s}s para o sorteio`;
+}
+setInterval(atualizarContador, 1000);
+atualizarContador();
+</script>
 
-      const diff = target - now;
-      const hrs = Math.floor((diff % 86400000) / 3600000);
-      const mins = Math.floor((diff % 3600000) / 60000);
-      const secs = Math.floor((diff % 60000) / 1000);
-
-      document.getElementById("countdown").innerText = `${hrs}h ${mins}m ${secs}s`;
-    }
-
-    setInterval(countdown, 1000);
-    countdown();
-  </script>
 </body>
 </html>
 
