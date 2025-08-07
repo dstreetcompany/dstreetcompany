@@ -1,202 +1,291 @@
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Motoboy da Sorte 🍀🛵</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Motoboy da Sorte — Participar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #111;
-    color: white;
-    text-align: center;
+  :root{
+    --bg:#0f0f10;
+    --card:#1d2326;
+    --muted:#98a0a6;
+    --accent:#ffd400; /* amarelo */
+    --accent-2:#00c853; /* verde */
+    --danger:#e53935;
+    --btn:#16a34a; /* verde botão */
+    --glass: rgba(255,255,255,0.03);
+    --radius:12px;
   }
-  header {
-    background: #e60000;
-    padding: 15px;
-    font-size: 2rem;
-    font-weight: bold;
+  html,body{height:100%;margin:0;background:var(--bg);font-family:Inter,system-ui,Arial,sans-serif;color:#fff;-webkit-font-smoothing:antialiased}
+  .app{max-width:420px;margin:0 auto;padding:14px 14px 60px;}
+  header{display:flex;align-items:center;gap:12px}
+  .logo{
+    width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,#000,#111);display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,0.04);
+    box-shadow:0 6px 20px rgba(0,0,0,0.6);
   }
-  header span {
-    font-size: 1.5rem;
-    color: #ff0;
+  .logo img{width:48px;height:48px;object-fit:contain}
+  .title{flex:1}
+  .title h1{font-size:18px;margin:0;letter-spacing:0.5px}
+  .title p{margin:2px 0 0;color:var(--muted);font-size:12px}
+  .menu-btn{width:40px;height:40px;border-radius:10px;background:var(--glass);display:flex;align-items:center;justify-content:center;color:var(--muted);font-weight:700}
+  /* prize card */
+  .prize{
+    background: linear-gradient(180deg,#161616,#191919);
+    margin-top:12px;border-radius:14px;padding:14px;border:1px solid rgba(255,255,255,0.04);
   }
-  .resumo {
-    background: #ffeb3b;
-    color: #000;
-    padding: 15px;
-    font-size: 1.1rem;
-    font-weight: bold;
-    line-height: 1.5;
+  .badge{display:inline-block;background:var(--accent-2);color:#012; padding:6px 9px;border-radius:8px;font-weight:700;font-size:12px}
+  .prize h2{font-size:18px;margin:10px 0 6px}
+  .prize .subtitle{color:var(--muted);font-size:13px}
+  .prize-img{
+    margin-top:12px;border-radius:12px;overflow:hidden;height:180px;background:#111;display:flex;align-items:center;justify-content:center;
   }
-  .resumo strong {
-    color: #e60000;
+  .prize-img img{width:100%;height:100%;object-fit:cover;display:block}
+  /* price and qty selector */
+  .price-row{display:flex;align-items:center;justify-content:space-between;margin-top:12px;gap:10px}
+  .price-big{font-weight:700;font-size:20px;color:var(--accent)}
+  .per{font-size:12px;color:var(--muted)}
+  .qty-panel{margin-top:14px;background:var(--card);padding:12px;border-radius:12px}
+  .add-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .add-grid button{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:14px;border-radius:10px;color:var(--muted);font-weight:700}
+  .add-grid button.active{background:var(--accent-2);color:#012;border-color:transparent;box-shadow:0 6px 16px rgba(0,0,0,0.5)}
+  .qty-ctl{display:flex;align-items:center;gap:10px;margin-top:12px}
+  .circle{width:42px;height:42px;border-radius:10px;background:#121314;border:1px solid rgba(255,255,255,0.03);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px}
+  .qty-input{flex:1;background:#0c0c0d;border-radius:10px;padding:10px 12px;text-align:center;font-size:18px;border:1px solid rgba(255,255,255,0.03)}
+  /* action button */
+  .action{
+    margin-top:16px;display:flex;gap:10px;align-items:center;
   }
-  .premio-dia {
-    padding: 20px;
-    background: #222;
+  .btn-choose{flex:1;background:var(--btn);padding:14px;border-radius:12px;color:#fff;font-weight:700;border:none;font-size:16px;box-shadow:0 8px 24px rgba(0,0,0,0.5)}
+  .btn-choose:active{transform:translateY(1px)}
+  .total{min-width:120px;text-align:center;color:#000;background:var(--accent);padding:10px;border-radius:10px;font-weight:800}
+  /* foldable description */
+  .fold{margin-top:12px;background:var(--glass);padding:12px;border-radius:10px;color:var(--muted);font-size:13px}
+  .fold summary{list-style:none;cursor:pointer;font-weight:700;color:#fff}
+  .fold details[open] summary::after{content:" ▲";font-weight:600}
+  .fold summary::after{content:" ▼";color:var(--muted);font-weight:600;margin-left:8px}
+  /* cotas premiadas */
+  .cotas{
+    margin-top:16px;background:linear-gradient(180deg,#121315,#0d0d0e);padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)
   }
-  .premio-dia img {
-    max-width: 100%;
-    border-radius: 12px;
-    margin-top: 10px;
-  }
-  .botoes {
-    margin: 20px 0;
-  }
-  .botoes button {
-    background: #ffd700;
-    color: #000;
-    padding: 15px 30px;
-    margin: 10px;
-    border: none;
-    border-radius: 8px;
-    font-size: 1.2rem;
-    cursor: pointer;
-    transition: 0.3s;
-  }
-  .botoes button:hover {
-    background: #ffea00;
-  }
-  .contador {
-    font-size: 1.5rem;
-    margin: 15px 0;
-    color: #0f0;
-  }
-  .calendario {
-    background: #1a1a1a;
-    padding: 20px;
-  }
-  .calendario h2 {
-    color: #ffd700;
-  }
-  .dia {
-    margin: 15px 0;
-  }
-  .dia img {
-    max-width: 100%;
-    border-radius: 8px;
-    margin-top: 5px;
-  }
-  .ganhadores {
-    background: #222;
-    padding: 20px;
-  }
-  .ganhadores h2 {
-    color: #ff0;
-  }
-  .ganhadores img {
-    width: 45%;
-    border-radius: 8px;
-    margin: 5px;
-  }
-  .qr {
-    padding: 20px;
-  }
-  footer {
-    background: #000;
-    padding: 10px;
-    color: #aaa;
-    font-size: 0.9rem;
+  .cotas h3{margin:0 0 8px;color:var(--accent-2)}
+  .c-grid{display:flex;flex-wrap:wrap;gap:8px}
+  .c-box{padding:8px 10px;border-radius:8px;background:#172125;color:#bfe6c9;font-weight:700;font-size:13px}
+  .c-box.bad{background:var(--danger);color:#fff}
+  .footer{margin-top:18px;padding:18px;text-align:center;color:var(--muted);font-size:13px}
+  .contact{display:flex;gap:10px;justify-content:center;margin-top:8px}
+  .contact a{background:rgba(255,255,255,0.03);padding:8px 12px;border-radius:10px;color:var(--muted);text-decoration:none;font-weight:700}
+  /* tiny responsive tweaks */
+  @media(min-width:460px){
+    .app{padding:18px}
+    .prize-img{height:220px}
   }
 </style>
 </head>
 <body>
+  <div class="app">
+    <header>
+      <div class="logo" aria-hidden="true">
+        <!-- use your logo image here; fallback is text -->
+        <img src="https://i.imgur.com/6rYxv2g.png" alt="Motoboy da Sorte">
+      </div>
+      <div class="title">
+        <h1>Motoboy da Sorte</h1>
+        <p>R$2,50 a chance • Pacote 7 dias por R$7,00</p>
+      </div>
+      <div class="menu-btn">≡</div>
+    </header>
 
-<header>
-  🍀 Motoboy da Sorte 🛵 <br><span>Prêmios todos os dias!</span>
-</header>
+    <!-- prize -->
+    <section class="prize">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span class="badge">Adquira já</span>
+        <div style="font-size:12px;color:var(--muted)">Sorteio diário • 20:00</div>
+      </div>
+      <h2>Prêmio de Hoje: Pizza Família + Refrigerante</h2>
+      <div class="subtitle">Participe com apenas R$2,50 — ou pegue o pacote semanal com chances em dobro!</div>
 
-<div class="resumo">
-  🎯 <strong>Já pensou ganhar o prêmio de hoje por apenas R$ 2,50?</strong><br>
-  Ou garantir <strong>7 dias de sorte</strong> por apenas <strong>R$ 6,99</strong> e ter <strong>chances em dobro</strong> para concorrer a <strong>delícias diferentes todo dia</strong>? 🍔🍕🍫<br>
-  Participe agora e aproveite essa oportunidade deliciosa!
-</div>
+      <div class="prize-img" aria-hidden="true">
+        <!-- optional image; using Unsplash stable link -->
+        <img src="https://images.unsplash.com/photo-1594007654729-407eedc4be65?auto=format&fit=crop&w=1200&q=80" alt="Prêmio pizza e refrigerante">
+      </div>
 
-<div class="premio-dia">
-  <h2>🎁 Prêmio de Hoje: 🍕 Pizza Família + Refrigerante</h2>
-  <img src="https://images.unsplash.com/photo-1594007654729-407eedc4be65?auto=format&fit=crop&w=1200&q=80" alt="Pizza e Refrigerante">
-  <div class="contador" id="contador">Carregando contador...</div>
-</div>
+      <div class="price-row">
+        <div>
+          <div class="per">Valor por cota</div>
+          <div class="price-big">R$ 2,50</div>
+        </div>
+        <div style="text-align:right">
+          <div class="per">Vagas limitadas</div>
+          <div style="color:var(--muted);font-size:12px">Confirme já no WhatsApp</div>
+        </div>
+      </div>
+    </section>
 
-<div class="botoes">
-  <button>🎟 Participar Hoje - R$ 2,50</button>
-  <button>🔥 Pacote 7 Dias - R$ 7,00</button>
-</div>
+    <!-- qty selector -->
+    <div class="qty-panel">
+      <div style="font-weight:700;margin-bottom:10px">Quantidade (entradas)</div>
 
-<div class="calendario">
-  <h2>📅 Calendário de Prêmios da Semana</h2>
-  
-  <div class="dia">
-    <strong>Segunda:</strong> 🍔 Combo de Lanche
-    <img src="https://images.unsplash.com/photo-1603052875305-5f7b50b52e12?auto=format&fit=crop&w=800&q=80" alt="Combo de Lanche">
+      <div class="add-grid" id="presetBtns">
+        <button data-add="10">+10</button>
+        <button data-add="20">+20</button>
+        <button data-add="50">+50</button>
+        <button data-add="100">+100</button>
+        <button data-add="200">+200</button>
+        <button data-add="300">+300</button>
+      </div>
+
+      <div class="qty-ctl">
+        <div class="circle" id="dec">−</div>
+        <input id="qty" class="qty-input" type="number" min="1" value="1" />
+        <div class="circle" id="inc">+</div>
+      </div>
+
+      <div style="margin-top:10px;display:flex;justify-content:space-between;align-items:center;gap:10px">
+        <div style="font-size:13px;color:var(--muted)">Total aproximado</div>
+        <div class="total" id="total">R$ 2,50</div>
+      </div>
+
+      <div class="action">
+        <button class="btn-choose" id="buyBtn">✅ Quero participar</button>
+        <!-- text price repeated for visibility -->
+        <div style="min-width:90px;text-align:center">
+          <div style="font-size:12px;color:var(--muted)">Total</div>
+          <div style="font-weight:800;color:var(--accent)">R$ <span id="totalNumeric">2,50</span></div>
+        </div>
+      </div>
+
+      <div style="margin-top:8px;font-size:12px;color:var(--muted)">Ou compre o <strong>Pacote 7 dias</strong> e concorra todos os dias por apenas <strong>R$ 7,00</strong> — <em>chance em dobro</em>.</div>
+      <div style="margin-top:8px">
+        <button id="packBtn" style="width:100%;padding:10px;border-radius:10px;border:none;background:#ffb300;color:#000;font-weight:800">🔥 Pacote 7 Dias — R$ 7,00</button>
+      </div>
+    </div>
+
+    <!-- foldable rules -->
+    <div class="fold">
+      <details>
+        <summary>Descrição / Regulamento</summary>
+        <div style="margin-top:8px;color:var(--muted);line-height:1.5;font-size:13px">
+          • Cada cota custa R$2,50 e equivale a 1 número no sorteio.<br>
+          • Pacote 7 dias (R$7,00) entra automaticamente nos próximos 7 sorteios, começando hoje se o sorteio ainda não ocorreu.<br>
+          • Sorteios diários sempre às 20:00 — resultado no Instagram @motoboy_da_sorte.<br>
+          • Prêmios e regras sujeitos a alteração com aviso prévio nos Stories.<br>
+          • Ao confirmar, envie comprovante via WhatsApp para validação.
+        </div>
+      </details>
+    </div>
+
+    <!-- cotas premiadas -->
+    <div class="cotas">
+      <h3>🔥 Cotas premiadas — Achou, ganhou!</h3>
+      <div class="c-grid" id="cotasGrid">
+        <!-- sample numbers; red = destaque -->
+        <div class="c-box">000000</div>
+        <div class="c-box">111111</div>
+        <div class="c-box">222222</div>
+        <div class="c-box">333333</div>
+        <div class="c-box">444444</div>
+        <div class="c-box">555555</div>
+        <div class="c-box">666666</div>
+        <div class="c-box">777777</div>
+        <div class="c-box">888888</div>
+        <div class="c-box">999999</div>
+        <div class="c-box bad">404040</div>
+        <div class="c-box">505050</div>
+        <div style="width:100%;margin-top:8px;color:var(--muted);font-size:13px">+ 15 NÚMEROS PREMIADOS de até R$200,00 — ver regulamento</div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div style="font-weight:700">Contatos</div>
+      <div class="contact">
+        <a href="https://www.instagram.com/motoboy_da_sorte" target="_blank">Instagram</a>
+        <a href="https://wa.me/5511913304443" target="_blank">WhatsApp</a>
+      </div>
+      <div style="margin-top:8px;color:var(--muted);font-size:12px">A sorte bate na sua porta 🍀 — Motoboy da Sorte</div>
+    </div>
   </div>
-  
-  <div class="dia">
-    <strong>Terça:</strong> 🍫 Barca de Açaí
-    <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=800&q=80" alt="Barca de Açaí">
-  </div>
-  
-  <div class="dia">
-    <strong>Quarta:</strong> 🍣 Combo Temaki
-    <img src="https://images.unsplash.com/photo-1604908177350-3407e51c9abf?auto=format&fit=crop&w=800&q=80" alt="Combo Temaki">
-  </div>
-  
-  <div class="dia">
-    <strong>Quinta:</strong> 🍕 Pizza Família + Refrigerante
-    <img src="https://images.unsplash.com/photo-1594007654729-407eedc4be65?auto=format&fit=crop&w=1200&q=80" alt="Pizza e Refrigerante">
-  </div>
-  
-  <div class="dia">
-    <strong>Sexta:</strong> 🍔 + 🍟 Combo Especial
-    <img src="https://images.unsplash.com/photo-1603052875305-5f7b50b52e12?auto=format&fit=crop&w=800&q=80" alt="Combo Especial">
-  </div>
-  
-  <div class="dia">
-    <strong>Sábado:</strong> 🍦 Taça Gigante de Sorvete
-    <img src="https://images.unsplash.com/photo-1542444459-db0c3a32e5f5?auto=format&fit=crop&w=800&q=80" alt="Sorvete">
-  </div>
-  
-  <div class="dia">
-    <strong>Domingo:</strong> 💵 PIX de R$ 50
-    <img src="https://images.unsplash.com/photo-1611432579699-4845e4a0e3f1?auto=format&fit=crop&w=800&q=80" alt="Pix">
-  </div>
-</div>
-
-<div class="ganhadores">
-  <h2>🏆 Últimos Ganhadores</h2>
-  <img src="https://via.placeholder.com/300x200?text=Ganhador+1" alt="Ganhador 1">
-  <img src="https://via.placeholder.com/300x200?text=Ganhador+2" alt="Ganhador 2">
-</div>
-
-<div class="qr">
-  <h2>📲 Siga no Instagram</h2>
-  <img src="https://api.qrserver.com/v1/create-qr-code/?data=https://instagram.com/motoboy_da_sorte&size=150x150" alt="QR Code Instagram">
-</div>
-
-<footer>
-  📍 Mogi das Cruzes - Contato: (11) 91330-4443 / (11) 99910-4178
-</footer>
 
 <script>
-function atualizarContador() {
-  const agora = new Date();
-  const alvo = new Date();
-  alvo.setHours(20,0,0,0); // 20h
-  if (agora > alvo) alvo.setDate(alvo.getDate() + 1);
-  
-  const diff = alvo - agora;
-  const h = Math.floor(diff / 1000 / 60 / 60);
-  const m = Math.floor(diff / 1000 / 60) % 60;
-  const s = Math.floor(diff / 1000) % 60;
-  
-  document.getElementById('contador').textContent = `⏳ ${h}h ${m}m ${s}s para o sorteio`;
-}
-setInterval(atualizarContador, 1000);
-atualizarContador();
-</script>
+  // config
+  const PRICE_PER = 2.5; // R$ 2,50 per entry
+  const whatsappNumber = "5511913304443"; // format for wa.me
+  const buyBtn = document.getElementById('buyBtn');
+  const packBtn = document.getElementById('packBtn');
+  const qtyInput = document.getElementById('qty');
+  const totalEl = document.getElementById('total');
+  const totalNumeric = document.getElementById('totalNumeric');
 
+  // preset buttons
+  document.querySelectorAll('#presetBtns button').forEach(btn=>{
+    btn.addEventListener('click', ()=> {
+      // clear active
+      document.querySelectorAll('#presetBtns button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      const add = parseInt(btn.getAttribute('data-add'),10) || 0;
+      qtyInput.value = add;
+      updateTotal();
+    });
+  });
+
+  // inc / dec
+  document.getElementById('inc').addEventListener('click', ()=>{
+    qtyInput.value = Number(qtyInput.value || 0) + 1;
+    clearActive();
+    updateTotal();
+  });
+  document.getElementById('dec').addEventListener('click', ()=>{
+    qtyInput.value = Math.max(1, Number(qtyInput.value || 1) - 1);
+    clearActive();
+    updateTotal();
+  });
+  qtyInput.addEventListener('input', ()=>{
+    if(!qtyInput.value || Number(qtyInput.value) < 1) qtyInput.value = 1;
+    clearActive();
+    updateTotal();
+  });
+
+  function clearActive(){
+    document.querySelectorAll('#presetBtns button').forEach(b=>b.classList.remove('active'));
+  }
+
+  function formatBR(value){
+    return value.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+  }
+  function updateTotal(){
+    const qty = Math.max(1, parseInt(qtyInput.value||1,10));
+    const total = qty * PRICE_PER;
+    totalEl.textContent = 'R$ ' + formatBR(total);
+    totalNumeric.textContent = formatBR(total);
+  }
+  updateTotal();
+
+  // buy flow
+  buyBtn.addEventListener('click', ()=>{
+    const qty = Math.max(1, parseInt(qtyInput.value||1,10));
+    // confirmation modal simple
+    const confirmMsg = `Boa sorte! 🍀\nVocê está prestes a concorrer ao prêmio de hoje com ${qty} entrada(s).\nO sorteio é às 20:00. Deseja continuar?`;
+    if(!confirm(confirmMsg)) return;
+    const total = (qty * PRICE_PER).toFixed(2);
+    const text = encodeURIComponent(`Quero participar do sorteio de hoje com ${qty} entrada(s). Total: R$ ${total} 🍀`);
+    const url = `https://wa.me/${whatsappNumber}?text=${text}`;
+    window.location.href = url;
+  });
+
+  // pack flow
+  packBtn.addEventListener('click', ()=>{
+    const confirmMsg = `ÓTIMA ESCOLHA! 🫵\nVocê está prestes a concorrer a várias delícias todos os dias por 7 dias seguidos!\nSua participação já vale para o prêmio de hoje se o sorteio ainda não foi realizado.\n\nDeseja continuar e pagar R$ 7,00?`;
+    if(!confirm(confirmMsg)) return;
+    const text = encodeURIComponent(`Quero o Pacote 7 Dias por R$ 7,00. Iniciar agora. 🍀`);
+    const url = `https://wa.me/${whatsappNumber}?text=${text}`;
+    window.location.href = url;
+  });
+
+  // small enhancement: long-press to clear active presets
+  document.getElementById('presetBtns').addEventListener('touchstart', (e)=>{}, {passive:true});
+</script>
 </body>
 </html>
+
