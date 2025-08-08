@@ -1,0 +1,82 @@
+!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prêmios da Semana - Motoboy da Sorte</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            padding: 20px;
+            max-width: 500px;
+            margin: auto;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .premio {
+            display: flex;
+            align-items: center;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
+        }
+        .premio img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 15px;
+        }
+        .premio span {
+            font-size: 16px;
+            font-weight: bold;
+            color: #444;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🎯 Prêmios da Semana</h1>
+
+    <div class="premio">
+        <img src="https://cdn-icons-png.flaticon.com/512/3075/3075977.png" alt="Hot Dog">
+        <span>Segunda - Hot Dog 2 Kilos + Coca 2L</span>
+    </div>
+
+    <div class="premio">
+        <img src="https://cdn-icons-png.flaticon.com/512/590/590769.png" alt="Barca de Açaí">
+        <span>Terça - Mega Barca de Açaí com frutas</span>
+    </div>
+
+    <div class="premio">
+        <img src="https://cdn-icons-png.flaticon.com/512/3527/3527896.png" alt="Salgados">
+        <span>Quarta - 100 Mini Salgados + Coca 2L</span>
+    </div>
+
+    <div class="premio">
+        <img src="https://cdn-icons-png.flaticon.com/512/3595/3595455.png" alt="Comida Japonesa">
+        <span>Quinta - Combo Japonês 40 peças + Coca 500ml</span>
+    </div>
+
+    <div class="premio">
+        <img src="https://cdn-icons-png.flaticon.com/512/6978/6978255.png" alt="Pizza">
+        <span>Sexta - Pizza Família + Coca 2L</span>
+    </div>
+
+    <div class="premio">
+        <img src="https://cdn-icons-png.flaticon.com/512/857/857681.png" alt="Lanches">
+        <span>Sábado - 4 Lanches + Coca 2L</span>
+    </div>
+
+    <div class="premio">
+        <img src="https://cdn-icons-png.flaticon.com/512/2351/2351370.png" alt="Rodízio">
+        <span>Domingo - Vale Rodízio Boi Nobre</span>
+    </div>
+
+</body>
+</html>
